@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="fr-CA">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tarifs — Le français avec Keb &amp; Bek</title>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  :root {
+    --encre:        #2B1F1A;
+    --papier:       #F4E4C8;
+    --papier-fonce: #E8D2A3;
+    --papier-clair: #FDF6E8;
+    --corail:       #E0593C;
+    --corail-fonce: #B5402A;
+    --corail-clair: #FBDCD2;
+    --jaune:        #F0A93C;
+    --jaune-fonce:  #C9821E;
+    --violet:       #7B5EA8;
+    --violet-fonce: #5A4080;
+    --turquoise:    #3E9C92;
+    --turquoise-clair: #D6F0EE;
+    --gris:         #8A7763;
+    --blanc:        #ffffff;
+    --ombre:        rgba(80, 40, 12, 0.22);
+    --ombre-douce:  rgba(80, 40, 12, 0.12);
+  }
+
+  body {
+    font-family: "Nunito", sans-serif;
+    background:
+      radial-gradient(ellipse 110% 60% at 0% 0%, rgba(62,156,146,0.20) 0%, transparent 55%),
+      radial-gradient(ellipse 90% 50% at 100% 100%, rgba(123,94,168,0.18) 0%, transparent 55%),
+      var(--papier-fonce);
+    color: var(--encre);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── NAV ── */
+  nav {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    padding: 1.2rem 2rem;
+    border-bottom: 1.5px dashed rgba(62,156,146,0.25);
+    background: rgba(244,228,200,0.7);
+    backdrop-filter: blur(10px);
+    position: sticky; top: 0; z-index: 100;
+  }
+  .nav-back {
+    font-family: "Caveat", cursive;
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: var(--turquoise);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .nav-back:hover { color: var(--corail); }
+  .nav-sep { color: var(--gris); font-size: 0.85rem; }
+  .nav-cur {
+    font-family: "Caveat", cursive;
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: var(--gris);
+  }
+
+  /* ── HEADER ── */
+  header {
+    text-align: center;
+    padding: clamp(3rem, 6vw, 5rem) 1.5rem 2.5rem;
+    position: relative;
+  }
+  .eyebrow {
+    font-family: "Caveat", cursive;
+    font-size: 1rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--turquoise);
+    margin-bottom: 0.8rem;
+    animation: monterDouce 0.5s 0.1s ease both;
+    opacity: 0;
+  }
+  h1 {
+    font-family: "Caveat", cursive;
+    font-weight: 700;
+    font-size: clamp(2.6rem, 6vw, 4.2rem);
+    line-height: 1.1;
+    color: var(--encre);
+    animation: monterDouce 0.5s 0.2s ease both;
+    opacity: 0;
+  }
+  h1 em {
+    font-style: italic;
+    color: var(--turquoise);
+  }
+  .header-sub {
+    font-size: 0.95rem;
+    color: var(--gris);
+    max-width: 440px;
+    margin: 1rem auto 0;
+    line-height: 1.7;
+    animation: monterDouce 0.5s 0.3s ease both;
+    opacity: 0;
+  }
+  /* Petite ligne décorative sous le header */
+  .header-ligne {
+    width: 60px;
+    height: 2px;
+    background: var(--turquoise);
+    border-radius: 2px;
+    margin: 1.5rem auto 0;
+    opacity: 0;
+    animation: monterDouce 0.5s 0.35s ease both;
+  }
+
+  /* ── ONGLETS LANGUES ── */
+  .lang-tabs-wrap {
+    display: flex;
+    justify-content: center;
+    padding: 2.5rem 1.5rem 0;
+    animation: monterDouce 0.5s 0.42s ease both;
+    opacity: 0;
+  }
+  .lang-tabs {
+    display: flex;
+    gap: 0.3rem;
+    background: rgba(244,228,200,0.6);
+    border: 1.5px solid rgba(62,156,146,0.22);
+    border-radius: 100px;
+    padding: 0.3rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    box-shadow: 0 3px 12px var(--ombre-douce);
+  }
+  .lang-tab {
+    font-family: "Caveat", cursive;
+    font-weight: 600;
+    font-size: 1rem;
+    padding: 0.3rem 1rem;
+    border-radius: 100px;
+    border: none;
+    background: transparent;
+    color: var(--gris);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+  }
+  .lang-tab:hover {
+    color: var(--turquoise);
+    background: var(--turquoise-clair);
+  }
+  .lang-tab.active {
+    background: var(--turquoise);
+    color: var(--blanc);
+  }
+
+  /* ── PANNEAUX ── */
+  .panels {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 2.5rem 1.5rem 6rem;
+  }
+  .panel { display: none; animation: monterDouce 0.35s ease both; }
+  .panel.active { display: block; }
+
+  /* ── CARTE TARIF ── */
+  .pricing-card {
+    background: var(--papier-clair);
+    border: 2px dashed rgba(62,156,146,0.28);
+    border-radius: 20px;
+    overflow: hidden;
+    margin-bottom: 1.2rem;
+    box-shadow: 0 4px 16px var(--ombre-douce);
+    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+  }
+  .pricing-card:hover {
+    transform: translateY(-3px);
+    border-color: var(--turquoise);
+    border-style: solid;
+    box-shadow: 0 12px 32px rgba(62,156,146,0.18);
+  }
+
+  /* Carte principale (cours régulier) */
+  .pricing-card.featured {
+    border-color: var(--turquoise);
+    border-style: solid;
+    background: linear-gradient(160deg, var(--papier-clair) 0%, var(--turquoise-clair) 100%);
+    position: relative;
+  }
+  .pricing-card.featured::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(to right, transparent, var(--turquoise), transparent);
+    border-radius: 20px 20px 0 0;
+  }
+
+  .card-inner { padding: 1.7rem 2rem; }
+
+  .card-label {
+    font-family: "Caveat", cursive;
+    font-weight: 600;
+    font-size: 0.95rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--turquoise);
+    margin-bottom: 0.4rem;
+  }
+  .card-label.muted {
+    color: var(--gris);
+  }
+
+  .card-title {
+    font-family: "Caveat", cursive;
+    font-weight: 700;
+    font-size: 1.8rem;
+    color: var(--encre);
+    margin-bottom: 0.3rem;
+  }
+  .card-title em {
+    font-style: italic;
+    color: var(--turquoise);
+  }
+
+  .card-price-row {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    margin: 0.9rem 0 0.4rem;
+  }
+  .price-amount {
+    font-family: "Caveat", cursive;
+    font-weight: 700;
+    font-size: 3.2rem;
+    color: var(--encre);
+    line-height: 1;
+  }
+  .price-currency {
+    font-family: "Caveat", cursive;
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: var(--turquoise);
+  }
+  .price-unit {
+    font-size: 0.85rem;
+    color: var(--gris);
+  }
+
+  .card-desc {
+    font-size: 0.88rem;
+    color: var(--gris);
+    line-height: 1.7;
+    margin-top: 0.5rem;
+  }
+
+  /* Forfaits */
+  .forfait-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-top: 1.2rem;
+  }
+  .forfait-item {
+    background: rgba(244,228,200,0.65);
+    border: 1.5px dashed rgba(62,156,146,0.3);
+    border-radius: 14px;
+    padding: 1rem 1.1rem;
+    transition: border-color 0.2s ease;
+  }
+  .forfait-item:hover {
+    border-color: var(--turquoise);
+    border-style: solid;
+  }
+  .forfait-name {
+    font-family: "Caveat", cursive;
+    font-weight: 600;
+    font-size: 0.9rem;
+    letter-spacing: 0.08em;
+    color: var(--turquoise);
+    margin-bottom: 0.3rem;
+  }
+  .forfait-total {
+    font-family: "Caveat", cursive;
+    font-weight: 700;
+    font-size: 1.9rem;
+    color: var(--encre);
+  }
+  .forfait-total span {
+    font-size: 0.85rem;
+    color: var(--gris);
+    margin-left: 0.15rem;
+  }
+  .forfait-per {
+    font-size: 0.78rem;
+    color: var(--gris);
+    margin-top: 0.15rem;
+  }
+  .forfait-saving {
+    display: inline-block;
+    margin-top: 0.5rem;
+    font-family: "Caveat", cursive;
+    font-weight: 600;
+    font-size: 0.88rem;
+    color: var(--corail-fonce);
+    background: var(--corail-clair);
+    border-radius: 100px;
+    padding: 0.1rem 0.55rem;
+  }
+
+  /* ── SECTION DISCRÈTE (tarifs préférentiels) ── */
+  .discreet-section {
+    margin-top: 0.5rem;
+    border: 1.5px dashed rgba(62,156,146,0.25);
+    border-radius: 16px;
+    padding: 1.4rem 1.7rem;
+    background: rgba(253,246,232,0.55);
+  }
+  .discreet-title {
+    font-family: "Caveat", cursive;
+    font-weight: 600;
+    font-size: 1rem;
+    letter-spacing: 0.12em;
+    color: var(--turquoise);
+    opacity: 0.8;
+    margin-bottom: 0.9rem;
+    text-align: center;
+  }
+  .discreet-items {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+  .discreet-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+  /* Petit losange SVG dessiné à la main — remplace ◈ */
+  .discreet-icon {
+    flex-shrink: 0;
+    margin-top: 0.15rem;
+    width: 16px;
+    height: 16px;
+  }
+  .discreet-text {
+    font-size: 0.88rem;
+    color: var(--gris);
+    line-height: 1.7;
+  }
+  .discreet-text strong {
+    color: var(--encre);
+    font-weight: 700;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    text-align: center;
+    padding: 2rem 2rem;
+    border-top: 1.5px dashed rgba(62,156,146,0.2);
+    font-family: "Caveat", cursive;
+    font-size: 1rem;
+    color: var(--gris);
+  }
+  footer a {
+    color: var(--turquoise);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  footer a:hover { color: var(--corail); }
+
+  @keyframes monterDouce {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (max-width: 560px) {
+    .forfait-grid { grid-template-columns: 1fr; }
+    .lang-tabs { gap: 0.2rem; }
+    .lang-tab { padding: 0.28rem 0.7rem; font-size: 0.9rem; }
+    .card-inner { padding: 1.3rem 1.2rem; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-back">← Cours privés</a>
+  <span class="nav-sep">/</span>
+  <span class="nav-cur">Tarifs</span>
+</nav>
+
+<header>
+  <div class="eyebrow">Keb &amp; Bek · Cours de français québécois</div>
+  <h1>Tarifs &amp; <em>forfaits</em></h1>
+  <p class="header-sub">Des cours privés sur mesure, avec une méthode unique — pour apprendre le français québécois authentique.</p>
+  <div class="header-ligne"></div>
+</header>
+
+<!-- ONGLETS LANGUES -->
+<div class="lang-tabs-wrap">
+  <div class="lang-tabs">
+    <button class="lang-tab active" data-lang="fr">Français</button>
+    <button class="lang-tab" data-lang="en">English</button>
+    <button class="lang-tab" data-lang="es">Español</button>
+    <button class="lang-tab" data-lang="pt">Português</button>
+    <button class="lang-tab" data-lang="it">Italiano</button>
+    <button class="lang-tab" data-lang="zh">中文</button>
+  </div>
+</div>
+
+<!-- SVG losange réutilisable (icône discrète, remplace ◈) -->
+<svg style="display:none">
+  <symbol id="losange" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M8 2.5 C8.4 2.5 8.7 2.8 10.5 5.3 L13.5 8 C13.8 8.3 13.6 8.7 13.5 8.8 L8.2 13.4 C8 13.6 7.8 13.6 7.6 13.4 L2.5 8.8 C2.3 8.6 2.3 8.3 2.5 8 L5.5 5.2 C7.3 2.8 7.6 2.5 8 2.5 Z" stroke="var(--turquoise)" stroke-width="1.5" stroke-linejoin="round" fill="var(--turquoise)" fill-opacity="0.18"/>
+  </symbol>
+</svg>
+
+<!-- PANNEAUX -->
+<div class="panels">
+
+  <!-- ════ FRANÇAIS ════ -->
+  <div class="panel active" id="panel-fr">
+    <div class="pricing-card">
+      <div class="card-inner">
+        <div class="card-label muted">Premier contact</div>
+        <div class="card-title">Cours d'essai</div>
+        <div class="card-price-row">
+          <span class="price-amount">30</span>
+          <span class="price-currency">CAD</span>
+          <span class="price-unit">/ 30 min</span>
+        </div>
+        <p class="card-desc">Une séance d'introduction pour faire connaissance, évaluer votre niveau et découvrir la méthode Keb &amp; Bek.</p>
+      </div>
+    </div>
+    <div class="pricing-card featured">
+      <div class="card-inner">
+        <div class="card-label">Cours régulier</div>
+        <div class="card-title">Cours <em>individuel</em></div>
+        <div class="card-price-row">
+          <span class="price-amount">65</span>
+          <span class="price-currency">CAD</span>
+          <span class="price-unit">/ heure</span>
+        </div>
+        <p class="card-desc">Cours privé d'une heure, entièrement personnalisé selon votre rythme et vos objectifs.</p>
+        <div class="forfait-grid">
+          <div class="forfait-item">
+            <div class="forfait-name">Forfait 10 cours</div>
+            <div class="forfait-total">600 <span>CAD</span></div>
+            <div class="forfait-per">60 CAD / cours</div>
+            <span class="forfait-saving">↓ 7,7 % d'économie</span>
+          </div>
+          <div class="forfait-item">
+            <div class="forfait-name">Forfait 20 cours</div>
+            <div class="forfait-total">1100 <span>CAD</span></div>
+            <div class="forfait-per">55 CAD / cours</div>
+            <span class="forfait-saving">↓ 15,4 % d'économie</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="discreet-section">
+      <div class="discreet-title">· Avantages &amp; tarifs préférentiels ·</div>
+      <div class="discreet-items">
+        <div class="discreet-item">
+          <svg class="discreet-icon"><use href="#losange"/></svg>
+          <p class="discreet-text"><strong>Programme de référence</strong> — Les élèves qui réfèrent un ami bénéficient d'avantages exclusifs valides sur leurs prochains cours. Contactez-moi pour en savoir plus.</p>
+        </div>
+        <div class="discreet-item">
+          <svg class="discreet-icon"><use href="#losange"/></svg>
+          <p class="discreet-text"><strong>Tarifs d'ancienneté</strong> — Des tarifs personnalisés sont offerts aux élèves de longue date, selon leur parcours. Ces tarifs sont laissés à ma discrétion.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ ENGLISH ════ -->
+  <div class="panel" id="panel-en">
+    <div class="pricing-card">
+      <div class="card-inner">
+        <div class="card-label muted">First contact</div>
+        <div class="card-title">Trial lesson</div>
+        <div class="card-price-row">
+          <span class="price-amount">30</span>
+          <span class="price-currency">CAD</span>
+          <span class="price-unit">/ 30 min</span>
+        </div>
+        <p class="card-desc">An introductory session to get acquainted, assess your level, and discover the Keb &amp; Bek method.</p>
+      </div>
+    </div>
+    <div class="pricing-card featured">
+      <div class="card-inner">
+        <div class="card-label">Regular lesson</div>
+        <div class="card-title"><em>Private</em> lesson</div>
+        <div class="card-price-row">
+          <span class="price-amount">65</span>
+          <span class="price-currency">CAD</span>
+          <span class="price-unit">/ hour</span>
+        </div>
+        <p class="card-desc">A one-hour private lesson, fully tailored to your pace and goals.</p>
+        <div class="forfait-grid">
+          <div class="forfait-item">
+            <div class="forfait-name">10-lesson package</div>
+            <div class="forfait-total">600 <span>CAD</span></div>
+            <div class="forfait-per">60 CAD / lesson</div>
+            <span class="forfait-saving">↓ 7.7% savings</span>
+          </div>
+          <div class="forfait-item">
+            <div class="forfait-name">20-lesson package</div>
+            <div class="forfait-total">1100 <span>CAD</span></div>
+            <div class="forfait-per">55 CAD / lesson</div>
+            <span class="forfait-saving">↓ 15.4% savings</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="discreet-section">
+      <div class="discreet-title">· Preferred rates &amp; benefits ·</div>
+      <div class="discreet-items">
+        <div class="discreet-item">
+          <svg class="discreet-icon"><use href="#losange"/></svg>
+          <p class="discreet-text"><strong>Referral program</strong> — Students who refer a friend receive exclusive benefits applicable to their upcoming lessons. Contact me to learn more.</p>
+        </div>
+        <div class="discreet-item">
+          <svg class="discreet-icon"><use href="#losange"/></svg>
+          <p class="discreet-text"><strong>Loyalty rates</strong> — Personalized rates are available for long-term students, based on their individual journey. These rates are offered at my discretion.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ ESPAÑOL ════ -->
+  <div class="panel" id="panel-es">
+    <div class="pricing-card">
+      <div class="card-inner">
+        <div class="card-label muted">Primer contacto</div>
+        <div class="card-title">Clase de prueba</div>
+        <div class="card-price-row">
+          <span class="price-amount">30</span>
+          <span class="price-currency">CAD</span>
+          <span class="price-unit">/ 30 min</span>
+        </div>
+        <p class="card-desc">Una sesión introductoria para conocernos, evaluar tu nivel y descubrir el método Keb &amp; Bek.</p>
+      </div>
+    </div>
+    <div class="pricing-card featured">
+      <div class="card-inner">
+        <div class="card-label">Clase regular</div>
+        <div class="card-title">Clase <em>individual</em></div>
+        <div class="card-price-row">
+          <span class="price-amount">65</span>
+          <span class="price-currency">CAD</span>
+          <span class="price-unit">/ hora</span>
+        </div>
+        <p class="card-desc">Una clase privada de una hora, completamente personalizada según tu ritmo y tus objetivos.</p>
+        <div class="forfait-grid">
+          <div class="forfait-item">
+            <div class="forfait-name">Paquete 10 clases</div>
+            <div class="forfait-total">600 <span>CAD</span></div>
+            <div class="forfait-per">60 CAD / clase</div>
+            <span class="forfait-saving">↓ 7,7% de ahorro</span>
+          </div>
+          <div class="forfait-item">
+            <div class="forfait-name">Paquete 20 clases</div>
+            <div class="forfait-total">1100 <span>CAD</span></div>
+            <div class="forfait-per">55 CAD / clase</div>
+            <span class="forfait-saving">↓ 15,4% de ahorro</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="discreet-section">
+      <div class="discreet-title">· Tarifas preferenciales y beneficios ·</div>
+      <div class="discreet-items">
+        <div class="discreet-item">
+          <svg class="discreet-icon"><use href="#losange"/></svg>
+          <p class="discreet-text"><strong>Programa de referencias</strong> — Los estudiantes que refieren a un amigo reciben beneficios exclusivos aplicables a sus próximas clases. Contáctame para saber más.</p>
+        </div>
+        <div class="discreet-item">
+          <svg class="discreet-icon"><use href="#losange"/></svg>
+          <p class="discreet-text"><strong>Tarifas por antigüedad</strong> — Se ofrecen tarifas personalizadas a los estudiantes de larga trayectoria, según su recorrido individual. Estas tarifas quedan a mi discreción.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ PORTUGUÊS ════ -->
+  <div class="panel" id="panel-pt">
+    <div class="pricing-card">
+      <div class="card-inner">
+        <div class="card-label muted">Primeiro contacto</div>
+        <div class="card-title">Aula experimental</div>
+        <div class="card-price-row">
+          <span class="price-amount">30</span>
+          <span class="price-currency">CAD</span>
+          <span class="price-unit">/ 30 min</span>
+        </div>
+        <p class="card-desc">Uma sessão introdutória para nos conhecermos, avaliar o seu nível e descobrir o método Keb &amp; Bek.</p>
+      </div>
+    </div>
+    <div class="pricing-card featured">
+      <div class="card-inner">
+        <div class="card-label">Aula regular</div>
+        <div class="card-title">Aula <em>individual</em></div>
+        <div class="card-price-row">
+          <span class="price-amount">65</span>
+          <span class="price-currency">CAD</span>
+          <span class="price-unit">/ hora</span>
+        </div>
+        <p class="card-desc">Uma aula privada de uma hora, totalmente personalizada ao seu ritmo e objetivos.</p>
+        <div class="forfait-grid">
+          <div class="forfait-item">
+            <div class="forfait-name">Pacote 10 aulas</div>
+            <div class="forfait-total">600 <span>CAD</span></div>
+            <div class="forfait-per">60 CAD / aula</div>
+            <span class="forfait-saving">↓ 7,7% de economia</span>
+          </div>
+          <div class="forfait-item">
+            <div class="forfait-name">Pacote 20 aulas</div>
+            <div class="forfait-total">1100 <span>CAD</span></div>
+            <div class="forfait-per">55 CAD / aula</div>
+            <span class="forfait-saving">↓ 15,4% de economia</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="discreet-section">
+      <div class="discreet-title">· Tarifas preferenciais e benefícios ·</div>
+      <div class="discreet-items">
+        <div class="discreet-item">
+          <svg class="discreet-icon"><use href="#losange"/></svg>
+          <p class="discreet-text"><strong>Programa de referências</strong> — Os alunos que indicam um amigo recebem benefícios exclusivos aplicáveis às próximas aulas. Entre em contacto para saber mais.</p>
+        </div>
+        <div class="discreet-item">
+          <svg class="discreet-icon"><use href="#losange"/></svg>
+          <p class="discreet-text"><strong>Tarifas por fidelidade</strong> — São oferecidas tarifas personalizadas aos alunos de longa data, de acordo com o seu percurso individual. Estas tarifas ficam ao meu critério.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ ITALIANO ════ -->
+  <div class="panel" id="panel-it">
+    <div class="pricing-card">
+      <div class="card-inner">
+        <div class="card-label muted">Primo contatto</div>
+        <div class="card-title">Lezione di prova</div>
+        <div class="card-price-row">
+          <span class="price-amount">30</span>
+          <span class="price-currency">CAD</span>
+          <span class="price-unit">/ 30 min</span>
+        </div>
+        <p class="card-desc">Una sessione introduttiva per conoscersi, valutare il tuo livello e scoprire il metodo Keb &amp; Bek.</p>
+      </div>
+    </div>
+    <div class="pricing-card featured">
+      <div class="card-inner">
+        <div class="card-label">Lezione regolare</div>
+        <div class="card-title">Lezione <em>individuale</em></div>
+        <div class="card-price-row">
+          <span class="price-amount">65</span>
+          <span class="price-currency">CAD</span>
+          <span class="price-unit">/ ora</span>
+        </div>
+        <p class="card-desc">Una lezione privata di un'ora, completamente personalizzata in base al tuo ritmo e ai tuoi obiettivi.</p>
+        <div class="forfait-grid">
+          <div class="forfait-item">
+            <div class="forfait-name">Pacchetto 10 lezioni</div>
+            <div class="forfait-total">600 <span>CAD</span></div>
+            <div class="forfait-per">60 CAD / lezione</div>
+            <span class="forfait-saving">↓ 7,7% di risparmio</span>
+          </div>
+          <div class="forfait-item">
+            <div class="forfait-name">Pacchetto 20 lezioni</div>
+            <div class="forfait-total">1100 <span>CAD</span></div>
+            <div class="forfait-per">55 CAD / lezione</div>
+            <span class="forfait-saving">↓ 15,4% di risparmio</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="discreet-section">
+      <div class="discreet-title">· Tariffe preferenziali e vantaggi ·</div>
+      <div class="discreet-items">
+        <div class="discreet-item">
+          <svg class="discreet-icon"><use href="#losange"/></svg>
+          <p class="discreet-text"><strong>Programma referral</strong> — Gli studenti che presentano un amico ricevono vantaggi esclusivi applicabili alle lezioni successive. Contattami per saperne di più.</p>
+        </div>
+        <div class="discreet-item">
+          <svg class="discreet-icon"><use href="#losange"/></svg>
+          <p class="discreet-text"><strong>Tariffe fedeltà</strong> — Sono disponibili tariffe personalizzate per gli studenti di lunga data, in base al loro percorso individuale. Queste tariffe sono a mia discrezione.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ 中文 ════ -->
+  <div class="panel" id="panel-zh">
+    <div class="pricing-card">
+      <div class="card-inner">
+        <div class="card-label muted">初次接触</div>
+        <div class="card-title">试听课</div>
+        <div class="card-price-row">
+          <span class="price-amount">30</span>
+          <span class="price-currency">CAD</span>
+          <span class="price-unit">/ 30 分钟</span>
+        </div>
+        <p class="card-desc">一堂入门课，让我们相互了解，评估您的语言水平，并体验 Keb &amp; Bek 的独特教学方法。</p>
+      </div>
+    </div>
+    <div class="pricing-card featured">
+      <div class="card-inner">
+        <div class="card-label">常规课程</div>
+        <div class="card-title"><em>一对一</em>私人课程</div>
+        <div class="card-price-row">
+          <span class="price-amount">65</span>
+          <span class="price-currency">CAD</span>
+          <span class="price-unit">/ 小时</span>
+        </div>
+        <p class="card-desc">一小时私人课程，完全根据您的节奏和学习目标量身定制。</p>
+        <div class="forfait-grid">
+          <div class="forfait-item">
+            <div class="forfait-name">10 节课套餐</div>
+            <div class="forfait-total">600 <span>CAD</span></div>
+            <div class="forfait-per">每节 60 CAD</div>
+            <span class="forfait-saving">↓ 节省 7.7%</span>
+          </div>
+          <div class="forfait-item">
+            <div class="forfait-name">20 节课套餐</div>
+            <div class="forfait-total">1100 <span>CAD</span></div>
+            <div class="forfait-per">每节 55 CAD</div>
+            <span class="forfait-saving">↓ 节省 15.4%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="discreet-section">
+      <div class="discreet-title">· 优惠价格与专属福利 ·</div>
+      <div class="discreet-items">
+        <div class="discreet-item">
+          <svg class="discreet-icon"><use href="#losange"/></svg>
+          <p class="discreet-text"><strong>推荐计划</strong> — 推荐朋友报名的学员可享受专属优惠，适用于后续课程。欢迎联系我了解详情。</p>
+        </div>
+        <div class="discreet-item">
+          <svg class="discreet-icon"><use href="#losange"/></svg>
+          <p class="discreet-text"><strong>忠诚优惠</strong> — 长期学员可享受个性化优惠价格，具体根据个人学习历程而定，由我酌情提供。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /panels -->
+
+<footer>
+  <a href="index.html">← Cours privés</a> · Keb &amp; Bek · Cours de français québécois
+</footer>
+
+<script>
+  const tabs = document.querySelectorAll('.lang-tab');
+  const panels = document.querySelectorAll('.panel');
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      const lang = tab.dataset.lang;
+      tabs.forEach(t => t.classList.remove('active'));
+      panels.forEach(p => p.classList.remove('active'));
+      tab.classList.add('active');
+      document.getElementById('panel-' + lang).classList.add('active');
+    });
+  });
+</script>
+</body>
+</html>
