@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="fr-CA">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cours privés — Le français avec Keb &amp; Bek</title>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --encre:        #2B1F1A;
+    --papier:       #F4E4C8;
+    --papier-fonce: #E8D2A3;
+    --papier-clair: #FDF6E8;
+    --corail:       #E0593C;
+    --corail-fonce: #B5402A;
+    --corail-clair: #FBDCD2;
+    --jaune:        #F0A93C;
+    --jaune-fonce:  #C9821E;
+    --violet:       #7B5EA8;
+    --violet-fonce: #5A4080;
+    --turquoise:    #3E9C92;
+    --turquoise-clair: #D6F0EE;
+    --gris:         #8A7763;
+    --blanc:        #ffffff;
+    --ombre:        rgba(80, 40, 12, 0.22);
+    --ombre-douce:  rgba(80, 40, 12, 0.12);
+  }
+
+  html, body {
+    min-height: 100vh;
+    background:
+      radial-gradient(ellipse 120% 70% at 10% -5%, rgba(62,156,146,0.28) 0%, transparent 55%),
+      radial-gradient(ellipse 90% 60% at 95% 105%, rgba(123,94,168,0.20) 0%, transparent 55%),
+      radial-gradient(ellipse 80% 50% at 55% 55%, rgba(240,169,60,0.12) 0%, transparent 55%),
+      var(--papier-fonce);
+    font-family: "Nunito", sans-serif;
+    color: var(--encre);
+    overflow-x: hidden;
+  }
+
+  /* Petits éclats colorés */
+  body::before {
+    content: "";
+    position: fixed; inset: 0;
+    background:
+      radial-gradient(circle 3px at 8%  20%, rgba(62,156,146,0.55) 98%, transparent),
+      radial-gradient(circle 4px at 90% 15%, rgba(240,169,60,0.45) 98%, transparent),
+      radial-gradient(circle 3px at 15% 82%, rgba(123,94,168,0.45) 98%, transparent),
+      radial-gradient(circle 4px at 85% 75%, rgba(62,156,146,0.40) 98%, transparent);
+    pointer-events: none; z-index: 0;
+  }
+
+  .page {
+    position: relative; z-index: 1;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: clamp(40px, 7vw, 80px) 24px 72px;
+  }
+
+  /* ── RETOUR ── */
+  .retour {
+    align-self: flex-start;
+    font-family: "Caveat", cursive;
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: var(--turquoise);
+    text-decoration: none;
+    margin-bottom: clamp(28px, 4vw, 44px);
+    opacity: 0;
+    animation: descendre 0.5s ease 0.1s forwards;
+    transition: color 0.2s;
+  }
+  .retour:hover { color: var(--corail); }
+
+  /* ── EN-TÊTE ── */
+  .entete {
+    text-align: center;
+    margin-bottom: clamp(36px, 5vw, 60px);
+    opacity: 0;
+    animation: descendre 0.6s ease 0.25s forwards;
+  }
+  .entete-surtitre {
+    font-family: "Caveat", cursive;
+    font-size: 1rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--turquoise);
+    margin-bottom: 0.6rem;
+  }
+  .entete-titre {
+    font-family: "Caveat", cursive;
+    font-weight: 700;
+    font-size: clamp(2.4rem, 5.5vw, 3.8rem);
+    line-height: 1.15;
+    color: var(--encre);
+    max-width: 560px;
+  }
+  .entete-titre em {
+    font-style: italic;
+    color: var(--turquoise);
+  }
+  .entete-sous {
+    margin-top: 0.9rem;
+    font-size: 0.95rem;
+    color: var(--gris);
+    max-width: 480px;
+    line-height: 1.7;
+  }
+
+  /* ── GRILLE DE BOUTONS ── */
+  .boutons {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: clamp(16px, 2.5vw, 28px);
+    width: 100%;
+    max-width: 820px;
+    opacity: 0;
+    animation: descendre 0.7s ease 0.5s forwards;
+  }
+
+  /* Base commune aux boutons-cartes */
+  .carte-btn {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    color: var(--encre);
+    background: var(--papier-clair);
+    border: 2px dashed rgba(62,156,146,0.32);
+    border-radius: 20px;
+    box-shadow: 0 6px 20px var(--ombre-douce);
+    padding: 26px 22px;
+    gap: 10px;
+    transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.3s ease, border-color 0.25s ease, background 0.25s ease;
+  }
+
+  /* ── BOUTON TARIFS — principal (turquoise, grand, penché) ── */
+  .carte-tarifs {
+    width: clamp(240px, 30vw, 320px);
+    padding: clamp(32px, 4vw, 44px) clamp(22px, 3vw, 34px);
+    gap: 12px;
+    background: linear-gradient(155deg, var(--turquoise) 0%, #2D837A 100%);
+    border: none;
+    box-shadow: 0 16px 44px rgba(62,156,146,0.40), 0 4px 10px rgba(62,156,146,0.22);
+    transform: rotate(-1.2deg) translateY(-6px);
+    order: 0;
+    z-index: 2;
+  }
+  .carte-tarifs:hover {
+    transform: rotate(0deg) translateY(-14px) scale(1.05);
+    box-shadow: 0 26px 56px rgba(62,156,146,0.48), 0 6px 14px rgba(62,156,146,0.26);
+    background: linear-gradient(155deg, #45ADA3 0%, #337D75 100%);
+  }
+
+  /* Icône étiquette-prix SVG */
+  .carte-tarifs .btn-icone {
+    width: clamp(56px, 6.5vw, 70px);
+    height: clamp(56px, 6.5vw, 70px);
+    display: flex; align-items: center; justify-content: center;
+    filter: drop-shadow(0 2px 5px rgba(0,0,0,0.15));
+  }
+  .carte-tarifs .btn-icone svg { width: 100%; height: 100%; }
+
+  /* Label rotatif */
+  .carte-tarifs .btn-label {
+    font-family: "Caveat", cursive;
+    font-weight: 700;
+    font-size: clamp(30px, 4.2vw, 40px);
+    color: var(--blanc);
+    height: 1.2em;
+    overflow: hidden;
+    position: relative;
+    text-align: center;
+    min-width: 160px;
+  }
+  .btn-label-mot {
+    position: absolute;
+    width: 100%;
+    left: 0;
+    opacity: 0;
+    transform: translateY(12px);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+    text-align: center;
+  }
+  .btn-label-mot.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .btn-label-mot.sortant {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+
+  .carte-tarifs .btn-detail {
+    font-size: 13px;
+    color: rgba(255,255,255,0.85);
+    text-align: center;
+    line-height: 1.4;
+  }
+  .carte-tarifs .btn-fleche {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--jaune);
+    margin-top: 2px;
+    transition: transform 0.25s ease;
+  }
+  .carte-tarifs:hover .btn-fleche { transform: translateX(6px); }
+
+  /* ── BOUTONS SECONDAIRES (placeholder pour futur contenu) ── */
+  .carte-sec {
+    width: clamp(180px, 22vw, 240px);
+    gap: 10px;
+  }
+  .carte-sec:first-of-type  { transform: rotate(-2deg); }
+  .carte-sec:last-of-type   { transform: rotate(2deg); }
+
+  .carte-sec:hover {
+    transform: rotate(0deg) translateY(-6px) scale(1.05);
+    border-color: var(--turquoise);
+    border-style: solid;
+    box-shadow: 0 14px 34px rgba(62,156,146,0.22);
+  }
+
+  .carte-sec .btn-icone {
+    width: clamp(44px, 5.2vw, 56px);
+    height: clamp(44px, 5.2vw, 56px);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .carte-sec .btn-icone svg { width: 100%; height: 100%; }
+
+  .carte-sec .btn-label-fixe {
+    font-family: "Caveat", cursive;
+    font-weight: 700;
+    font-size: clamp(22px, 2.8vw, 28px);
+    color: var(--encre);
+    text-align: center;
+  }
+  .carte-sec .btn-detail {
+    font-size: 12px;
+    color: var(--gris);
+    text-align: center;
+    line-height: 1.4;
+  }
+
+  /* ── PIED ── */
+  .pied {
+    margin-top: clamp(44px, 6vw, 68px);
+    font-size: 12px;
+    color: var(--gris);
+    text-align: center;
+    opacity: 0;
+    animation: descendre 0.6s ease 0.85s forwards;
+  }
+
+  @keyframes descendre {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (max-width: 640px) {
+    .boutons { flex-direction: column; align-items: center; }
+    .carte-tarifs { order: -1; transform: none; width: min(340px, 92%); }
+    .carte-tarifs:hover { transform: translateY(-6px) scale(1.02); }
+    .carte-sec { width: min(320px, 92%); flex-direction: row; justify-content: flex-start; gap: 14px; transform: none !important; }
+    .carte-sec .btn-detail { text-align: left; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <a href="../index.html" class="retour">← Accueil</a>
+
+  <div class="entete">
+    <div class="entete-surtitre">Keb &amp; Bek · Cours privés</div>
+    <h1 class="entete-titre">Apprendre avec <em>Raphaël</em></h1>
+    <p class="entete-sous">Des cours sur mesure, en français québécois authentique — à votre rythme, avec votre méthode.</p>
+  </div>
+
+  <div class="boutons">
+
+    <!-- Bouton tarifs — principal avec label rotatif multilingue -->
+    <a href="tarifs.html" class="carte-btn carte-tarifs">
+
+      <!-- Icône étiquette-prix SVG dessinée à la main -->
+      <div class="btn-icone">
+        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Corps de l'étiquette : pentagone arrondi façon price tag -->
+          <path d="M14 11 L38 10.5 C41.5 10.5 44.5 12 46.5 14.5 L56 27 C57.5 29 57.5 32 56 34 L38 54 C35.5 57 31.5 57 29 54.5 L12 38 C10 36 9.5 33 10 30.5 L11 17 C11.5 13.5 12.5 11 14 11 Z" stroke="rgba(255,255,255,0.9)" stroke-width="2.4" stroke-linejoin="round" fill="rgba(255,255,255,0.16)"/>
+          <!-- Trou de l'étiquette -->
+          <circle cx="20" cy="20" r="4" stroke="rgba(255,255,255,0.85)" stroke-width="2.2" fill="none"/>
+          <!-- Ficelle stylisée -->
+          <path d="M16.5 16.5 C13 13 10 11 8 10" stroke="rgba(255,255,255,0.55)" stroke-width="1.8" stroke-linecap="round" fill="none"/>
+          <!-- Deux lignes de prix suggérées -->
+          <path d="M27 34 L45 34" stroke="rgba(255,255,255,0.75)" stroke-width="2.2" stroke-linecap="round"/>
+          <path d="M27 41 L40 41" stroke="rgba(255,255,255,0.5)" stroke-width="1.8" stroke-linecap="round"/>
+          <!-- Petit signe $ suggéré -->
+          <path d="M34 27 C34 27 32 26 31 28 C30 30 33 31 34 33 C35 35 32 36 31 35" stroke="rgba(255,255,255,0.8)" stroke-width="2" stroke-linecap="round" fill="none"/>
+          <path d="M32 25 L32 37" stroke="rgba(255,255,255,0.7)" stroke-width="1.6" stroke-linecap="round"/>
+        </svg>
+      </div>
+
+      <!-- Label rotatif multilingue -->
+      <div class="btn-label" id="labelTarifs" aria-label="Tarifs">
+        <span class="btn-label-mot visible">Tarifs</span>
+        <span class="btn-label-mot">Pricing</span>
+        <span class="btn-label-mot">Precios</span>
+        <span class="btn-label-mot">Preços</span>
+        <span class="btn-label-mot">Prezzi</span>
+        <span class="btn-label-mot">Presyo</span>
+        <span class="btn-label-mot">Preus</span>
+        <span class="btn-label-mot">가격</span>
+        <span class="btn-label-mot">料金</span>
+        <span class="btn-label-mot">价格</span>
+        <span class="btn-label-mot">Pri</span>
+      </div>
+
+      <div class="btn-detail">Cours d'essai · Forfaits · Tarifs préférentiels</div>
+      <div class="btn-fleche">→</div>
+    </a>
+
+    <!-- Bouton secondaire gauche (placeholder — ex. Méthode, À propos...) -->
+    <a href="#" class="carte-btn carte-sec" style="order:-1">
+      <div class="btn-icone">
+        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Livre ouvert façon croquis -->
+          <path d="M9 14 C9 14 9.5 46 10 50 C18 47 26 48 32 50 C38 48 46 47 54 50 C54.5 46 55 14 55 14" stroke="var(--turquoise)" stroke-width="2.4" stroke-linejoin="round" fill="var(--turquoise)" fill-opacity="0.10"/>
+          <path d="M32 50 L32 14" stroke="var(--turquoise)" stroke-width="2" stroke-linecap="round"/>
+          <path d="M9 14 C9 14 18 11 32 14 C46 11 55 14 55 14" stroke="var(--turquoise)" stroke-width="2.2" stroke-linejoin="round" fill="none"/>
+          <path d="M15 22 L28 21" stroke="var(--turquoise)" stroke-width="1.8" stroke-linecap="round" opacity="0.65"/>
+          <path d="M15 28 L28 27.5" stroke="var(--turquoise)" stroke-width="1.6" stroke-linecap="round" opacity="0.5"/>
+          <path d="M36 22 L50 21" stroke="var(--turquoise)" stroke-width="1.8" stroke-linecap="round" opacity="0.65"/>
+          <path d="M36 28 L50 27.5" stroke="var(--turquoise)" stroke-width="1.6" stroke-linecap="round" opacity="0.5"/>
+        </svg>
+      </div>
+      <div class="btn-label-fixe">La méthode</div>
+      <div class="btn-detail">Comment ça marche</div>
+    </a>
+
+    <!-- Bouton secondaire droit (placeholder — ex. Contact, Réserver...) -->
+    <a href="#" class="carte-btn carte-sec">
+      <div class="btn-icone">
+        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Enveloppe façon croquis -->
+          <path d="M9 18 C9 16 10.5 15 12 15 L52 15 C53.5 15 55 16 55 18 L55 46 C55 47.5 53.5 49 52 49 L12 49 C10.5 49 9 47.5 9 46 Z" stroke="var(--turquoise)" stroke-width="2.3" stroke-linejoin="round" fill="var(--turquoise)" fill-opacity="0.10"/>
+          <path d="M9 18 L30 33 C31 34 33 34 34 33 L55 18" stroke="var(--turquoise)" stroke-width="2.2" stroke-linejoin="round" fill="none"/>
+        </svg>
+      </div>
+      <div class="btn-label-fixe">Contact</div>
+      <div class="btn-detail">Réserver une séance</div>
+    </a>
+
+  </div>
+
+  <div class="pied">Cours de français québécois · Keb &amp; Bek</div>
+
+</div>
+
+<script>
+  // Rotation multilingue du label "Tarifs"
+  // Ordre établi dans le projet : FR, EN, ES, PT, IT, TL, CA, KO, JA, ZH, HT
+  const mots = document.querySelectorAll('#labelTarifs .btn-label-mot');
+  let courant = 0;
+
+  function roterLabel() {
+    const suivant = (courant + 1) % mots.length;
+
+    // Faire sortir le courant
+    mots[courant].classList.remove('visible');
+    mots[courant].classList.add('sortant');
+
+    // Après la transition de sortie, nettoyer et amener le suivant
+    setTimeout(() => {
+      mots[courant].classList.remove('sortant');
+      mots[suivant].classList.add('visible');
+      courant = suivant;
+    }, 400);
+  }
+
+  // Démarrer la rotation après 2,1s, puis toutes les 2,1s
+  setTimeout(() => {
+    roterLabel();
+    setInterval(roterLabel, 2100);
+  }, 2100);
+</script>
+
+</body>
+</html>
