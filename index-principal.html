@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="fr-CA">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Le français avec Keb & Bek</title>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,400i&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --encre:        #2B1F1A;
+      --papier:       #F4E4C8;
+      --papier-fonce: #E8D2A3;
+      --papier-clair: #FDF6E8;
+      --corail:       #E0593C;
+      --corail-fonce: #B5402A;
+      --corail-clair: #FBDCD2;
+      --jaune:        #F0A93C;
+      --jaune-fonce:  #C9821E;
+      --violet:       #7B5EA8;
+      --violet-fonce: #5A4080;
+      --turquoise:    #3E9C92;
+      --gris:         #8A7763;
+      --blanc:        #ffffff;
+      --ombre:        rgba(80, 40, 12, 0.22);
+      --ombre-douce:  rgba(80, 40, 12, 0.12);
+    }
+
+    html, body {
+      min-height: 100vh;
+      background:
+        radial-gradient(ellipse 120% 80% at 15% -10%, rgba(240,169,60,0.35) 0%, transparent 55%),
+        radial-gradient(ellipse 100% 70% at 100% 10%, rgba(123,94,168,0.28) 0%, transparent 55%),
+        radial-gradient(ellipse 90% 70% at 50% 105%, rgba(224,89,60,0.22) 0%, transparent 55%),
+        var(--papier-fonce);
+      font-family: "Nunito", sans-serif;
+      color: var(--encre);
+      overflow-x: hidden;
+    }
+
+    /* ── TEXTURE DE FOND — éclats colorés discrets ── */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(circle 3px at 12% 22%, rgba(224,89,60,0.5) 98%, transparent),
+        radial-gradient(circle 4px at 88% 18%, rgba(62,156,146,0.5) 98%, transparent),
+        radial-gradient(circle 3px at 8% 78%, rgba(240,169,60,0.55) 98%, transparent),
+        radial-gradient(circle 5px at 92% 70%, rgba(123,94,168,0.45) 98%, transparent),
+        radial-gradient(circle 3px at 78% 92%, rgba(224,89,60,0.4) 98%, transparent),
+        radial-gradient(circle 4px at 22% 6%, rgba(62,156,146,0.4) 98%, transparent);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .page {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: clamp(32px, 6vw, 72px) 24px 64px;
+    }
+
+    /* ── BANDEAU ── */
+    .bandeau {
+      font-family: "Caveat", cursive;
+      font-size: clamp(12px, 1.3vw, 14px);
+      color: var(--corail-fonce);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      margin-bottom: clamp(28px, 4vw, 44px);
+      opacity: 0;
+      animation: descendre 0.7s ease 0.1s forwards;
+      transform: rotate(-1.5deg);
+    }
+
+    /* ══════════════════ COUVERTURE / AUTOCOLLANT ══════════════════ */
+    .couverture-wrap {
+      position: relative;
+      width: 100%;
+      max-width: 980px;
+      margin-bottom: clamp(20px, 3vw, 32px);
+      opacity: 0;
+      animation: apparaitre-couverture 1.1s cubic-bezier(0.22, 1, 0.36, 1) 0.2s forwards;
+    }
+
+    /* Marges réservées pour de futurs croquis de Bek (papillons, doodles) */
+    .marge-croquis {
+      position: absolute;
+      top: 50%;
+      width: 90px;
+      height: 90px;
+      transform: translateY(-50%);
+      pointer-events: none;
+      opacity: 0.5;
+    }
+    .marge-croquis.gauche { left: clamp(-10px, -4vw, -40px); }
+    .marge-croquis.droite { right: clamp(-10px, -4vw, -40px); }
+
+    .couverture {
+      position: relative;
+      width: 100%;
+      border-radius: 28px;
+      background: var(--papier-clair);
+      border: 4px solid var(--blanc);
+      outline: 2px dashed rgba(224,89,60,0.35);
+      outline-offset: 6px;
+      box-shadow:
+        0 2px 0 rgba(255,255,255,0.7) inset,
+        0 28px 64px var(--ombre),
+        0 6px 16px var(--ombre-douce);
+      padding: clamp(28px, 5vw, 56px) clamp(24px, 6vw, 64px) clamp(36px, 5vw, 60px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transform: rotate(-1.1deg);
+      transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.4s ease;
+    }
+
+    .couverture:hover {
+      transform: rotate(0deg) translateY(-6px) scale(1.012);
+      box-shadow:
+        0 2px 0 rgba(255,255,255,0.7) inset,
+        0 36px 80px var(--ombre),
+        0 8px 20px var(--ombre-douce);
+    }
+
+    .couverture-image-wrap {
+      width: 100%;
+      margin-bottom: 0;
+      animation: flotter 5s ease-in-out infinite;
+    }
+
+    .couverture-titre--masque {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip: rect(0,0,0,0);
+      white-space: nowrap;
+    }
+
+    .couverture-image {
+      width: 100%;
+      height: auto;
+      display: block;
+      filter: drop-shadow(0 10px 24px rgba(40,32,20,0.16));
+    }
+
+    .couverture-image-placeholder {
+      width: clamp(180px, 32vw, 320px);
+      aspect-ratio: 4 / 3;
+      border-radius: 20px;
+      background: linear-gradient(135deg, var(--turquoise), var(--corail), var(--jaune));
+      opacity: 0.3;
+      margin-bottom: clamp(8px, 1.5vw, 14px);
+    }
+
+    .couverture-titre {
+      font-family: "Caveat", cursive;
+      font-weight: 700;
+      font-size: clamp(38px, 7.4vw, 72px);
+      color: var(--corail-fonce);
+      text-align: center;
+      line-height: 1.05;
+      letter-spacing: 0.01em;
+    }
+
+    .couverture-titre .esperluette {
+      color: var(--jaune-fonce);
+      padding: 0 0.08em;
+    }
+
+    .couverture-soustitre {
+      margin-top: 10px;
+      font-size: clamp(13px, 1.5vw, 16px);
+      color: var(--gris);
+      text-align: center;
+      font-style: italic;
+    }
+
+    /* coins "scotch" décoratifs */
+    .scotch {
+      position: absolute;
+      width: 64px;
+      height: 28px;
+      background: rgba(240,169,60,0.45);
+      border: 1px solid rgba(224,89,60,0.4);
+      box-shadow: 0 2px 6px rgba(80,40,12,0.14);
+    }
+    .scotch.tl { top: -14px; left: 8%; transform: rotate(-9deg); }
+    .scotch.tr { top: -14px; right: 8%; transform: rotate(8deg); }
+
+    @keyframes flotter {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50%      { transform: translateY(-7px) rotate(-0.6deg); }
+    }
+
+    @keyframes apparaitre-couverture {
+      from { opacity: 0; transform: translateY(28px) scale(0.97); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    /* ══════════════════ ACCROCHE ══════════════════ */
+    .accroche {
+      font-family: "Caveat", cursive;
+      font-weight: 600;
+      font-size: clamp(22px, 3.2vw, 32px);
+      color: var(--encre);
+      text-align: center;
+      max-width: 560px;
+      line-height: 1.4;
+      margin: clamp(28px, 4vw, 40px) 0 clamp(36px, 5vw, 52px);
+      opacity: 0;
+      animation: descendre 0.7s ease 0.7s forwards;
+      position: relative;
+    }
+
+    .accroche::before,
+    .accroche::after {
+      content: "";
+      display: inline-block;
+      width: 28px;
+      height: 1.5px;
+      background: var(--turquoise);
+      vertical-align: middle;
+      margin: 0 12px;
+    }
+
+    /* ══════════════════ PORTES (boutons de destination) ══════════════════ */
+    .portes {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: clamp(14px, 2.4vw, 28px);
+      width: 100%;
+      max-width: 880px;
+      flex-wrap: wrap;
+      opacity: 0;
+      animation: descendre 0.8s ease 0.95s forwards;
+    }
+
+    .porte {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      color: var(--encre);
+      background: var(--papier-clair);
+      border: 2px dashed rgba(123,94,168,0.35);
+      border-radius: 20px;
+      box-shadow: 0 6px 20px var(--ombre-douce);
+      transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.3s ease, border-color 0.25s ease;
+      padding: 22px 18px;
+    }
+
+    /* porte secondaire (Bravo, Cours privés) */
+    .porte-secondaire {
+      width: clamp(190px, 24vw, 250px);
+      gap: 10px;
+    }
+    .porte-secondaire:nth-of-type(1) { transform: rotate(-2deg); }
+    .porte-secondaire:nth-of-type(3) { transform: rotate(2deg); }
+
+    .porte-secondaire .porte-icone {
+      width: clamp(48px, 5.6vw, 60px);
+      height: clamp(48px, 5.6vw, 60px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .porte-secondaire .porte-icone svg { width: 100%; height: 100%; }
+
+    .porte-secondaire .porte-label {
+      font-family: "Caveat", cursive;
+      font-weight: 700;
+      font-size: clamp(24px, 3vw, 30px);
+    }
+
+    .porte-secondaire .porte-detail {
+      font-size: 12px;
+      color: var(--gris);
+      text-align: center;
+      line-height: 1.4;
+    }
+
+    .porte-secondaire:nth-of-type(1):hover {
+      transform: rotate(0deg) translateY(-6px) scale(1.06);
+      border-color: var(--turquoise);
+      border-style: solid;
+      box-shadow: 0 16px 36px rgba(62,156,146,0.30);
+    }
+    .porte-secondaire:nth-of-type(3):hover {
+      transform: rotate(0deg) translateY(-6px) scale(1.06);
+      border-color: var(--violet);
+      border-style: solid;
+      box-shadow: 0 16px 36px rgba(123,94,168,0.30);
+    }
+
+    /* porte centrale (Le cours) — dominante, vive, légèrement penchée */
+    .porte-principale {
+      width: clamp(280px, 34vw, 380px);
+      padding: clamp(34px, 4.2vw, 46px) clamp(24px, 3.6vw, 36px);
+      gap: 12px;
+      background: linear-gradient(155deg, var(--corail) 0%, var(--corail-fonce) 100%);
+      border: none;
+      box-shadow: 0 18px 44px rgba(181,64,42,0.40), 0 4px 10px rgba(181,64,42,0.22);
+      order: 0;
+      z-index: 2;
+      transform: rotate(-1.5deg) translateY(-10px);
+    }
+
+    .porte-principale .porte-icone {
+      width: clamp(60px, 7vw, 76px);
+      height: clamp(60px, 7vw, 76px);
+      filter: drop-shadow(0 3px 6px rgba(0,0,0,0.18));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .porte-principale .porte-icone svg { width: 100%; height: 100%; }
+
+    .porte-principale .porte-label {
+      font-family: "Caveat", cursive;
+      font-weight: 700;
+      font-size: clamp(34px, 4.6vw, 46px);
+      color: var(--blanc);
+    }
+
+    .porte-principale .porte-detail {
+      font-size: 13.5px;
+      color: rgba(255,255,255,0.88);
+      text-align: center;
+      line-height: 1.4;
+    }
+
+    .porte-principale:hover {
+      transform: rotate(0deg) translateY(-15px) scale(1.05);
+      box-shadow: 0 28px 60px rgba(181,64,42,0.48), 0 6px 14px rgba(181,64,42,0.26);
+      background: linear-gradient(155deg, #E8633F 0%, #C2452D 100%);
+    }
+
+    .porte-principale .porte-arrow {
+      margin-top: 4px;
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--jaune);
+      transition: transform 0.25s ease;
+    }
+    .porte-principale:hover .porte-arrow { transform: translateX(7px); }
+
+    @media (max-width: 640px) {
+      .portes { flex-direction: column; }
+      .porte-principale { order: -1; transform: rotate(0deg); width: min(360px, 92%); }
+      .porte-principale:hover { transform: translateY(-6px) scale(1.02); }
+      .porte-secondaire { width: min(340px, 92%); flex-direction: row; justify-content: flex-start; gap: 16px; }
+      .porte-secondaire:nth-of-type(1), .porte-secondaire:nth-of-type(3) { transform: none; }
+      .porte-secondaire .porte-detail { text-align: left; }
+    }
+
+    /* ══════════════════ PIED ══════════════════ */
+    .pied {
+      margin-top: clamp(48px, 6vw, 72px);
+      font-size: 12px;
+      color: var(--gris);
+      text-align: center;
+      opacity: 0;
+      animation: descendre 0.6s ease 1.2s forwards;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .pied-sep { color: rgba(138,128,115,0.4); }
+
+    .pied a {
+      color: var(--gris);
+      text-decoration: none;
+      border-bottom: 1px dotted rgba(138,128,115,0.5);
+      transition: color 0.15s, border-color 0.15s;
+    }
+    .pied a:hover { color: var(--corail-fonce); border-color: var(--corail-fonce); }
+
+    /* ── ANIMATIONS ── */
+    @keyframes descendre {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .couverture-image-wrap { animation: none; }
+      * { animation-duration: 0.01ms !important; }
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <p class="bandeau">Un projet original · Montréal, Québec</p>
+
+  <div class="couverture-wrap">
+    <div class="marge-croquis gauche"></div>
+    <div class="marge-croquis droite"></div>
+    <div class="couverture">
+      <span class="scotch tl"></span>
+      <span class="scotch tr"></span>
+
+      <!-- Autocollant Keb & Bek (Mont-Royal) — intégré en base64 pour évaluation visuelle.
+           Le titre "Le français avec Keb & Bek" est déjà intégré dans l'image elle-même
+           (lettrage manuscrit en bas de la scène) — h1 ci-dessous conservé pour le SEO/accessibilité,
+           visuellement masqué puisque l'image porte déjà le titre. -->
+      <div class="couverture-image-wrap">
+        <img class="couverture-image" alt="Keb et Keb au sommet du Mont-Royal, vue sur Montréal — Le français avec Keb &amp; Bek" src="images/site/autocollant_couverture.png">
+      </div>
+
+      <h1 class="couverture-titre couverture-titre--masque">Le français avec Keb<span class="esperluette"> &amp; </span>Bek</h1>
+      <p class="couverture-soustitre">Un cours de français raconté à travers une histoire vraie (presque).</p>
+    </div>
+  </div>
+
+  <p class="accroche">Apprends le français comme si tu y étais.</p>
+
+  <div class="portes">
+
+    <a class="porte porte-secondaire" href="bravo/index.html">
+      <span class="porte-icone">
+        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M20 14 C19 11 21 9 24 9 L40 9 C43 9 45 11 44 14 L41 32 C40 40 33 44 32 44 C31 44 24 40 23 32 L20 14 Z" stroke="var(--violet)" stroke-width="2.4" stroke-linejoin="round" fill="var(--violet)" fill-opacity="0.12"/>
+          <path d="M20 16 C13 16 10 21 13 26 C15 30 19 31 22 29" stroke="var(--violet)" stroke-width="2.4" stroke-linecap="round" fill="none"/>
+          <path d="M44 16 C51 16 54 21 51 26 C49 30 45 31 42 29" stroke="var(--violet)" stroke-width="2.4" stroke-linecap="round" fill="none"/>
+          <path d="M32 44 L32 51" stroke="var(--violet)" stroke-width="2.4" stroke-linecap="round"/>
+          <path d="M23 57 C23 53 27 51 32 51 C37 51 41 53 41 57" stroke="var(--violet)" stroke-width="2.4" stroke-linecap="round" fill="none"/>
+          <path d="M27 21 L30 24 L36 17" stroke="var(--violet)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        </svg>
+      </span>
+      <span class="porte-label">Bravo !</span>
+      <span class="porte-detail">Tes succès, tes titres, ta fiche</span>
+    </a>
+
+    <a class="porte porte-principale" href="cours/index.html">
+      <span class="porte-icone">
+        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M32 16 C28 12 18 11 11 13 C10 13 9 14 9 15 L9 46 C9 47 10 48 11 47 C18 45 28 46 32 50" stroke="var(--blanc)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+          <path d="M32 16 C36 12 46 11 53 13 C54 13 55 14 55 15 L55 46 C55 47 54 48 53 47 C46 45 36 46 32 50" stroke="var(--blanc)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+          <path d="M32 16 L32 50" stroke="var(--blanc)" stroke-width="2.2" stroke-linecap="round"/>
+          <path d="M15 21 C20 19 25 20 28 22" stroke="var(--blanc)" stroke-width="1.8" stroke-linecap="round" fill="none" opacity="0.65"/>
+          <path d="M15 28 C20 26 25 27 28 29" stroke="var(--blanc)" stroke-width="1.8" stroke-linecap="round" fill="none" opacity="0.65"/>
+          <path d="M36 22 C39 20 44 19 49 21" stroke="var(--blanc)" stroke-width="1.8" stroke-linecap="round" fill="none" opacity="0.65"/>
+          <path d="M36 29 C39 27 44 26 49 28" stroke="var(--blanc)" stroke-width="1.8" stroke-linecap="round" fill="none" opacity="0.65"/>
+        </svg>
+      </span>
+      <span class="porte-label">Le cours</span>
+      <span class="porte-detail">Commence ou continue ton apprentissage</span>
+      <span class="porte-arrow">→</span>
+    </a>
+
+    <a class="porte porte-secondaire" href="cours-prives/index.html">
+      <span class="porte-icone">
+        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M32 14 L58 25 L32 36 L6 25 Z" stroke="var(--turquoise)" stroke-width="2.4" stroke-linejoin="round" fill="var(--turquoise)" fill-opacity="0.14"/>
+          <path d="M18 30 L18 42 C18 42 24 47 32 47 C40 47 46 42 46 42 L46 30" stroke="var(--turquoise)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+          <path d="M53 27 L53 41" stroke="var(--turquoise)" stroke-width="2.4" stroke-linecap="round"/>
+          <circle cx="53" cy="45" r="2.6" fill="var(--turquoise)"/>
+        </svg>
+      </span>
+      <span class="porte-label">Cours privés</span>
+      <span class="porte-detail">Apprends avec Raphaël, en personne</span>
+    </a>
+
+  </div>
+
+  <div class="pied">
+    <span>Un projet de <strong>Keb &amp; Bek</strong></span>
+    <span class="pied-sep">·</span>
+    <span>Montréal, Québec</span>
+  </div>
+
+</div>
+</body>
+</html>
