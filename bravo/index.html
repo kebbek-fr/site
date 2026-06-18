@@ -496,25 +496,42 @@
 </div>
 
 <script>
-  function allerCharriot() {
-    var input = document.getElementById('charriot-code');
-    var erreur = document.getElementById('charriot-erreur');
-    var code = input.value.trim().toLowerCase();
+  // Routage par convention de nommage — les DEUX premières lettres du préfixe
+  // déterminent le dossier. Format : XX-XXXXXXX (ex. ta-kl1k3ur)
+  // Première lettre : catégorie (t=titre, s=succès, f=fiche)
+  // Deuxième lettre : type (a=action, c=cours, l=leçon, …à enrichir)
+  // Aucune table individuelle à maintenir — si la page existe, ça marche.
 
-    if (!code) {
+  var DOSSIERS = {
+    'ta': 'titres',
+    'tc': 'titres',
+    'sa': 'succes',
+    'sc': 'succes',
+    'sl': 'succes',
+    'fa': 'fiches',
+    'fc': 'fiches'
+  };
+
+  function allerCharriot() {
+    var input  = document.getElementById('charriot-code');
+    var erreur = document.getElementById('charriot-erreur');
+    var code   = input.value.trim().toLowerCase();
+
+    if (!code) { input.focus(); return; }
+
+    erreur.style.display = 'none';
+
+    var prefixe = code.split('-')[0];
+    var dossier = DOSSIERS[prefixe];
+
+    if (!dossier) {
+      erreur.style.display = 'block';
+      erreur.textContent   = 'Hmm, ce code ne correspond à rien pour l\'instant. Vérifie qu\'il est bien écrit !';
       input.focus();
       return;
     }
 
-    // Le routage réel se fera selon une table de correspondance code → page,
-    // à brancher une fois les premières pages de détail construites.
-    // Pour l'instant : tentative de redirection vers charriot/[code].html
-    // avec repli sur message d'erreur si la page n'existe pas.
-
-    erreur.classList.remove('visible');
-
-    // Placeholder de logique — sera remplacé par la vraie table de routage
-    window.location.href = 'charriot/' + encodeURIComponent(code) + '.html';
+    window.location.href = dossier + '/' + encodeURIComponent(code) + '.html';
   }
 
   document.getElementById('charriot-code').addEventListener('keydown', function(e) {
