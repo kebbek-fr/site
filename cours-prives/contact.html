@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="fr-CA">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact — Le français avec Keb &amp; Bek</title>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --encre:        #2B1F1A;
+    --papier:       #F4E4C8;
+    --papier-fonce: #E8D2A3;
+    --papier-clair: #FDF6E8;
+    --corail:       #E0593C;
+    --corail-fonce: #B5402A;
+    --corail-clair: #FBDCD2;
+    --jaune:        #F0A93C;
+    --jaune-fonce:  #C9821E;
+    --violet:       #7B5EA8;
+    --violet-fonce: #5A4080;
+    --violet-clair: #EDE8F7;
+    --turquoise:    #3E9C92;
+    --gris:         #8A7763;
+    --blanc:        #ffffff;
+    --ombre-douce:  rgba(80, 40, 12, 0.12);
+  }
+
+  body {
+    font-family: "Nunito", sans-serif;
+    background:
+      radial-gradient(ellipse 110% 55% at 5%   0%,  rgba(123,94,168,0.16) 0%, transparent 55%),
+      radial-gradient(ellipse 90%  50% at 100% 100%, rgba(62,156,146,0.14) 0%, transparent 55%),
+      var(--papier-fonce);
+    color: var(--encre);
+    min-height: 100vh; overflow-x: hidden;
+  }
+
+  /* ── NAV ── */
+  nav {
+    display: flex; align-items: center; gap: 0.7rem;
+    padding: 1.2rem 2rem;
+    border-bottom: 1.5px dashed rgba(123,94,168,0.25);
+    background: rgba(244,228,200,0.72); backdrop-filter: blur(10px);
+    position: sticky; top: 0; z-index: 100;
+  }
+  .nav-back { font-family: "Caveat", cursive; font-weight: 600; font-size: 1.1rem; color: var(--violet); text-decoration: none; transition: color 0.2s; }
+  .nav-back:hover { color: var(--corail); }
+  .nav-sep  { color: var(--gris); font-size: 0.85rem; }
+  .nav-cur  { font-family: "Caveat", cursive; font-weight: 600; font-size: 1.1rem; color: var(--gris); }
+
+  /* ── HERO ── */
+  .hero {
+    text-align: center;
+    padding: clamp(3rem, 6vw, 5rem) 1.5rem 2.5rem;
+    max-width: 660px; margin: 0 auto;
+  }
+  .hero-surtitre {
+    font-family: "Caveat", cursive; font-size: 1rem;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--violet); margin-bottom: 0.7rem;
+    animation: monterDouce 0.5s 0.1s ease both; opacity: 0;
+  }
+  .hero h1 {
+    font-family: "Caveat", cursive; font-weight: 700;
+    font-size: clamp(2.6rem, 6vw, 4rem); line-height: 1.1; color: var(--encre);
+    animation: monterDouce 0.5s 0.2s ease both; opacity: 0;
+  }
+  .hero h1 em { font-style: italic; color: var(--violet); }
+  .hero-sous {
+    font-size: 0.98rem; color: var(--gris); max-width: 500px;
+    margin: 1rem auto 0; line-height: 1.75;
+    animation: monterDouce 0.5s 0.3s ease both; opacity: 0;
+  }
+  .hero-ligne {
+    width: 50px; height: 2.5px; background: var(--violet);
+    border-radius: 2px; margin: 1.5rem auto 0;
+    animation: monterDouce 0.5s 0.35s ease both; opacity: 0;
+  }
+
+  /* ── SÉLECTEUR DE LANGUE ── */
+  .lang-wrap {
+    display: flex; justify-content: center;
+    padding: 0.5rem 1.5rem 2.5rem;
+    animation: monterDouce 0.5s 0.42s ease both; opacity: 0;
+  }
+  .lang-tabs {
+    display: flex; gap: 0.3rem;
+    background: rgba(244,228,200,0.6);
+    border: 1.5px solid rgba(123,94,168,0.22);
+    border-radius: 100px; padding: 0.3rem;
+    flex-wrap: wrap; justify-content: center;
+    box-shadow: 0 3px 12px var(--ombre-douce);
+  }
+  .lang-tab {
+    font-family: "Caveat", cursive; font-weight: 600; font-size: 1rem;
+    padding: 0.28rem 0.9rem; border-radius: 100px;
+    border: none; background: transparent;
+    color: var(--gris); cursor: pointer;
+    transition: all 0.2s ease; white-space: nowrap;
+  }
+  .lang-tab:hover { color: var(--violet); background: var(--violet-clair); }
+  .lang-tab.active { background: var(--violet); color: var(--blanc); }
+
+  /* ── CARTES EMAIL ── */
+  .contenu {
+    max-width: 720px; margin: 0 auto;
+    padding: 0 1.5rem clamp(4rem, 8vw, 6rem);
+    display: flex; flex-direction: column; gap: 1.4rem;
+  }
+
+  /* Panneau de langue */
+  .panel { display: none; flex-direction: column; gap: 1.4rem; animation: monterDouce 0.35s ease both; }
+  .panel.active { display: flex; }
+
+  .email-carte {
+    background: var(--papier-clair);
+    border-radius: 20px;
+    box-shadow: 0 5px 20px var(--ombre-douce);
+    overflow: hidden;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+  }
+  .email-carte:hover { transform: translateY(-3px); box-shadow: 0 12px 32px var(--ombre-douce); }
+
+  /* Carte cours — accentuée violet */
+  .email-carte.cours {
+    border: 2px solid var(--violet);
+    position: relative;
+  }
+  .email-carte.cours::before {
+    content: "";
+    position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: linear-gradient(to right, transparent, var(--violet), transparent);
+  }
+
+  /* Carte suggestions — tiretée */
+  .email-carte.suggestions {
+    border: 2px dashed rgba(123,94,168,0.30);
+  }
+  .email-carte.suggestions:hover { border-color: var(--violet); border-style: solid; }
+
+  .email-en-tete {
+    padding: 1.4rem 1.8rem 0;
+    display: flex; align-items: center; gap: 1rem;
+  }
+  .email-icone {
+    width: 46px; height: 46px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .email-icone svg { width: 100%; height: 100%; }
+
+  .email-categorie {
+    font-family: "Caveat", cursive; font-weight: 600;
+    font-size: 0.9rem; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--violet); margin-bottom: 0.2rem;
+  }
+  .email-titre-carte {
+    font-family: "Caveat", cursive; font-weight: 700;
+    font-size: 1.5rem; color: var(--encre); line-height: 1.2;
+  }
+
+  .email-desc {
+    padding: 0.8rem 1.8rem 0.5rem;
+    font-size: 0.9rem; color: var(--gris); line-height: 1.72;
+  }
+  .email-desc strong { color: var(--encre); }
+
+  /* Adresse email cliquable */
+  .email-adresse {
+    margin: 0 1.8rem 1.5rem;
+    display: flex; align-items: center; gap: 0.6rem;
+    background: var(--violet-clair);
+    border: 1.5px solid rgba(123,94,168,0.25);
+    border-radius: 12px; padding: 0.75rem 1.1rem;
+    text-decoration: none; color: var(--violet-fonce);
+    font-family: "Caveat", cursive; font-weight: 600; font-size: 1.15rem;
+    transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+    word-break: break-all;
+  }
+  .email-adresse:hover {
+    background: var(--violet); color: var(--blanc);
+    border-color: var(--violet); transform: translateX(4px);
+  }
+  .email-adresse svg { flex-shrink: 0; transition: transform 0.2s ease; }
+  .email-adresse:hover svg { transform: translateX(3px); }
+  .email-adresse:hover path, .email-adresse:hover circle { stroke: white; }
+
+  /* Note de réponse */
+  .email-note {
+    margin: -0.5rem 1.8rem 1.4rem;
+    font-size: 0.8rem; color: var(--gris); font-style: italic;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    text-align: center; padding: 2rem;
+    border-top: 1.5px dashed rgba(123,94,168,0.2);
+    font-family: "Caveat", cursive; font-size: 1rem; color: var(--gris);
+  }
+  footer a { color: var(--violet); text-decoration: none; transition: color 0.2s; }
+  footer a:hover { color: var(--corail); }
+
+  @keyframes monterDouce {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (max-width: 480px) {
+    .email-adresse { font-size: 1rem; }
+    .lang-tab { font-size: 0.88rem; padding: 0.25rem 0.65rem; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-back">← Cours privés</a>
+  <span class="nav-sep">/</span>
+  <span class="nav-cur">Contact</span>
+</nav>
+
+<div class="hero">
+  <div class="hero-surtitre">Keb &amp; Bek · Cours privés</div>
+  <h1>On est <em>là</em> pour vous</h1>
+  <p class="hero-sous">Pour s'inscrire à un cours, poser une question sur la méthode, ou simplement nous partager une idée — choisissez l'adresse qui correspond à votre besoin.</p>
+  <div class="hero-ligne"></div>
+</div>
+
+<!-- SÉLECTEUR DE LANGUE -->
+<div class="lang-wrap">
+  <div class="lang-tabs">
+    <button class="lang-tab active" data-lang="fr">Français</button>
+    <button class="lang-tab" data-lang="en">English</button>
+    <button class="lang-tab" data-lang="es">Español</button>
+    <button class="lang-tab" data-lang="pt">Português</button>
+    <button class="lang-tab" data-lang="it">Italiano</button>
+    <button class="lang-tab" data-lang="zh">中文</button>
+  </div>
+</div>
+
+<div class="contenu">
+
+<!-- ════ FRANÇAIS ════ -->
+<div class="panel active" id="panel-fr">
+
+  <div class="email-carte cours">
+    <div class="email-en-tete">
+      <div class="email-icone">
+        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 20 C9 17.5 10.8 16 13 16 L51 16 C53.2 16 55 17.5 55 20 L55 44 C55 46.5 53.2 48 51 48 L13 48 C10.8 48 9 46.5 9 44 Z" stroke="var(--violet)" stroke-width="2.3" fill="var(--violet)" fill-opacity="0.12"/>
+          <path d="M9 20 L30 34 C31 35 33 35 34 34 L55 20" stroke="var(--violet)" stroke-width="2.2" fill="none"/>
+          <!-- étoile -->
+          <path d="M44 8 L45.5 12 L50 12 L46.5 14.5 L48 19 L44 16.5 L40 19 L41.5 14.5 L38 12 L42.5 12 Z" stroke="var(--violet)" stroke-width="1.5" fill="var(--violet)" fill-opacity="0.3"/>
+        </svg>
+      </div>
+      <div>
+        <div class="email-categorie">Cours privés</div>
+        <div class="email-titre-carte">Prendre des cours avec Raphaël</div>
+      </div>
+    </div>
+    <p class="email-desc">Pour <strong>s'inscrire</strong>, réserver un <strong>cours d'essai</strong>, poser des questions sur les forfaits ou la méthode, ou obtenir plus d'information sur le déroulement des cours privés.</p>
+    <a class="email-adresse" href="mailto:francais.avec.raphael@gmail.com">
+      <svg width="20" height="20" viewBox="0 0 64 64" fill="none"><path d="M9 20 C9 17.5 10.8 16 13 16 L51 16 C53.2 16 55 17.5 55 20 L55 44 C55 46.5 53.2 48 51 48 L13 48 C10.8 48 9 46.5 9 44 Z" stroke="var(--violet-fonce)" stroke-width="2.3" fill="none"/><path d="M9 20 L30 34 C31 35 33 35 34 34 L55 20" stroke="var(--violet-fonce)" stroke-width="2.2" fill="none"/></svg>
+      francais.avec.raphael@gmail.com
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" style="margin-left:auto"><path d="M5 12 L19 12 M13 6 L19 12 L13 18" stroke="var(--violet-fonce)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+    <p class="email-note">Raphaël vous répondra dans les meilleurs délais pour convenir d'un premier cours.</p>
+  </div>
+
+  <div class="email-carte suggestions">
+    <div class="email-en-tete">
+      <div class="email-icone">
+        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 14 L52 14 C53.5 14 55 15.5 55 17 L55 40 C55 41.5 53.5 43 52 43 L28 43 L18 54 L18 43 L12 43 C10.5 43 9 41.5 9 40 L9 17 C9 15.5 10.5 14 12 14 Z" stroke="var(--violet)" stroke-width="2.3" fill="var(--violet)" fill-opacity="0.09"/>
+          <path d="M18 24 L46 24" stroke="var(--violet)" stroke-width="2" stroke-linecap="round" opacity="0.6"/>
+          <path d="M18 31 L38 31" stroke="var(--violet)" stroke-width="1.8" stroke-linecap="round" opacity="0.45"/>
+        </svg>
+      </div>
+      <div>
+        <div class="email-categorie">Le site &amp; le cours</div>
+        <div class="email-titre-carte">Suggestions, commentaires, erreurs</div>
+      </div>
+    </div>
+    <p class="email-desc">Pour tout ce qui concerne <strong>le site, le cours en ligne ou le contenu</strong> — une erreur repérée, une suggestion d'amélioration, un commentaire général, ou simplement nous dire bonjour. Chaque retour est lu et apprécié.</p>
+    <a class="email-adresse" href="mailto:keb.bek.officiel@gmail.com">
+      <svg width="20" height="20" viewBox="0 0 64 64" fill="none"><path d="M9 20 C9 17.5 10.8 16 13 16 L51 16 C53.2 16 55 17.5 55 20 L55 44 C55 46.5 53.2 48 51 48 L13 48 C10.8 48 9 46.5 9 44 Z" stroke="var(--violet-fonce)" stroke-width="2.3" fill="none"/><path d="M9 20 L30 34 C31 35 33 35 34 34 L55 20" stroke="var(--violet-fonce)" stroke-width="2.2" fill="none"/></svg>
+      keb.bek.officiel@gmail.com
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" style="margin-left:auto"><path d="M5 12 L19 12 M13 6 L19 12 L13 18" stroke="var(--violet-fonce)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+    <p class="email-note">Ce compte est géré par l'équipe Keb &amp; Bek.</p>
+  </div>
+
+</div>
+
+<!-- ════ ENGLISH ════ -->
+<div class="panel" id="panel-en">
+
+  <div class="email-carte cours">
+    <div class="email-en-tete">
+      <div class="email-icone">
+        <svg viewBox="0 0 64 64" fill="none"><path d="M9 20 C9 17.5 10.8 16 13 16 L51 16 C53.2 16 55 17.5 55 20 L55 44 C55 46.5 53.2 48 51 48 L13 48 C10.8 48 9 46.5 9 44 Z" stroke="var(--violet)" stroke-width="2.3" fill="var(--violet)" fill-opacity="0.12"/><path d="M9 20 L30 34 C31 35 33 35 34 34 L55 20" stroke="var(--violet)" stroke-width="2.2" fill="none"/><path d="M44 8 L45.5 12 L50 12 L46.5 14.5 L48 19 L44 16.5 L40 19 L41.5 14.5 L38 12 L42.5 12 Z" stroke="var(--violet)" stroke-width="1.5" fill="var(--violet)" fill-opacity="0.3"/></svg>
+      </div>
+      <div>
+        <div class="email-categorie">Private lessons</div>
+        <div class="email-titre-carte">Take lessons with Raphaël</div>
+      </div>
+    </div>
+    <p class="email-desc">To <strong>register</strong>, book a <strong>trial lesson</strong>, ask questions about pricing or the teaching method, or get more information about how private lessons work.</p>
+    <a class="email-adresse" href="mailto:francais.avec.raphael@gmail.com">
+      <svg width="20" height="20" viewBox="0 0 64 64" fill="none"><path d="M9 20 C9 17.5 10.8 16 13 16 L51 16 C53.2 16 55 17.5 55 20 L55 44 C55 46.5 53.2 48 51 48 L13 48 C10.8 48 9 46.5 9 44 Z" stroke="var(--violet-fonce)" stroke-width="2.3" fill="none"/><path d="M9 20 L30 34 C31 35 33 35 34 34 L55 20" stroke="var(--violet-fonce)" stroke-width="2.2" fill="none"/></svg>
+      francais.avec.raphael@gmail.com
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" style="margin-left:auto"><path d="M5 12 L19 12 M13 6 L19 12 L13 18" stroke="var(--violet-fonce)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+    <p class="email-note">Raphaël will get back to you as soon as possible to arrange a first lesson.</p>
+  </div>
+
+  <div class="email-carte suggestions">
+    <div class="email-en-tete">
+      <div class="email-icone">
+        <svg viewBox="0 0 64 64" fill="none"><path d="M12 14 L52 14 C53.5 14 55 15.5 55 17 L55 40 C55 41.5 53.5 43 52 43 L28 43 L18 54 L18 43 L12 43 C10.5 43 9 41.5 9 40 L9 17 C9 15.5 10.5 14 12 14 Z" stroke="var(--violet)" stroke-width="2.3" fill="var(--violet)" fill-opacity="0.09"/><path d="M18 24 L46 24" stroke="var(--violet)" stroke-width="2" stroke-linecap="round" opacity="0.6"/><path d="M18 31 L38 31" stroke="var(--violet)" stroke-width="1.8" stroke-linecap="round" opacity="0.45"/></svg>
+      </div>
+      <div>
+        <div class="email-categorie">The website &amp; course</div>
+        <div class="email-titre-carte">Suggestions, feedback, errors</div>
+      </div>
+    </div>
+    <p class="email-desc">For anything related to <strong>the website, the online course or its content</strong> — a spotted error, a suggestion for improvement, general feedback, or simply saying hello. Every message is read and appreciated.</p>
+    <a class="email-adresse" href="mailto:keb.bek.officiel@gmail.com">
+      <svg width="20" height="20" viewBox="0 0 64 64" fill="none"><path d="M9 20 C9 17.5 10.8 16 13 16 L51 16 C53.2 16 55 17.5 55 20 L55 44 C55 46.5 53.2 48 51 48 L13 48 C10.8 48 9 46.5 9 44 Z" stroke="var(--violet-fonce)" stroke-width="2.3" fill="none"/><path d="M9 20 L30 34 C31 35 33 35 34 34 L55 20" stroke="var(--violet-fonce)" stroke-width="2.2" fill="none"/></svg>
+      keb.bek.officiel@gmail.com
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" style="margin-left:auto"><path d="M5 12 L19 12 M13 6 L19 12 L13 18" stroke="var(--violet-fonce)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+    <p class="email-note">This account is managed by the Keb &amp; Bek team.</p>
+  </div>
+
+</div>
+
+<!-- ════ ESPAÑOL ════ -->
+<div class="panel" id="panel-es">
+
+  <div class="email-carte cours">
+    <div class="email-en-tete">
+      <div class="email-icone">
+        <svg viewBox="0 0 64 64" fill="none"><path d="M9 20 C9 17.5 10.8 16 13 16 L51 16 C53.2 16 55 17.5 55 20 L55 44 C55 46.5 53.2 48 51 48 L13 48 C10.8 48 9 46.5 9 44 Z" stroke="var(--violet)" stroke-width="2.3" fill="var(--violet)" fill-opacity="0.12"/><path d="M9 20 L30 34 C31 35 33 35 34 34 L55 20" stroke="var(--violet)" stroke-width="2.2" fill="none"/><path d="M44 8 L45.5 12 L50 12 L46.5 14.5 L48 19 L44 16.5 L40 19 L41.5 14.5 L38 12 L42.5 12 Z" stroke="var(--violet)" stroke-width="1.5" fill="var(--violet)" fill-opacity="0.3"/></svg>
+      </div>
+      <div>
+        <div class="email-categorie">Clases privadas</div>
+        <div class="email-titre-carte">Tomar clases con Raphaël</div>
+      </div>
+    </div>
+    <p class="email-desc">Para <strong>inscribirse</strong>, reservar una <strong>clase de prueba</strong>, hacer preguntas sobre los precios o el método de enseñanza, u obtener más información sobre cómo funcionan las clases privadas.</p>
+    <a class="email-adresse" href="mailto:francais.avec.raphael@gmail.com">
+      <svg width="20" height="20" viewBox="0 0 64 64" fill="none"><path d="M9 20 C9 17.5 10.8 16 13 16 L51 16 C53.2 16 55 17.5 55 20 L55 44 C55 46.5 53.2 48 51 48 L13 48 C10.8 48 9 46.5 9 44 Z" stroke="var(--violet-fonce)" stroke-width="2.3" fill="none"/><path d="M9 20 L30 34 C31 35 33 35 34 34 L55 20" stroke="var(--violet-fonce)" stroke-width="2.2" fill="none"/></svg>
+      francais.avec.raphael@gmail.com
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" style="margin-left:auto"><path d="M5 12 L19 12 M13 6 L19 12 L13 18" stroke="var(--violet-fonce)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+    <p class="email-note">Raphaël te responderá lo antes posible para coordinar una primera clase.</p>
+  </div>
+
+  <div class="email-carte suggestions">
+    <div class="email-en-tete">
+      <div class="email-icone">
+        <svg viewBox="0 0 64 64" fill="none"><path d="M12 14 L52 14 C53.5 14 55 15.5 55 17 L55 40 C55 41.5 53.5 43 52 43 L28 43 L18 54 L18 43 L12 43 C10.5 43 9 41.5 9 40 L9 17 C9 15.5 10.5 14 12 14 Z" stroke="var(--violet)" stroke-width="2.3" fill="var(--violet)" fill-opacity="0.09"/><path d="M18 24 L46 24" stroke="var(--violet)" stroke-width="2" stroke-linecap="round" opacity="0.6"/><path d="M18 31 L38 31" stroke="var(--violet)" stroke-width="1.8" stroke-linecap="round" opacity="0.45"/></svg>
+      </div>
+      <div>
+        <div class="email-categorie">El sitio &amp; el curso</div>
+        <div class="email-titre-carte">Sugerencias, comentarios, errores</div>
+      </div>
+    </div>
+    <p class="email-desc">Para todo lo relacionado con <strong>el sitio web, el curso en línea o su contenido</strong> — un error encontrado, una sugerencia de mejora, un comentario general, o simplemente saludarnos. Cada mensaje es leído y apreciado.</p>
+    <a class="email-adresse" href="mailto:keb.bek.officiel@gmail.com">
+      <svg width="20" height="20" viewBox="0 0 64 64" fill="none"><path d="M9 20 C9 17.5 10.8 16 13 16 L51 16 C53.2 16 55 17.5 55 20 L55 44 C55 46.5 53.2 48 51 48 L13 48 C10.8 48 9 46.5 9 44 Z" stroke="var(--violet-fonce)" stroke-width="2.3" fill="none"/><path d="M9 20 L30 34 C31 35 33 35 34 34 L55 20" stroke="var(--violet-fonce)" stroke-width="2.2" fill="none"/></svg>
+      keb.bek.officiel@gmail.com
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" style="margin-left:auto"><path d="M5 12 L19 12 M13 6 L19 12 L13 18" stroke="var(--violet-fonce)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+    <p class="email-note">Esta cuenta es gestionada por el equipo Keb &amp; Bek.</p>
+  </div>
+
+</div>
+
+<!-- ════ PORTUGUÊS ════ -->
+<div class="panel" id="panel-pt">
+
+  <div class="email-carte cours">
+    <div class="email-en-tete">
+      <div class="email-icone">
+        <svg viewBox="0 0 64 64" fill="none"><path d="M9 20 C9 17.5 10.8 16 13 16 L51 16 C53.2 16 55 17.5 55 20 L55 44 C55 46.5 53.2 48 51 48 L13 48 C10.8 48 9 46.5 9 44 Z" stroke="var(--violet)" stroke-width="2.3" fill="var(--violet)" fill-opacity="0.12"/><path d="M9 20 L30 34 C31 35 33 35 34 34 L55 20" stroke="var(--violet)" stroke-width="2.2" fill="none"/><path d="M44 8 L45.5 12 L50 12 L46.5 14.5 L48 19 L44 16.5 L40 19 L41.5 14.5 L38 12 L42.5 12 Z" stroke="var(--violet)" stroke-width="1.5" fill="var(--violet)" fill-opacity="0.3"/></svg>
+      </div>
+      <div>
+        <div class="email-categorie">Aulas privadas</div>
+        <div class="email-titre-carte">Fazer aulas com o Raphaël</div>
+      </div>
+    </div>
+    <p class="email-desc">Para <strong>inscrever-se</strong>, reservar uma <strong>aula experimental</strong>, fazer perguntas sobre os preços ou o método de ensino, ou obter mais informações sobre o funcionamento das aulas privadas.</p>
+    <a class="email-adresse" href="mailto:francais.avec.raphael@gmail.com">
+      <svg width="20" height="20" viewBox="0 0 64 64" fill="none"><path d="M9 20 C9 17.5 10.8 16 13 16 L51 16 C53.2 16 55 17.5 55 20 L55 44 C55 46.5 53.2 48 51 48 L13 48 C10.8 48 9 46.5 9 44 Z" stroke="var(--violet-fonce)" stroke-width="2.3" fill="none"/><path d="M9 20 L30 34 C31 35 33 35 34 34 L55 20" stroke="var(--violet-fonce)" stroke-width="2.2" fill="none"/></svg>
+      francais.avec.raphael@gmail.com
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" style="margin-left:auto"><path d="M5 12 L19 12 M13 6 L19 12 L13 18" stroke="var(--violet-fonce)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+    <p class="email-note">O Raphaël responderá o mais breve possível para combinar uma primeira aula.</p>
+  </div>
+
+  <div class="email-carte suggestions">
+    <div class="email-en-tete">
+      <div class="email-icone">
+        <svg viewBox="0 0 64 64" fill="none"><path d="M12 14 L52 14 C53.5 14 55 15.5 55 17 L55 40 C55 41.5 53.5 43 52 43 L28 43 L18 54 L18 43 L12 43 C10.5 43 9 41.5 9 40 L9 17 C9 15.5 10.5 14 12 14 Z" stroke="var(--violet)" stroke-width="2.3" fill="var(--violet)" fill-opacity="0.09"/><path d="M18 24 L46 24" stroke="var(--violet)" stroke-width="2" stroke-linecap="round" opacity="0.6"/><path d="M18 31 L38 31" stroke="var(--violet)" stroke-width="1.8" stroke-linecap="round" opacity="0.45"/></svg>
+      </div>
+      <div>
+        <div class="email-categorie">O site &amp; o curso</div>
+        <div class="email-titre-carte">Sugestões, comentários, erros</div>
+      </div>
+    </div>
+    <p class="email-desc">Para tudo o que diz respeito <strong>ao site, ao curso online ou ao seu conteúdo</strong> — um erro encontrado, uma sugestão de melhoria, um comentário geral, ou simplesmente dizer olá. Cada mensagem é lida e apreciada.</p>
+    <a class="email-adresse" href="mailto:keb.bek.officiel@gmail.com">
+      <svg width="20" height="20" viewBox="0 0 64 64" fill="none"><path d="M9 20 C9 17.5 10.8 16 13 16 L51 16 C53.2 16 55 17.5 55 20 L55 44 C55 46.5 53.2 48 51 48 L13 48 C10.8 48 9 46.5 9 44 Z" stroke="var(--violet-fonce)" stroke-width="2.3" fill="none"/><path d="M9 20 L30 34 C31 35 33 35 34 34 L55 20" stroke="var(--violet-fonce)" stroke-width="2.2" fill="none"/></svg>
+      keb.bek.officiel@gmail.com
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" style="margin-left:auto"><path d="M5 12 L19 12 M13 6 L19 12 L13 18" stroke="var(--violet-fonce)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+    <p class="email-note">Esta conta é gerida pela equipa Keb &amp; Bek.</p>
+  </div>
+
+</div>
+
+<!-- ════ ITALIANO ════ -->
+<div class="panel" id="panel-it">
+
+  <div class="email-carte cours">
+    <div class="email-en-tete">
+      <div class="email-icone">
+        <svg viewBox="0 0 64 64" fill="none"><path d="M9 20 C9 17.5 10.8 16 13 16 L51 16 C53.2 16 55 17.5 55 20 L55 44 C55 46.5 53.2 48 51 48 L13 48 C10.8 48 9 46.5 9 44 Z" stroke="var(--violet)" stroke-width="2.3" fill="var(--violet)" fill-opacity="0.12"/><path d="M9 20 L30 34 C31 35 33 35 34 34 L55 20" stroke="var(--violet)" stroke-width="2.2" fill="none"/><path d="M44 8 L45.5 12 L50 12 L46.5 14.5 L48 19 L44 16.5 L40 19 L41.5 14.5 L38 12 L42.5 12 Z" stroke="var(--violet)" stroke-width="1.5" fill="var(--violet)" fill-opacity="0.3"/></svg>
+      </div>
+      <div>
+        <div class="email-categorie">Lezioni private</div>
+        <div class="email-titre-carte">Seguire lezioni con Raphaël</div>
+      </div>
+    </div>
+    <p class="email-desc">Per <strong>iscriversi</strong>, prenotare una <strong>lezione di prova</strong>, fare domande sui prezzi o sul metodo di insegnamento, o ricevere maggiori informazioni sullo svolgimento delle lezioni private.</p>
+    <a class="email-adresse" href="mailto:francais.avec.raphael@gmail.com">
+      <svg width="20" height="20" viewBox="0 0 64 64" fill="none"><path d="M9 20 C9 17.5 10.8 16 13 16 L51 16 C53.2 16 55 17.5 55 20 L55 44 C55 46.5 53.2 48 51 48 L13 48 C10.8 48 9 46.5 9 44 Z" stroke="var(--violet-fonce)" stroke-width="2.3" fill="none"/><path d="M9 20 L30 34 C31 35 33 35 34 34 L55 20" stroke="var(--violet-fonce)" stroke-width="2.2" fill="none"/></svg>
+      francais.avec.raphael@gmail.com
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" style="margin-left:auto"><path d="M5 12 L19 12 M13 6 L19 12 L13 18" stroke="var(--violet-fonce)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+    <p class="email-note">Raphaël ti risponderà al più presto per fissare una prima lezione.</p>
+  </div>
+
+  <div class="email-carte suggestions">
+    <div class="email-en-tete">
+      <div class="email-icone">
+        <svg viewBox="0 0 64 64" fill="none"><path d="M12 14 L52 14 C53.5 14 55 15.5 55 17 L55 40 C55 41.5 53.5 43 52 43 L28 43 L18 54 L18 43 L12 43 C10.5 43 9 41.5 9 40 L9 17 C9 15.5 10.5 14 12 14 Z" stroke="var(--violet)" stroke-width="2.3" fill="var(--violet)" fill-opacity="0.09"/><path d="M18 24 L46 24" stroke="var(--violet)" stroke-width="2" stroke-linecap="round" opacity="0.6"/><path d="M18 31 L38 31" stroke="var(--violet)" stroke-width="1.8" stroke-linecap="round" opacity="0.45"/></svg>
+      </div>
+      <div>
+        <div class="email-categorie">Il sito &amp; il corso</div>
+        <div class="email-titre-carte">Suggerimenti, commenti, errori</div>
+      </div>
+    </div>
+    <p class="email-desc">Per tutto ciò che riguarda <strong>il sito web, il corso online o il suo contenuto</strong> — un errore trovato, un suggerimento di miglioramento, un commento generale, o semplicemente per salutarci. Ogni messaggio viene letto e apprezzato.</p>
+    <a class="email-adresse" href="mailto:keb.bek.officiel@gmail.com">
+      <svg width="20" height="20" viewBox="0 0 64 64" fill="none"><path d="M9 20 C9 17.5 10.8 16 13 16 L51 16 C53.2 16 55 17.5 55 20 L55 44 C55 46.5 53.2 48 51 48 L13 48 C10.8 48 9 46.5 9 44 Z" stroke="var(--violet-fonce)" stroke-width="2.3" fill="none"/><path d="M9 20 L30 34 C31 35 33 35 34 34 L55 20" stroke="var(--violet-fonce)" stroke-width="2.2" fill="none"/></svg>
+      keb.bek.officiel@gmail.com
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" style="margin-left:auto"><path d="M5 12 L19 12 M13 6 L19 12 L13 18" stroke="var(--violet-fonce)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+    <p class="email-note">Questo account è gestito dal team Keb &amp; Bek.</p>
+  </div>
+
+</div>
+
+<!-- ════ 中文 ════ -->
+<div class="panel" id="panel-zh">
+
+  <div class="email-carte cours">
+    <div class="email-en-tete">
+      <div class="email-icone">
+        <svg viewBox="0 0 64 64" fill="none"><path d="M9 20 C9 17.5 10.8 16 13 16 L51 16 C53.2 16 55 17.5 55 20 L55 44 C55 46.5 53.2 48 51 48 L13 48 C10.8 48 9 46.5 9 44 Z" stroke="var(--violet)" stroke-width="2.3" fill="var(--violet)" fill-opacity="0.12"/><path d="M9 20 L30 34 C31 35 33 35 34 34 L55 20" stroke="var(--violet)" stroke-width="2.2" fill="none"/><path d="M44 8 L45.5 12 L50 12 L46.5 14.5 L48 19 L44 16.5 L40 19 L41.5 14.5 L38 12 L42.5 12 Z" stroke="var(--violet)" stroke-width="1.5" fill="var(--violet)" fill-opacity="0.3"/></svg>
+      </div>
+      <div>
+        <div class="email-categorie">私人课程</div>
+        <div class="email-titre-carte">与 Raphaël 一起上课</div>
+      </div>
+    </div>
+    <p class="email-desc">如需<strong>报名</strong>、预约<strong>试听课</strong>、咨询价格或教学方法，或了解私人课程的详细信息，请发送邮件至：</p>
+    <a class="email-adresse" href="mailto:francais.avec.raphael@gmail.com">
+      <svg width="20" height="20" viewBox="0 0 64 64" fill="none"><path d="M9 20 C9 17.5 10.8 16 13 16 L51 16 C53.2 16 55 17.5 55 20 L55 44 C55 46.5 53.2 48 51 48 L13 48 C10.8 48 9 46.5 9 44 Z" stroke="var(--violet-fonce)" stroke-width="2.3" fill="none"/><path d="M9 20 L30 34 C31 35 33 35 34 34 L55 20" stroke="var(--violet-fonce)" stroke-width="2.2" fill="none"/></svg>
+      francais.avec.raphael@gmail.com
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" style="margin-left:auto"><path d="M5 12 L19 12 M13 6 L19 12 L13 18" stroke="var(--violet-fonce)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+    <p class="email-note">Raphaël 将尽快回复您，安排第一堂课。</p>
+  </div>
+
+  <div class="email-carte suggestions">
+    <div class="email-en-tete">
+      <div class="email-icone">
+        <svg viewBox="0 0 64 64" fill="none"><path d="M12 14 L52 14 C53.5 14 55 15.5 55 17 L55 40 C55 41.5 53.5 43 52 43 L28 43 L18 54 L18 43 L12 43 C10.5 43 9 41.5 9 40 L9 17 C9 15.5 10.5 14 12 14 Z" stroke="var(--violet)" stroke-width="2.3" fill="var(--violet)" fill-opacity="0.09"/><path d="M18 24 L46 24" stroke="var(--violet)" stroke-width="2" stroke-linecap="round" opacity="0.6"/><path d="M18 31 L38 31" stroke="var(--violet)" stroke-width="1.8" stroke-linecap="round" opacity="0.45"/></svg>
+      </div>
+      <div>
+        <div class="email-categorie">网站 &amp; 课程内容</div>
+        <div class="email-titre-carte">建议、反馈、错误报告</div>
+      </div>
+    </div>
+    <p class="email-desc">有关<strong>网站、在线课程或其内容</strong>的任何意见 — 发现错误、改进建议、一般反馈，或只是打个招呼。每一条留言都会被认真阅读。</p>
+    <a class="email-adresse" href="mailto:keb.bek.officiel@gmail.com">
+      <svg width="20" height="20" viewBox="0 0 64 64" fill="none"><path d="M9 20 C9 17.5 10.8 16 13 16 L51 16 C53.2 16 55 17.5 55 20 L55 44 C55 46.5 53.2 48 51 48 L13 48 C10.8 48 9 46.5 9 44 Z" stroke="var(--violet-fonce)" stroke-width="2.3" fill="none"/><path d="M9 20 L30 34 C31 35 33 35 34 34 L55 20" stroke="var(--violet-fonce)" stroke-width="2.2" fill="none"/></svg>
+      keb.bek.officiel@gmail.com
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" style="margin-left:auto"><path d="M5 12 L19 12 M13 6 L19 12 L13 18" stroke="var(--violet-fonce)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+    <p class="email-note">此账户由 Keb &amp; Bek 团队管理。</p>
+  </div>
+
+</div>
+
+</div><!-- /contenu -->
+
+<footer>
+  <a href="index.html">← Cours privés</a> · Keb &amp; Bek · Cours de français québécois
+</footer>
+
+<script>
+  const tabs = document.querySelectorAll('.lang-tab');
+  const panels = document.querySelectorAll('.panel');
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      const lang = tab.dataset.lang;
+      tabs.forEach(t => t.classList.remove('active'));
+      panels.forEach(p => p.classList.remove('active'));
+      tab.classList.add('active');
+      document.getElementById('panel-' + lang).classList.add('active');
+    });
+  });
+</script>
+
+</body>
+</html>
