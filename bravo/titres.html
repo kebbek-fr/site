@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="fr-CA">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Titres — Le français avec Keb & Bek</title>
+  <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,400i&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --beige:        #F2EDE3;
+      --beige-clair:  #FDF8F2;
+      --ambre:        #D4A24E;
+      --ambre-clair:  #FAEEDA;
+      --ambre-fonce:  #854F0B;
+      --violet:       #7B5EA8;
+      --violet-clair: #EDE6F5;
+      --violet-fonce: #5A4080;
+      --vert:         #7FA86E;
+      --vert-clair:   #EAF3DE;
+      --vert-fonce:   #4A7A36;
+      --bleu-poudre:  #B8C9E0;
+      --bleu-fonce:   #7A9BBF;
+      --texte:        #2A2422;
+      --gris:         #8A8480;
+      --blanc:        #ffffff;
+      --ombre:        rgba(42,36,34,0.10);
+    }
+    html, body { min-height: 100vh; background: var(--beige); font-family: "Nunito", sans-serif; color: var(--texte); }
+    .page { max-width: 960px; margin: 0 auto; padding: clamp(28px,5vw,48px) 24px 64px; }
+
+    .nav-haut { display: flex; align-items: center; gap: 12px; margin-bottom: 28px; opacity: 0; animation: descendre 0.5s ease 0.05s forwards; }
+    .lien-retour { font-size: 12px; color: var(--gris); text-decoration: none; border-bottom: 1px dotted rgba(138,128,115,0.5); transition: color 0.15s; }
+    .lien-retour:hover { color: var(--violet-fonce); }
+    .sep-nav { font-size: 12px; color: var(--gris); }
+
+    .entete { margin-bottom: clamp(28px,4.5vw,42px); opacity: 0; animation: descendre 0.6s ease 0.1s forwards; position: relative; }
+
+    .entete-titre {
+      font-family: "Patrick Hand", cursive;
+      font-size: clamp(48px, 9vw, 84px);
+      line-height: 1;
+      display: inline-block;
+      transform: rotate(-1.5deg);
+      margin-bottom: 10px;
+      letter-spacing: 0.03em;
+      color: var(--ambre-fonce);
+      background: linear-gradient(120deg, #854F0B 0%, #D4A24E 35%, #F6DFA8 50%, #D4A24E 65%, #854F0B 100%);
+      background-size: 220% 100%;
+      background-position: 0% 50%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      cursor: default;
+      filter: drop-shadow(0 0 0 rgba(212,162,78,0));
+      transition: filter 0.4s ease, transform 0.4s cubic-bezier(0.34,1.56,0.64,1), background-position 0.8s ease;
+      animation: lueur-respire 3.5s ease-in-out infinite;
+    }
+    .entete-titre:hover {
+      transform: rotate(-1.5deg) scale(1.08);
+      background-position: 100% 50%;
+      filter: drop-shadow(0 0 14px rgba(212,162,78,0.65)) drop-shadow(0 0 28px rgba(246,223,168,0.4));
+      animation-play-state: paused;
+    }
+    @keyframes lueur-respire {
+      0%, 100% { filter: drop-shadow(0 0 2px rgba(212,162,78,0.15)); }
+      50%      { filter: drop-shadow(0 0 8px rgba(212,162,78,0.35)); }
+    }
+
+    .entete-eclat {
+      position: absolute;
+      animation: scintiller 2.4s ease-in-out infinite;
+    }
+    @keyframes scintiller {
+      0%, 100% { opacity: 0.35; transform: scale(0.85) rotate(0deg); }
+      50%      { opacity: 1;    transform: scale(1.1) rotate(15deg); }
+    }
+
+    .entete-sous {
+      font-size: clamp(14.5px, 1.8vw, 16.5px);
+      color: var(--texte);
+      font-style: normal;
+      max-width: 540px;
+      line-height: 1.7;
+    }
+    .entete-sous strong { color: var(--violet-fonce); }
+    .entete-sous .cri {
+      display: block;
+      margin-top: 10px;
+      font-family: "Patrick Hand", cursive;
+      font-size: clamp(17px, 2.4vw, 21px);
+      color: var(--ambre-fonce);
+    }
+
+    /* ── GRILLE DE TITRES ── */
+    .titres-grille {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: clamp(16px, 2.5vw, 24px);
+    }
+
+    .titre-carte {
+      background: var(--beige-clair);
+      border: 2px solid var(--bleu-poudre);
+      border-radius: 18px;
+      padding: 20px 18px 18px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      opacity: 0;
+      animation: apparaitre 0.6s cubic-bezier(0.22,1,0.36,1) forwards;
+      text-decoration: none;
+      color: var(--texte);
+      transition: transform 0.22s cubic-bezier(0.34,1.56,0.64,1), border-color 0.18s, box-shadow 0.18s;
+    }
+    .titre-carte:hover {
+      transform: translateY(-5px) scale(1.02);
+      border-color: var(--violet);
+      box-shadow: 0 12px 28px rgba(123,94,168,0.22);
+    }
+    .titre-carte:nth-child(1) { animation-delay: 0.25s; }
+    .titre-carte:nth-child(2) { animation-delay: 0.35s; }
+    .titre-carte:nth-child(3) { animation-delay: 0.45s; }
+
+    /* Image ombragée */
+    .titre-image-wrap {
+      position: relative;
+      width: 120px;
+      height: 150px;
+    }
+    .titre-image {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      border-radius: 10px;
+      filter: brightness(0.35) saturate(0);
+      transition: filter 0.3s ease;
+    }
+    .titre-carte:hover .titre-image { filter: brightness(0.45) saturate(0.2); }
+    .titre-verrou {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .titre-verrou svg { width: 36px; height: 36px; opacity: 0.7; }
+
+    /* Texte */
+    .titre-nom {
+      font-family: "Patrick Hand", cursive;
+      font-size: 17px;
+      color: var(--violet-fonce);
+      text-align: center;
+      line-height: 1.25;
+    }
+    .titre-teaser {
+      font-size: 12px;
+      color: var(--gris);
+      text-align: center;
+      font-style: italic;
+      line-height: 1.5;
+    }
+    .titre-niveau {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      background: var(--violet-clair);
+      color: var(--violet-fonce);
+      border-radius: 20px;
+      padding: 3px 10px;
+    }
+
+    /* Badge action */
+    .titre-action {
+      font-size: 11px;
+      color: var(--ambre-fonce);
+      background: var(--ambre-clair);
+      border-radius: 20px;
+      padding: 3px 10px;
+    }
+
+    /* ── PIED ── */
+    .pied { margin-top: 48px; text-align: center; font-size: 12px; color: var(--gris); opacity: 0; animation: descendre 0.5s ease 0.9s forwards; }
+
+    @keyframes descendre { from { opacity:0; transform:translateY(14px); } to { opacity:1; transform:translateY(0); } }
+    @keyframes apparaitre { from { opacity:0; transform:translateY(20px) scale(0.97); } to { opacity:1; transform:translateY(0) scale(1); } }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <div class="nav-haut">
+    <a class="lien-retour" href="../index.html">← Bravo !</a>
+    <span class="sep-nav">/</span>
+    <span style="font-size:12px; color:var(--gris);">Titres</span>
+  </div>
+
+  <div class="entete">
+    <svg class="entete-eclat" style="top:-6px; left:108px; width:20px; height:20px;" viewBox="0 0 24 24" fill="none">
+      <path d="M12 2 L14 10 L22 12 L14 14 L12 22 L10 14 L2 12 L10 10 Z" fill="var(--ambre)"/>
+    </svg>
+    <svg class="entete-eclat" style="top:14px; left:280px; width:14px; height:14px; animation-delay:0.6s;" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="4" fill="var(--vert)"/>
+    </svg>
+    <svg class="entete-eclat" style="top:-10px; left:340px; width:16px; height:16px; animation-delay:1.1s;" viewBox="0 0 24 24" fill="none">
+      <path d="M12 2 L14 10 L22 12 L14 14 L12 22 L10 14 L2 12 L10 10 Z" fill="var(--bleu-fonce)"/>
+    </svg>
+    <h1 class="entete-titre">TITRES</h1>
+    <p class="entete-sous">
+      Voici des titres que tu peux débloquer et mettre sur ta fiche.<br>
+      Il y en a plein — des beaux, et puis des encore plus beaux, des <strong>dorés</strong>, des <strong>légendaires</strong>… des <strong>uniques</strong> ! Sois le premier ou la première à les trouver !
+      <span class="cri">Que la chasse aux titres commence !</span>
+    </p>
+  </div>
+
+  <div class="titres-grille">
+
+    <!-- ta-kl1k3ur — Le petit cliqueur / La petite cliqueuse -->
+    <a class="titre-carte" href="../charriot/ta-kl1k3ur.html">
+      <div class="titre-image-wrap">
+        <img class="titre-image" src="../images/titres/ta-kl1k3ur_fille.png" alt="Titre verrouillé">
+        <div class="titre-verrou">
+          <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="7" y="14" width="18" height="13" rx="3" fill="white" fill-opacity="0.85"/>
+            <path d="M11 14 V10 C11 7.2 21 7.2 21 10 V14" stroke="white" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+            <circle cx="16" cy="20" r="2" fill="var(--violet-fonce)" fill-opacity="0.7"/>
+          </svg>
+        </div>
+      </div>
+      <span class="titre-nom">Le petit cliqueur<br>La petite cliqueuse</span>
+      <span class="titre-teaser">Il faut cliquer sur un gros truc rectangulaire avec deux bonhommes dessus.</span>
+      <span class="titre-niveau">Découverte</span>
+      <span class="titre-action">Action requise</span>
+    </a>
+
+    <!-- Placeholder titre 2 — à venir -->
+    <div class="titre-carte" style="opacity:0.4; pointer-events:none; animation-delay:0.35s;">
+      <div class="titre-image-wrap">
+        <div style="width:100%;height:100%;background:var(--beige);border-radius:10px;display:flex;align-items:center;justify-content:center;">
+          <svg viewBox="0 0 32 32" fill="none" width="36" height="36"><circle cx="16" cy="16" r="12" stroke="var(--gris)" stroke-width="1.5" stroke-dasharray="3 3"/><text x="16" y="21" text-anchor="middle" font-size="14" fill="var(--gris)" font-family="Patrick Hand, cursive">?</text></svg>
+        </div>
+      </div>
+      <span class="titre-nom" style="color:var(--gris);">À découvrir…</span>
+      <span class="titre-teaser">Ce titre n'a pas encore été révélé.</span>
+      <span class="titre-niveau">???</span>
+    </div>
+
+    <!-- Placeholder titre 3 — à venir -->
+    <div class="titre-carte" style="opacity:0.4; pointer-events:none; animation-delay:0.45s;">
+      <div class="titre-image-wrap">
+        <div style="width:100%;height:100%;background:var(--beige);border-radius:10px;display:flex;align-items:center;justify-content:center;">
+          <svg viewBox="0 0 32 32" fill="none" width="36" height="36"><circle cx="16" cy="16" r="12" stroke="var(--gris)" stroke-width="1.5" stroke-dasharray="3 3"/><text x="16" y="21" text-anchor="middle" font-size="14" fill="var(--gris)" font-family="Patrick Hand, cursive">?</text></svg>
+        </div>
+      </div>
+      <span class="titre-nom" style="color:var(--gris);">À découvrir…</span>
+      <span class="titre-teaser">Ce titre n'a pas encore été révélé.</span>
+      <span class="titre-niveau">???</span>
+    </div>
+
+  </div>
+
+  <div class="pied">Un projet de <strong>Keb &amp; Bek</strong> · Montréal, Québec</div>
+
+</div>
+</body>
+</html>
