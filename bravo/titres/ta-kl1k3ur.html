@@ -230,23 +230,25 @@
     }
     .autocollant-libelle.actif { color: var(--ambre); }
 
-    /* Bouton "Choisir ce titre" */
-    .btn-choisir {
-      display: block;
-      padding: 10px 22px;
-      background: linear-gradient(135deg, var(--violet) 0%, var(--violet-fonce) 100%);
+    /* Bouton téléchargement */
+    .btn-telecharger {
+      display: flex; align-items: center; justify-content: center; gap: 7px;
+      padding: 10px 20px;
+      background: linear-gradient(135deg, #3A7D44 0%, #2A5C32 100%);
       color: var(--blanc);
       font-family: "Patrick Hand", cursive; font-size: 15px;
       border-radius: 100px; border: none; cursor: pointer;
-      box-shadow: 0 4px 16px rgba(90,64,128,0.45);
+      box-shadow: 0 4px 16px rgba(42,92,50,0.5);
+      text-decoration: none;
       transition: transform 0.2s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.2s;
-      opacity: 0; pointer-events: none; margin-top: 2px;
+      opacity: 0; pointer-events: none; margin-top: 4px;
     }
-    .btn-choisir.visible { opacity: 1; pointer-events: auto; }
-    .btn-choisir:hover {
+    .btn-telecharger.visible { opacity: 1; pointer-events: auto; }
+    .btn-telecharger:hover {
       transform: translateY(-3px) scale(1.05);
-      box-shadow: 0 8px 24px rgba(90,64,128,0.6);
+      box-shadow: 0 8px 24px rgba(42,92,50,0.65);
     }
+    .btn-telecharger svg { width: 16px; height: 16px; flex-shrink: 0; }
 
     /* ── ZONE MOT DE PASSE ── */
     .mdp-section {
@@ -398,7 +400,10 @@
           </div>
         </div>
         <span class="autocollant-libelle" id="lib-garcon">Le petit cliqueur</span>
-        <button class="btn-choisir" id="btn-garcon" onclick="choisirTitre('garcon')">Choisir ce titre</button>
+        <a class="btn-telecharger" id="btn-garcon" href="../images/titres/ta-kl1k3ur_garcon.png" download="ta-kl1k3ur_garcon.png">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M12 3 L12 15 M8 11 L12 15 L16 11" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 19 L19 19" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
+          Télécharger
+        </a>
       </div>
 
       <div class="autocollant-wrap" id="wrap-fille">
@@ -415,7 +420,10 @@
           </div>
         </div>
         <span class="autocollant-libelle" id="lib-fille">La petite cliqueuse</span>
-        <button class="btn-choisir" id="btn-fille" onclick="choisirTitre('fille')">Choisir ce titre</button>
+        <a class="btn-telecharger" id="btn-fille" href="../images/titres/ta-kl1k3ur_fille.png" download="ta-kl1k3ur_fille.png">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M12 3 L12 15 M8 11 L12 15 L16 11" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 19 L19 19" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
+          Télécharger
+        </a>
       </div>
 
     </div>
@@ -496,26 +504,7 @@
     btn.textContent = "\u2713";
   }
 
-  function choisirTitre(genre) {
-    var noms = { garcon: "Le petit cliqueur", fille: "La petite cliqueuse" };
-    var nom = noms[genre];
 
-    localStorage.setItem("keb_bek_titre_actif", nom);
-    localStorage.setItem("keb_bek_titre_code", "ta-kl1k3ur");
-
-    var autre = genre === "garcon" ? "fille" : "garcon";
-    document.getElementById("btn-" + autre).style.opacity = "0.3";
-    document.getElementById("btn-" + autre).style.pointerEvents = "none";
-    document.getElementById("imgwrap-" + autre).style.opacity = "0.45";
-
-    var btn = document.getElementById("btn-" + genre);
-    btn.textContent = "\u2713 Titre choisi\u00a0!";
-    btn.style.background = "linear-gradient(135deg, #4A7A36, #2D5020)";
-    btn.style.boxShadow = "0 4px 16px rgba(74,122,54,0.45)";
-
-    document.getElementById("imgwrap-" + genre).classList.add("actif");
-    document.getElementById("mdp-label").textContent = "\u00ab\u00a0" + nom + "\u00a0\u00bb est maintenant ton titre. Bravo\u00a0!";
-  }
 </script>
 </body>
 </html>
