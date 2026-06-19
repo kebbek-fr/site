@@ -44,7 +44,6 @@
       transform: rotate(-1.5deg);
       margin-bottom: 10px;
       letter-spacing: 0.03em;
-      color: var(--ambre-fonce);
       background: linear-gradient(120deg, #854F0B 0%, #D4A24E 35%, #F6DFA8 50%, #D4A24E 65%, #854F0B 100%);
       background-size: 220% 100%;
       background-position: 0% 50%;
@@ -52,7 +51,6 @@
       background-clip: text;
       -webkit-text-fill-color: transparent;
       cursor: default;
-      filter: drop-shadow(0 0 0 rgba(212,162,78,0));
       transition: filter 0.4s ease, transform 0.4s cubic-bezier(0.34,1.56,0.64,1), background-position 0.8s ease;
       animation: lueur-respire 3.5s ease-in-out infinite;
     }
@@ -67,10 +65,7 @@
       50%      { filter: drop-shadow(0 0 8px rgba(212,162,78,0.35)); }
     }
 
-    .entete-eclat {
-      position: absolute;
-      animation: scintiller 2.4s ease-in-out infinite;
-    }
+    .entete-eclat { position: absolute; animation: scintiller 2.4s ease-in-out infinite; }
     @keyframes scintiller {
       0%, 100% { opacity: 0.35; transform: scale(0.85) rotate(0deg); }
       50%      { opacity: 1;    transform: scale(1.1) rotate(15deg); }
@@ -78,108 +73,93 @@
 
     .entete-sous {
       font-size: clamp(14.5px, 1.8vw, 16.5px);
-      color: var(--texte);
-      font-style: normal;
-      max-width: 540px;
-      line-height: 1.7;
+      color: var(--texte); max-width: 540px; line-height: 1.7;
     }
     .entete-sous strong { color: var(--violet-fonce); }
     .entete-sous .cri {
-      display: block;
-      margin-top: 10px;
+      display: block; margin-top: 10px;
       font-family: "Patrick Hand", cursive;
       font-size: clamp(17px, 2.4vw, 21px);
       color: var(--ambre-fonce);
     }
 
-    /* ── GRILLE DE TITRES ── */
+    /* ── GRILLE ── */
     .titres-grille {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
       gap: clamp(16px, 2.5vw, 24px);
     }
 
+    /* Carte — PAS un lien, juste un div */
     .titre-carte {
       background: var(--beige-clair);
       border: 2px solid var(--bleu-poudre);
       border-radius: 18px;
       padding: 20px 18px 18px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 10px;
+      display: flex; flex-direction: column; align-items: center; gap: 10px;
       opacity: 0;
       animation: apparaitre 0.6s cubic-bezier(0.22,1,0.36,1) forwards;
-      text-decoration: none;
       color: var(--texte);
+      cursor: default;
       transition: transform 0.22s cubic-bezier(0.34,1.56,0.64,1), border-color 0.18s, box-shadow 0.18s;
     }
-    .titre-carte:hover {
-      transform: translateY(-5px) scale(1.02);
+    /* Les cartes réelles ont un léger hover cosmétique (pas de navigation) */
+    .titre-carte.reel:hover {
+      transform: translateY(-4px) scale(1.015);
       border-color: var(--violet);
-      box-shadow: 0 12px 28px rgba(123,94,168,0.22);
+      box-shadow: 0 10px 24px rgba(123,94,168,0.18);
     }
     .titre-carte:nth-child(1) { animation-delay: 0.25s; }
     .titre-carte:nth-child(2) { animation-delay: 0.35s; }
     .titre-carte:nth-child(3) { animation-delay: 0.45s; }
 
-    /* Image ombragée */
-    .titre-image-wrap {
-      position: relative;
-      width: 120px;
-      height: 150px;
-    }
+    .titre-image-wrap { position: relative; width: 120px; height: 150px; }
     .titre-image {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-      border-radius: 10px;
+      width: 100%; height: 100%; object-fit: contain; border-radius: 10px;
       filter: brightness(0.35) saturate(0);
       transition: filter 0.3s ease;
     }
-    .titre-carte:hover .titre-image { filter: brightness(0.45) saturate(0.2); }
+    .titre-carte.reel:hover .titre-image { filter: brightness(0.48) saturate(0.2); }
     .titre-verrou {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
     }
     .titre-verrou svg { width: 36px; height: 36px; opacity: 0.7; }
 
-    /* Texte */
     .titre-nom {
       font-family: "Patrick Hand", cursive;
-      font-size: 17px;
-      color: var(--violet-fonce);
-      text-align: center;
-      line-height: 1.25;
+      font-size: 17px; color: var(--violet-fonce);
+      text-align: center; line-height: 1.25;
     }
     .titre-teaser {
-      font-size: 12px;
-      color: var(--gris);
-      text-align: center;
-      font-style: italic;
-      line-height: 1.5;
+      font-size: 12px; color: var(--gris);
+      text-align: center; font-style: italic; line-height: 1.5;
     }
     .titre-niveau {
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.07em;
-      text-transform: uppercase;
-      background: var(--violet-clair);
-      color: var(--violet-fonce);
-      border-radius: 20px;
-      padding: 3px 10px;
+      font-size: 11px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase;
+      background: var(--violet-clair); color: var(--violet-fonce);
+      border-radius: 20px; padding: 3px 10px;
+    }
+    .titre-action {
+      font-size: 11px; color: var(--ambre-fonce);
+      background: var(--ambre-clair); border-radius: 20px; padding: 3px 10px;
     }
 
-    /* Badge action */
-    .titre-action {
-      font-size: 11px;
-      color: var(--ambre-fonce);
-      background: var(--ambre-clair);
-      border-radius: 20px;
-      padding: 3px 10px;
+    /* Récompenses mini */
+    .titre-recomp {
+      display: flex; gap: 6px; flex-wrap: wrap; justify-content: center;
+    }
+    .titre-recomp-badge {
+      font-size: 10px; font-weight: 800;
+      padding: 2px 8px; border-radius: 100px;
+    }
+    .badge-mini-piastres {
+      background: var(--ambre-clair); color: var(--ambre-fonce);
+      border: 1px solid rgba(212,162,78,0.4);
+    }
+    .badge-mini-points {
+      background: var(--violet-clair); color: var(--violet-fonce);
+      border: 1px solid rgba(123,94,168,0.3);
     }
 
     /* ── PIED ── */
@@ -218,12 +198,12 @@
 
   <div class="titres-grille">
 
-    <!-- ta-kl1k3ur — Le petit cliqueur / La petite cliqueuse -->
-    <a class="titre-carte" href="../charriot/ta-kl1k3ur.html">
+    <!-- ta-kl1k3ur — Le petit cliqueur / La petite cliqueuse — PAS DE LIEN, juste div -->
+    <div class="titre-carte reel">
       <div class="titre-image-wrap">
-        <img class="titre-image" src="../images/titres/ta-kl1k3ur_fille.png" alt="Titre verrouillé">
+        <img class="titre-image" src="images/titres/ta-kl1k3ur_fille.png" alt="Titre verrouillé">
         <div class="titre-verrou">
-          <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <svg viewBox="0 0 32 32" fill="none">
             <rect x="7" y="14" width="18" height="13" rx="3" fill="white" fill-opacity="0.85"/>
             <path d="M11 14 V10 C11 7.2 21 7.2 21 10 V14" stroke="white" stroke-width="2.2" stroke-linecap="round" fill="none"/>
             <circle cx="16" cy="20" r="2" fill="var(--violet-fonce)" fill-opacity="0.7"/>
@@ -234,13 +214,20 @@
       <span class="titre-teaser">Il faut cliquer sur un gros truc rectangulaire avec deux bonhommes dessus.</span>
       <span class="titre-niveau">Découverte</span>
       <span class="titre-action">Action requise</span>
-    </a>
+      <div class="titre-recomp">
+        <span class="titre-recomp-badge badge-mini-piastres">+ 5 piastres</span>
+        <span class="titre-recomp-badge badge-mini-points">+ 2 pts bonis</span>
+      </div>
+    </div>
 
-    <!-- Placeholder titre 2 — à venir -->
+    <!-- Placeholder 2 -->
     <div class="titre-carte" style="opacity:0.4; pointer-events:none; animation-delay:0.35s;">
       <div class="titre-image-wrap">
         <div style="width:100%;height:100%;background:var(--beige);border-radius:10px;display:flex;align-items:center;justify-content:center;">
-          <svg viewBox="0 0 32 32" fill="none" width="36" height="36"><circle cx="16" cy="16" r="12" stroke="var(--gris)" stroke-width="1.5" stroke-dasharray="3 3"/><text x="16" y="21" text-anchor="middle" font-size="14" fill="var(--gris)" font-family="Patrick Hand, cursive">?</text></svg>
+          <svg viewBox="0 0 32 32" fill="none" width="36" height="36">
+            <circle cx="16" cy="16" r="12" stroke="var(--gris)" stroke-width="1.5" stroke-dasharray="3 3"/>
+            <text x="16" y="21" text-anchor="middle" font-size="14" fill="var(--gris)" font-family="Patrick Hand, cursive">?</text>
+          </svg>
         </div>
       </div>
       <span class="titre-nom" style="color:var(--gris);">À découvrir…</span>
@@ -248,11 +235,14 @@
       <span class="titre-niveau">???</span>
     </div>
 
-    <!-- Placeholder titre 3 — à venir -->
+    <!-- Placeholder 3 -->
     <div class="titre-carte" style="opacity:0.4; pointer-events:none; animation-delay:0.45s;">
       <div class="titre-image-wrap">
         <div style="width:100%;height:100%;background:var(--beige);border-radius:10px;display:flex;align-items:center;justify-content:center;">
-          <svg viewBox="0 0 32 32" fill="none" width="36" height="36"><circle cx="16" cy="16" r="12" stroke="var(--gris)" stroke-width="1.5" stroke-dasharray="3 3"/><text x="16" y="21" text-anchor="middle" font-size="14" fill="var(--gris)" font-family="Patrick Hand, cursive">?</text></svg>
+          <svg viewBox="0 0 32 32" fill="none" width="36" height="36">
+            <circle cx="16" cy="16" r="12" stroke="var(--gris)" stroke-width="1.5" stroke-dasharray="3 3"/>
+            <text x="16" y="21" text-anchor="middle" font-size="14" fill="var(--gris)" font-family="Patrick Hand, cursive">?</text>
+          </svg>
         </div>
       </div>
       <span class="titre-nom" style="color:var(--gris);">À découvrir…</span>
