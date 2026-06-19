@@ -369,7 +369,7 @@
 
     /* porte secondaire (Bravo, Cours privés) */
     .porte-secondaire {
-      width: clamp(190px, 24vw, 250px);
+      width: clamp(210px, 27vw, 290px);
       gap: 10px;
     }
     .porte-secondaire:nth-of-type(1) { transform: rotate(-2deg); }
@@ -387,7 +387,7 @@
     .porte-secondaire .porte-label {
       font-family: "Caveat", cursive;
       font-weight: 700;
-      font-size: clamp(24px, 3vw, 30px);
+      font-size: clamp(19px, 2.3vw, 24px);
     }
 
     .porte-secondaire .porte-detail {
@@ -395,6 +395,35 @@
       color: var(--gris);
       text-align: center;
       line-height: 1.4;
+    }
+
+    /* ── TICKER FONDU (Le cours + Cours privés) ── */
+    .porte-ticker {
+      position: relative;
+      height: 1.5em;
+      width: 100%;
+    }
+    .porte-ticker-ligne {
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      line-height: 1.5em;
+      white-space: nowrap;
+      opacity: 0;
+      transition: opacity 0.6s ease;
+      pointer-events: none;
+    }
+    .porte-ticker-ligne.active { opacity: 1; }
+    .porte-principale .porte-ticker-ligne {
+      font-size: 13.5px;
+      color: rgba(255,255,255,0.88);
+    }
+    .porte-secondaire .porte-ticker-ligne {
+      color: var(--gris);
+      font-size: 11px;
     }
 
     .porte-secondaire:nth-of-type(1):hover {
@@ -589,7 +618,16 @@
         </svg>
       </span>
       <span class="porte-label">Le cours</span>
-      <span class="porte-detail">Commence ou continue ton apprentissage</span>
+      <span class="porte-ticker" id="ticker-cours">
+          <span class="porte-ticker-ligne active">Commence ou continue ton apprentissage</span>
+          <span class="porte-ticker-ligne">Start or continue your learning</span>
+          <span class="porte-ticker-ligne">Comienza o continúa tu aprendizaje</span>
+          <span class="porte-ticker-ligne">Comece ou continue seu aprendizado</span>
+          <span class="porte-ticker-ligne">Inizia o continua il tuo apprendimento</span>
+          <span class="porte-ticker-ligne">开始或继续你的学习之旅</span>
+          <span class="porte-ticker-ligne">시작하거나 계속 배워 보세요</span>
+          <span class="porte-ticker-ligne">学習を始めるか、続けましょう</span>
+      </span>
       <span class="porte-arrow">→</span>
     </a>
 
@@ -602,8 +640,17 @@
           <circle cx="53" cy="45" r="2.6" fill="var(--turquoise)"/>
         </svg>
       </span>
-      <span class="porte-label">Cours privés</span>
-      <span class="porte-detail">Apprends avec Raphaël, en personne</span>
+      <span class="porte-label">Cours privés &amp; contact</span>
+      <span class="porte-ticker" id="ticker-prives">
+          <span class="porte-ticker-ligne active">Apprends avec Raphaël, en personne</span>
+          <span class="porte-ticker-ligne">Learn with Raphaël, one on one</span>
+          <span class="porte-ticker-ligne">Aprende con Raphaël, en persona</span>
+          <span class="porte-ticker-ligne">Aprenda com Raphaël, presencialmente</span>
+          <span class="porte-ticker-ligne">Impara con Raphaël, di persona</span>
+          <span class="porte-ticker-ligne">与 Raphaël 一对一学习</span>
+          <span class="porte-ticker-ligne">Raphaël과 함께 직접 배워 보세요</span>
+          <span class="porte-ticker-ligne">ラファエルと直接学びましょう</span>
+      </span>
     </a>
 
   </div>
@@ -617,6 +664,22 @@
 </div>
 
 <script>
+  /* ── TICKERS FONDU ── */
+  function lancerTicker(tickerId, intervalle) {
+    var lignes = document.querySelectorAll('#' + tickerId + ' .porte-ticker-ligne');
+    if (!lignes.length) return;
+    var index = 0;
+    setInterval(function() {
+      lignes[index].classList.remove('active');
+      index = (index + 1) % lignes.length;
+      lignes[index].classList.add('active');
+    }, intervalle);
+  }
+  window.addEventListener('load', function() {
+    lancerTicker('ticker-cours',  2600);
+    lancerTicker('ticker-prives', 2800);
+  });
+
   var minuteurRetour = null;
 
   function basculerCouverture() {
