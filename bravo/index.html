@@ -1,542 +1,308 @@
 <!DOCTYPE html>
 <html lang="fr-CA">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Bravo ! — Le français avec Keb & Bek</title>
-  <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,400i&display=swap" rel="stylesheet">
-  <style>
-    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Le cours — Le français avec Keb & Bek</title>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Patrick+Hand&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --beige:        #F2EDE3;
+    --beige-clair:  #FDF8F2;
+    --violet:       #7B5EA8;
+    --violet-fonce: #5A4080;
+    --violet-clair: #EDE6F5;
+    --ambre:        #D4A24E;
+    --ambre-clair:  #FAEEDA;
+    --ambre-fonce:  #854F0B;
+    --vert-fonce:   #4A7A36;
+    --bleu-fonce:   #7A9BBF;
+    --gris:         #8A8480;
+    --gris-clair:   #C9C2BC;
+    --texte:        #2A2422;
+    --blanc:        #ffffff;
+  }
+  html, body {
+    background: var(--beige); color: var(--texte);
+    font-family: "Nunito", sans-serif;
+    scroll-behavior: smooth;
+  }
 
-    :root {
-      --beige:       #F2EDE3;
-      --beige-clair: #FDF8F2;
-      --bleu-poudre: #B8C9E0;
-      --bleu-fonce:  #7A9BBF;
-      --vert:        #7FA86E;
-      --vert-clair:  #EAF3DE;
-      --vert-fonce:  #4A7A36;
-      --ambre:       #D4A24E;
-      --ambre-clair: #FAEEDA;
-      --ambre-fonce: #854F0B;
-      --violet:      #7B5EA8;
-      --violet-clair:#EDE6F5;
-      --violet-fonce:#5A4080;
-      --texte:       #2A2422;
-      --gris:        #8A8480;
-      --blanc:       #ffffff;
-      --ombre:       rgba(42, 36, 34, 0.10);
-    }
+  /* ════════════════════════════════
+     SECTION 1 — ACCUEIL / AUTOCOLLANT
+  ════════════════════════════════ */
+  #section-accueil {
+    min-height: 100vh;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 40px 24px; text-align: center; position: relative;
+  }
 
-    html, body {
-      min-height: 100vh;
-      background: var(--beige);
-      font-family: "Nunito", sans-serif;
-      color: var(--texte);
-    }
+  .titre-cours-wrap { margin-bottom: 28px; position: relative; }
 
-    .page {
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: clamp(28px, 5vw, 48px) 24px 64px;
-    }
+  .titre-cours {
+    font-family: "Caveat", cursive; font-weight: 700;
+    font-size: clamp(56px, 11vw, 100px); color: var(--violet-fonce); line-height: 1;
+    display: inline-block;
+    clip-path: inset(0 100% 0 0);
+    animation: ecrire 1.8s cubic-bezier(0.65, 0, 0.35, 1) forwards;
+  }
+  @keyframes ecrire { to { clip-path: inset(0 0% 0 0); } }
 
-    .lien-retour {
-      width: 100%;
-      max-width: 880px;
-      margin-bottom: 18px;
-      opacity: 0;
-      animation: descendre 0.5s ease 0.05s forwards;
-    }
-    .lien-retour a {
-      font-size: 12px; color: var(--gris); text-decoration: none;
-      border-bottom: 1px dotted rgba(138,128,115,0.5);
-      transition: color 0.15s, border-color 0.15s;
-    }
-    .lien-retour a:hover { color: var(--vert-fonce); border-color: var(--vert-fonce); }
+  .pointe-stylo {
+    position: absolute; top: 50%; left: 0; width: 16px; height: 16px;
+    transform: translateY(-50%); opacity: 0;
+    animation: deplacer-pointe 1.8s cubic-bezier(0.65, 0, 0.35, 1) forwards;
+  }
+  @keyframes deplacer-pointe {
+    0% { left: 0%; opacity: 1; } 92% { left: 98%; opacity: 1; } 100% { left: 100%; opacity: 0; }
+  }
+  .pointe-stylo svg { width: 100%; height: 100%; }
 
-    /* ── EN-TÊTE ── */
-    .entete {
-      position: relative;
-      text-align: center;
-      margin-bottom: clamp(28px, 4vw, 40px);
-      opacity: 0;
-      animation: descendre 0.6s ease 0.1s forwards;
-      padding: 10px 0;
-    }
-    .entete-titre {
-      position: relative;
-      display: inline-block;
-      font-family: "Patrick Hand", cursive;
-      font-size: clamp(72px, 13vw, 130px);
-      line-height: 1.1;
-      transform: rotate(-2deg);
-    }
-    .entete-titre .lettre {
-      display: inline-block;
-      animation: rebondir 2.4s ease-in-out infinite;
-    }
-    .entete-titre .lettre:nth-child(1) { color: var(--vert-fonce); animation-delay: 0s; }
-    .entete-titre .lettre:nth-child(2) { color: var(--bleu-fonce); animation-delay: 0.08s; }
-    .entete-titre .lettre:nth-child(3) { color: var(--ambre-fonce); animation-delay: 0.16s; }
-    .entete-titre .lettre:nth-child(4) { color: var(--violet-fonce); animation-delay: 0.24s; }
-    .entete-titre .lettre:nth-child(5) { color: var(--vert-fonce); animation-delay: 0.32s; }
-    .entete-titre .point-excl { color: var(--ambre-fonce); display: inline-block; animation: rebondir 2.4s ease-in-out infinite; animation-delay: 0.4s; transform-origin: bottom center; }
+  .soulignement { width: clamp(240px, 55vw, 400px); height: 14px; margin: 2px auto 0; }
+  .soulignement path {
+    fill: none; stroke: var(--ambre); stroke-width: 3.5; stroke-linecap: round;
+    stroke-dasharray: 460; stroke-dashoffset: 460;
+    animation: tracer-soulignement 0.7s ease 1.7s forwards;
+  }
+  @keyframes tracer-soulignement { to { stroke-dashoffset: 0; } }
 
-    @keyframes rebondir {
-      0%, 60%, 100% { transform: translateY(0); }
-      30% { transform: translateY(-9px); }
-    }
+  /* Autocollant Keb & Bek */
+  .autocollant-wrap {
+    position: relative;
+    width: min(420px, 80vw);
+    margin: 18px auto 0;
+    opacity: 0;
+    animation: apparaitre-autocollant 0.7s ease 2.2s forwards;
+  }
+  @keyframes apparaitre-autocollant {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
 
-    .deco-eclat {
-      position: absolute;
-      pointer-events: none;
-    }
-    .deco-eclat.e1 { top: -14px; left: calc(50% - 290px); width: 34px; height: 34px; animation: scintiller 2.2s ease-in-out infinite; }
-    .deco-eclat.e2 { top: 8px; right: calc(50% - 310px); width: 26px; height: 26px; animation: scintiller 2.2s ease-in-out infinite 0.6s; }
-    .deco-eclat.e3 { bottom: -4px; left: calc(50% - 340px); width: 20px; height: 20px; animation: scintiller 2.2s ease-in-out infinite 1.1s; }
-    .deco-eclat.e4 { bottom: 18px; right: calc(50% - 265px); width: 28px; height: 28px; animation: scintiller 2.2s ease-in-out infinite 0.3s; }
+  .autocollant-img {
+    width: 100%; display: block; border-radius: 18px;
+    filter: drop-shadow(0 10px 22px rgba(42,36,34,0.18));
+    transition: filter 0.2s ease;
+  }
 
-    @keyframes scintiller {
-      0%, 100% { opacity: 0.35; transform: scale(0.85) rotate(0deg); }
-      50% { opacity: 1; transform: scale(1.15) rotate(15deg); }
-    }
+  /* Zone cliquable invisible sur la casquette — seulement active si .casquette-visible */
+  .zone-casquette {
+    position: absolute;
+    top: 0%; left: 3%; width: 32%; height: 14%; /* coordonnées ajustées session 40 */
+    cursor: pointer;
+    display: none;
+  }
+  .casquette-visible .zone-casquette { display: block; }
 
-    .entete-sous {
-      margin-top: 14px;
-      font-size: clamp(13px, 1.5vw, 15px);
-      color: var(--gris);
-      font-style: italic;
-    }
+  /* Petit indice discret au survol de la casquette */
+  .zone-casquette:hover { filter: drop-shadow(0 0 8px rgba(212,162,78,0.5)); }
 
-    /* ══════════════ LE CHARRIOT — barre en haut, mise en évidence ══════════════ */
-    .charriot-wrap {
-      width: 100%;
-      max-width: 880px;
-      margin-bottom: clamp(28px, 4vw, 40px);
-      opacity: 0;
-      animation: apparaitre 0.7s cubic-bezier(0.22,1,0.36,1) 0.2s forwards;
-    }
+  .lien-code-titre {
+    margin-top: 14px;
+    font-family: "Patrick Hand", cursive;
+    font-size: 15px;
+    color: var(--ambre-fonce);
+    background: var(--ambre-clair);
+    border: 1.5px dashed rgba(212,162,78,0.5);
+    border-radius: 12px;
+    padding: 10px 18px;
+    display: inline-block;
+    opacity: 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: opacity 0.4s ease, max-height 0.4s ease, margin-top 0.4s ease;
+  }
+  .lien-code-titre.visible {
+    opacity: 1; max-height: 120px; margin-top: 14px;
+  }
 
-    .charriot {
-      position: relative;
-      background: linear-gradient(155deg, var(--ambre) 0%, #C18A33 100%);
-      border-radius: 20px;
-      padding: clamp(20px, 3vw, 28px) clamp(22px, 3.5vw, 34px);
-      box-shadow: 0 14px 36px rgba(133,79,11,0.28), 0 4px 10px rgba(133,79,11,0.16);
-      display: flex;
-      align-items: center;
-      gap: clamp(14px, 2.5vw, 22px);
-    }
+  .btn-retour {
+    position: fixed; top: 18px; left: 18px; z-index: 100;
+    display: flex; align-items: center; gap: 7px;
+    font-family: "Patrick Hand", cursive; font-size: 15px;
+    color: var(--violet-fonce); text-decoration: none;
+    background: var(--beige-clair); border: 1.5px solid var(--violet);
+    border-radius: 100px; padding: 7px 16px 7px 11px;
+    box-shadow: 0 3px 10px rgba(90,64,128,0.15);
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+    opacity: 0; animation: apparaitre-bouton 0.6s ease 2.6s forwards;
+  }
+  .btn-retour:hover { transform: translateX(-3px); box-shadow: 0 5px 16px rgba(90,64,128,0.25); }
+  .btn-retour svg { flex-shrink: 0; }
+    margin-top: 26px;
+    font-family: "Patrick Hand", cursive; font-size: clamp(18px, 2.5vw, 22px);
+    padding: 14px 38px; border-radius: 100px; border: none;
+    background: var(--violet-fonce); color: var(--blanc); cursor: pointer;
+    box-shadow: 0 5px 20px rgba(90,64,128,0.35);
+    transition: transform 0.2s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.2s ease;
+    opacity: 0;
+    animation: apparaitre-bouton 0.6s ease 2.6s forwards;
+  }
+  @keyframes apparaitre-bouton { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+  .btn-commencons:hover { transform: translateY(-3px) scale(1.05); box-shadow: 0 8px 26px rgba(90,64,128,0.45); }
 
-    .charriot-icone {
-      width: clamp(44px, 5.5vw, 56px);
-      height: clamp(44px, 5.5vw, 56px);
-      flex-shrink: 0;
-      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.15));
-    }
-    .charriot-icone svg { width: 100%; height: 100%; }
+  .fleche-bas {
+    margin-top: 36px; opacity: 0;
+    animation: apparaitre-fleche 0.6s ease 3s forwards, flotter 2.2s ease-in-out 3.6s infinite;
+  }
+  @keyframes apparaitre-fleche { to { opacity: 0.5; } }
+  @keyframes flotter { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(8px); } }
 
-    .charriot-corps {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      min-width: 0;
-    }
+  /* ════════════════════════════════
+     SECTION 2 — CHOIX DE LANGUE
+  ════════════════════════════════ */
+  #section-langues {
+    min-height: 100vh;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 60px 24px 80px;
+  }
 
-    .charriot-label {
-      font-family: "Patrick Hand", cursive;
-      font-size: clamp(18px, 2.4vw, 23px);
-      color: var(--blanc);
-      line-height: 1;
-    }
+  .langues-titre {
+    font-family: "Patrick Hand", cursive; font-size: clamp(24px, 4vw, 32px);
+    color: var(--violet-fonce); margin-bottom: 8px; text-align: center;
+  }
+  .langues-sous {
+    font-size: 14px; color: var(--gris); margin-bottom: 32px; text-align: center;
+  }
 
-    .charriot-form {
-      display: flex;
-      gap: 10px;
-    }
+  .grille-langues {
+    display: flex; flex-wrap: wrap; justify-content: center; gap: 14px;
+    max-width: 760px;
+  }
 
-    .charriot-input {
-      flex: 1;
-      min-width: 0;
-      padding: 11px 16px;
-      border: none;
-      border-radius: 100px;
-      font-family: "Nunito", sans-serif;
-      font-size: 14px;
-      font-weight: 600;
-      color: var(--texte);
-      background: var(--blanc);
-      outline: none;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-    }
-    .charriot-input::placeholder { color: #bbb; font-weight: 400; font-style: italic; }
-    .charriot-input:focus { box-shadow: 0 0 0 3px rgba(255,255,255,0.5); }
+  .btn-langue {
+    font-family: "Nunito", sans-serif; font-weight: 700; font-size: 15px;
+    padding: 14px 26px; border-radius: 100px;
+    background: var(--beige-clair); border: 2px solid var(--violet);
+    color: var(--violet-fonce); text-decoration: none; cursor: pointer;
+    transition: transform 0.18s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.18s ease, background 0.18s ease;
+  }
+  .btn-langue:hover {
+    transform: translateY(-3px) scale(1.04);
+    box-shadow: 0 6px 18px rgba(123,94,168,0.25);
+    background: var(--violet-clair);
+  }
 
-    .charriot-btn {
-      flex-shrink: 0;
-      padding: 11px 26px;
-      border: none;
-      border-radius: 100px;
-      background: var(--violet-fonce);
-      color: var(--blanc);
-      font-family: "Patrick Hand", cursive;
-      font-size: 17px;
-      cursor: pointer;
-      box-shadow: 0 4px 14px rgba(90,64,128,0.35);
-      transition: transform 0.18s cubic-bezier(0.34,1.56,0.64,1), background 0.15s;
-    }
-    .charriot-btn:hover { background: var(--violet); transform: translateY(-2px) scale(1.03); }
-    .charriot-btn:active { transform: translateY(0) scale(0.98); }
+  .btn-langue.desactive {
+    background: var(--beige); border-color: var(--gris-clair); color: var(--gris-clair);
+    cursor: not-allowed; pointer-events: none; opacity: 0.55;
+  }
 
-    .charriot-erreur {
-      font-size: 12.5px;
-      color: var(--ambre-fonce);
-      background: rgba(255,255,255,0.55);
-      border-radius: 8px;
-      padding: 6px 12px;
-      display: none;
-    }
-    .charriot-erreur.visible { display: block; }
-
-    /* roulettes décoratives du charriot */
-    .roulette {
-      position: absolute;
-      width: 14px; height: 14px;
-      border-radius: 50%;
-      background: rgba(0,0,0,0.18);
-      bottom: -6px;
-    }
-    .roulette.g { left: 14%; }
-    .roulette.d { right: 14%; }
-
-    @media (max-width: 560px) {
-      .charriot { flex-direction: column; align-items: flex-start; }
-      .charriot-icone { display: none; }
-    }
-
-    /* ══════════════ CLASSEMENT — niveau intermédiaire ══════════════ */
-    .classement-wrap {
-      width: 100%;
-      max-width: 880px;
-      margin-bottom: clamp(28px, 4vw, 40px);
-      opacity: 0;
-      animation: apparaitre 0.7s cubic-bezier(0.22,1,0.36,1) 0.35s forwards;
-    }
-
-    .classement {
-      display: flex;
-      align-items: center;
-      gap: clamp(16px, 3vw, 26px);
-      background: var(--beige-clair);
-      border: 2px solid var(--bleu-poudre);
-      border-radius: 18px;
-      padding: clamp(18px, 2.6vw, 24px) clamp(22px, 3vw, 30px);
-      text-decoration: none;
-      color: var(--texte);
-      box-shadow: 0 6px 20px var(--ombre);
-      transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.25s ease, border-color 0.2s;
-    }
-    .classement:hover {
-      transform: translateY(-4px);
-      border-color: var(--bleu-fonce);
-      box-shadow: 0 14px 32px rgba(122,155,191,0.30);
-    }
-
-    .classement-icone {
-      width: clamp(46px, 5.5vw, 58px);
-      height: clamp(46px, 5.5vw, 58px);
-      flex-shrink: 0;
-    }
-    .classement-icone svg { width: 100%; height: 100%; }
-
-    .classement-texte { flex: 1; min-width: 0; }
-    .classement-label {
-      font-family: "Patrick Hand", cursive;
-      font-size: clamp(22px, 3vw, 28px);
-      color: var(--bleu-fonce);
-      line-height: 1.1;
-    }
-    .classement-detail {
-      font-size: 13px;
-      color: var(--gris);
-      margin-top: 3px;
-    }
-    .classement-arrow {
-      font-size: 20px;
-      color: var(--bleu-fonce);
-      flex-shrink: 0;
-      transition: transform 0.22s ease;
-    }
-    .classement:hover .classement-arrow { transform: translateX(6px); }
-
-    /* ══════════════ GALERIES — Succès / Titres / Fiches, même poids ══════════════ */
-    .galeries {
-      width: 100%;
-      max-width: 880px;
-      display: flex;
-      gap: clamp(14px, 2.2vw, 22px);
-      flex-wrap: wrap;
-      justify-content: center;
-    }
-
-    .galerie {
-      flex: 1;
-      min-width: 220px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 10px;
-      background: var(--beige-clair);
-      border: 2px solid rgba(184,201,224,0.45);
-      border-radius: 18px;
-      padding: clamp(26px, 3.4vw, 34px) clamp(18px, 2.4vw, 24px);
-      text-decoration: none;
-      color: var(--texte);
-      box-shadow: 0 6px 18px var(--ombre);
-      opacity: 0;
-      animation: apparaitre 0.6s cubic-bezier(0.22,1,0.36,1) forwards;
-      transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.25s ease, border-color 0.2s;
-    }
-    .galerie:nth-of-type(1) { animation-delay: 0.5s; }
-    .galerie:nth-of-type(2) { animation-delay: 0.6s; }
-    .galerie:nth-of-type(3) { animation-delay: 0.7s; }
-
-    .galerie-icone {
-      width: clamp(50px, 6vw, 62px);
-      height: clamp(50px, 6vw, 62px);
-    }
-    .galerie-icone svg { width: 100%; height: 100%; }
-
-    .galerie-label {
-      font-family: "Patrick Hand", cursive;
-      font-size: clamp(24px, 3vw, 30px);
-      line-height: 1;
-    }
-
-    .galerie-detail {
-      font-size: 12.5px;
-      color: var(--gris);
-      text-align: center;
-      line-height: 1.45;
-    }
-
-    .galerie.succes:hover {
-      transform: translateY(-6px) scale(1.03);
-      border-color: var(--ambre);
-      box-shadow: 0 16px 34px rgba(212,162,78,0.32);
-    }
-    .galerie.titres:hover {
-      transform: translateY(-6px) scale(1.03);
-      border-color: var(--violet);
-      box-shadow: 0 16px 34px rgba(123,94,168,0.32);
-    }
-    .galerie.fiches:hover {
-      transform: translateY(-6px) scale(1.03);
-      border-color: var(--vert);
-      box-shadow: 0 16px 34px rgba(127,168,110,0.32);
-    }
-
-    .galerie.succes .galerie-label { color: var(--ambre-fonce); }
-    .galerie.titres .galerie-label { color: var(--violet-fonce); }
-    .galerie.fiches .galerie-label { color: var(--vert-fonce); }
-
-    @media (max-width: 640px) {
-      .galeries { flex-direction: column; }
-      .galerie { width: 100%; flex-direction: row; text-align: left; padding: 18px 22px; }
-      .galerie-detail { text-align: left; }
-    }
-
-    /* ── PIED ── */
-    .pied {
-      margin-top: clamp(40px, 5vw, 56px);
-      font-size: 12px;
-      color: var(--gris);
-      text-align: center;
-      opacity: 0;
-      animation: descendre 0.6s ease 1s forwards;
-    }
-
-    @keyframes descendre {
-      from { opacity: 0; transform: translateY(14px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-    @keyframes apparaitre {
-      from { opacity: 0; transform: translateY(20px) scale(0.98); }
-      to   { opacity: 1; transform: translateY(0) scale(1); }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      * { animation-duration: 0.01ms !important; }
-    }
-  </style>
+  .langue-native { font-size: 12.5px; opacity: 0.7; margin-left: 4px; }
+</style>
 </head>
 <body>
-<div class="page">
 
-  <div class="lien-retour">
-    <a href="../index.html">← Retour à l'accueil</a>
-  </div>
+<a class="btn-retour" href="../index-principal.html">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+      <path d="M19 12H5M5 12L11 6M5 12L11 18" stroke="var(--violet-fonce)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    Accueil
+  </a>
 
-  <div class="entete">
-    <svg class="deco-eclat e1" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M12 2 L14 10 L22 12 L14 14 L12 22 L10 14 L2 12 L10 10 Z" fill="var(--ambre)"/>
-    </svg>
-    <svg class="deco-eclat e2" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M12 2 L14 10 L22 12 L14 14 L12 22 L10 14 L2 12 L10 10 Z" fill="var(--vert)"/>
-    </svg>
-    <svg class="deco-eclat e3" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="12" cy="12" r="5" fill="var(--violet)"/>
-    </svg>
-    <svg class="deco-eclat e4" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M12 2 L14 10 L22 12 L14 14 L12 22 L10 14 L2 12 L10 10 Z" fill="var(--bleu-fonce)"/>
-    </svg>
-    <h1 class="entete-titre">
-      <span class="lettre">B</span><span class="lettre">r</span><span class="lettre">a</span><span class="lettre">v</span><span class="lettre">o</span><span class="point-excl"> !</span>
-    </h1>
-    <p class="entete-sous">Tes succès, tes titres, ta fiche — et tout ce qu'il y a à débloquer</p>
-  </div>
+<!-- ═══════════════════ SECTION 1 — ACCUEIL ═══════════════════ -->
+<section id="section-accueil">
 
-  <!-- LE CHARRIOT -->
-  <div class="charriot-wrap">
-    <div class="charriot">
-      <span class="charriot-icone">
-        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M8 12 L14 12 L20 40 L48 40 L54 20 L18 20" stroke="#fff" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-          <circle cx="24" cy="50" r="4.5" fill="#fff"/>
-          <circle cx="44" cy="50" r="4.5" fill="#fff"/>
-        </svg>
-      </span>
-      <div class="charriot-corps">
-        <span class="charriot-label">Le charriot — entre ton code pour récupérer tes trucs</span>
-        <div class="charriot-form">
-          <input class="charriot-input" id="charriot-code" type="text" placeholder="Entre ton code… (ex. o-x0x0x0x0)" autocomplete="off" spellcheck="false">
-          <button class="charriot-btn" onclick="allerCharriot()">Aller →</button>
-        </div>
-        <div class="charriot-erreur" id="charriot-erreur">Hmm, ce code ne correspond à rien pour l'instant. Vérifie qu'il est bien écrit !</div>
-      </div>
-      <span class="roulette g"></span>
-      <span class="roulette d"></span>
+  <div class="titre-cours-wrap">
+    <span class="titre-cours">Le cours</span>
+    <div class="pointe-stylo">
+      <svg viewBox="0 0 24 24" fill="none">
+        <path d="M4 20 L16 8 L19 11 L7 23 Z" fill="#5A4080"/>
+        <path d="M16 8 L19 5 L22 8 L19 11 Z" fill="#D4A24E"/>
+        <path d="M4 20 L2 22 L5 21 Z" fill="#2A2422"/>
+      </svg>
+    </div>
+    <div class="soulignement">
+      <svg viewBox="0 0 460 14" xmlns="http://www.w3.org/2000/svg">
+        <path d="M5 8 Q 120 2 230 9 Q 340 15 455 6"/>
+      </svg>
     </div>
   </div>
 
-  <!-- CLASSEMENT -->
-  <div class="classement-wrap">
-    <a class="classement" href="classement.html">
-      <span class="classement-icone">
-        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M14 54 L14 36 L24 36 L24 54 Z" stroke="var(--bleu-fonce)" stroke-width="2.4" stroke-linejoin="round" fill="var(--bleu-fonce)" fill-opacity="0.14"/>
-          <path d="M27 54 L27 24 L37 24 L37 54 Z" stroke="var(--bleu-fonce)" stroke-width="2.4" stroke-linejoin="round" fill="var(--bleu-fonce)" fill-opacity="0.22"/>
-          <path d="M40 54 L40 14 L50 14 L50 54 Z" stroke="var(--bleu-fonce)" stroke-width="2.4" stroke-linejoin="round" fill="var(--bleu-fonce)" fill-opacity="0.30"/>
-          <circle cx="32" cy="10" r="3.4" fill="var(--bleu-fonce)"/>
-          <path d="M32 13 L32 24" stroke="var(--bleu-fonce)" stroke-width="2" stroke-linecap="round"/>
-        </svg>
-      </span>
-      <span class="classement-texte">
-        <span class="classement-label">Le classement</span>
-        <span class="classement-detail">Découvre les fiches publiques des autres élèves — clique pour les ouvrir.</span>
-      </span>
-      <span class="classement-arrow">→</span>
-    </a>
+  <div class="autocollant-wrap" id="autocollant-wrap">
+    <img class="autocollant-img" id="img-autocollant"
+         src="images/keb_bek_commencons.png"
+         alt="Keb et Bek vous invitent à commencer le cours">
+    <!-- Zone cliquable sur la casquette, activée seulement après clic sur Commençons DANS les 5 premières secondes -->
+    <div class="zone-casquette" id="zone-casquette" title="?"></div>
   </div>
 
-  <!-- GALERIES -->
-  <div class="galeries">
-
-    <a class="galerie succes" href="succes.html">
-      <span class="galerie-icone">
-        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M20 14 C19 11 21 9 24 9 L40 9 C43 9 45 11 44 14 L41 32 C40 40 33 44 32 44 C31 44 24 40 23 32 L20 14 Z" stroke="var(--ambre-fonce)" stroke-width="2.4" stroke-linejoin="round" fill="var(--ambre)" fill-opacity="0.16"/>
-          <path d="M20 16 C13 16 10 21 13 26 C15 30 19 31 22 29" stroke="var(--ambre-fonce)" stroke-width="2.4" stroke-linecap="round" fill="none"/>
-          <path d="M44 16 C51 16 54 21 51 26 C49 30 45 31 42 29" stroke="var(--ambre-fonce)" stroke-width="2.4" stroke-linecap="round" fill="none"/>
-          <path d="M32 44 L32 51" stroke="var(--ambre-fonce)" stroke-width="2.4" stroke-linecap="round"/>
-          <path d="M23 57 C23 53 27 51 32 51 C37 51 41 53 41 57" stroke="var(--ambre-fonce)" stroke-width="2.4" stroke-linecap="round" fill="none"/>
-        </svg>
-      </span>
-      <span class="galerie-label">Succès</span>
-      <span class="galerie-detail">La galerie de tout ce qu'il y a à accomplir</span>
-    </a>
-
-    <a class="galerie titres" href="titres.html">
-      <span class="galerie-icone">
-        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M12 22 L52 22 L48 46 L16 46 Z" stroke="var(--violet-fonce)" stroke-width="2.4" stroke-linejoin="round" fill="var(--violet)" fill-opacity="0.14"/>
-          <path d="M18 22 L14 14 L22 18 L32 10 L42 18 L50 14 L46 22" stroke="var(--violet-fonce)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" fill="var(--violet)" fill-opacity="0.20"/>
-          <circle cx="32" cy="33" r="3" fill="var(--violet-fonce)"/>
-        </svg>
-      </span>
-      <span class="galerie-label">Titres</span>
-      <span class="galerie-detail">Les surnoms et statuts à débloquer</span>
-    </a>
-
-    <a class="galerie fiches" href="fiches.html">
-      <span class="galerie-icone">
-        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M16 8 L40 8 L48 16 L48 56 L16 56 Z" stroke="var(--vert-fonce)" stroke-width="2.4" stroke-linejoin="round" fill="var(--vert)" fill-opacity="0.14"/>
-          <path d="M40 8 L40 16 L48 16" stroke="var(--vert-fonce)" stroke-width="2.2" stroke-linejoin="round" fill="none"/>
-          <circle cx="32" cy="32" r="7" stroke="var(--vert-fonce)" stroke-width="2.2" fill="none"/>
-          <path d="M28 32 L31 35 L37 28" stroke="var(--vert-fonce)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-          <path d="M22 44 L42 44" stroke="var(--vert-fonce)" stroke-width="2" stroke-linecap="round" opacity="0.6"/>
-          <path d="M22 49 L38 49" stroke="var(--vert-fonce)" stroke-width="2" stroke-linecap="round" opacity="0.6"/>
-        </svg>
-      </span>
-      <span class="galerie-label">Fiches</span>
-      <span class="galerie-detail">Les modèles de personnage à débloquer</span>
-    </a>
-
+  <div class="lien-code-titre" id="lien-code-titre">
+    🎩 Tu as remarqué la casquette ? <strong>Code : ta-d3p3ch3</strong> — file dans Le charriot !
   </div>
 
-  <div class="pied">
-    Un projet de <strong>Keb &amp; Bek</strong> · Montréal, Québec
+  <button class="btn-commencons" id="btn-commencons">Commençons</button>
+
+  <div class="fleche-bas">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+      <path d="M12 4 L12 20 M6 14 L12 20 L18 14" stroke="var(--violet-fonce)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
   </div>
 
-</div>
+</section>
+
+<!-- ═══════════════════ SECTION 2 — CHOIX DE LANGUE ═══════════════════ -->
+<section id="section-langues">
+
+  <div class="langues-titre">Dans quelle langue veux-tu apprendre ?</div>
+  <div class="langues-sous">Les langues grisées arrivent bientôt — reviens les essayer plus tard !</div>
+
+  <div class="grille-langues">
+    <a class="btn-langue" href="menus/en.html">English</a>
+    <a class="btn-langue" href="menus/es.html">Español</a>
+    <a class="btn-langue" href="menus/pt.html">Português</a>
+
+    <span class="btn-langue desactive">中文</span>
+    <span class="btn-langue desactive">Français</span>
+    <span class="btn-langue desactive">Deutsch</span>
+    <span class="btn-langue desactive">Italiano</span>
+    <span class="btn-langue desactive">日本語</span>
+    <span class="btn-langue desactive">한국어</span>
+    <span class="btn-langue desactive">العربية</span>
+    <span class="btn-langue desactive">Русский</span>
+  </div>
+
+</section>
 
 <script>
-  // Routage par convention de nommage — les DEUX premières lettres du préfixe
-  // déterminent le dossier. Format : XX-XXXXXXX (ex. ta-kl1k3ur)
-  // Première lettre : catégorie (t=titre, s=succès, f=fiche)
-  // Deuxième lettre : type (a=action, c=cours, l=leçon, …à enrichir)
-  // Aucune table individuelle à maintenir — si la page existe, ça marche.
+  var minuteurDefilement = null;
+  var casquetteActivee = false;
+  var fenetreExpiree = false; // devient vrai dès que les 5 secondes s'écoulent SANS clic
 
-  var DOSSIERS = {
-    'ta': 'titres',
-    'tc': 'titres',
-    'sa': 'succes',
-    'sc': 'succes',
-    'sl': 'succes',
-    'fa': 'fiches',
-    'fc': 'fiches'
-  };
-
-  function allerCharriot() {
-    var input  = document.getElementById('charriot-code');
-    var erreur = document.getElementById('charriot-erreur');
-    var code   = input.value.trim().toLowerCase();
-
-    if (!code) { input.focus(); return; }
-
-    erreur.style.display = 'none';
-
-    var prefixe = code.split('-')[0];
-    var dossier = DOSSIERS[prefixe];
-
-    if (!dossier) {
-      erreur.style.display = 'block';
-      erreur.textContent   = 'Hmm, ce code ne correspond à rien pour l\'instant. Vérifie qu\'il est bien écrit !';
-      input.focus();
-      return;
-    }
-
-    window.location.href = dossier + '/' + encodeURIComponent(code) + '.html';
+  function defilerVersLangues() {
+    document.getElementById("section-langues").scrollIntoView({ behavior: "smooth" });
   }
 
-  document.getElementById('charriot-code').addEventListener('keydown', function(e) {
-    if (e.key === 'Enter') allerCharriot();
+  // Défilement automatique après 5 secondes si aucune réaction — ferme aussi la fenêtre de la casquette
+  minuteurDefilement = setTimeout(function () {
+    fenetreExpiree = true;
+    defilerVersLangues();
+  }, 5000);
+
+  document.getElementById("btn-commencons").addEventListener("click", function () {
+    // Le bouton reste TOUJOURS actif : il annule le minuteur et défile, peu importe le moment du clic
+    clearTimeout(minuteurDefilement);
+    defilerVersLangues();
+
+    // Mais la casquette ne peut apparaître que si on a cliqué AVANT l'expiration de la fenêtre de 5s.
+    // Si fenetreExpiree est déjà vrai (le défilement automatique a déjà eu lieu), on s'arrête ici.
+    if (fenetreExpiree) return;
+
+    // 1 seconde après un clic fait à temps : bascule vers l'image avec casquette
+    setTimeout(function () {
+      document.getElementById("img-autocollant").src = "images/keb_bek_commencons_casquette.png";
+      document.getElementById("autocollant-wrap").classList.add("casquette-visible");
+      casquetteActivee = true;
+    }, 1000);
+  });
+
+  document.getElementById("zone-casquette").addEventListener("click", function (e) {
+    e.stopPropagation();
+    if (!casquetteActivee) return;
+    document.getElementById("lien-code-titre").classList.add("visible");
   });
 </script>
+
 </body>
 </html>
