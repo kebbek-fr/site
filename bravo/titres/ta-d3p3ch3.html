@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="fr-CA">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Titre — Le petit pressé / La petite pressée</title>
+  <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,400i&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --beige:        #F2EDE3;
+      --beige-clair:  #FDF8F2;
+      --ambre:        #D4A24E;
+      --ambre-clair:  #FAEEDA;
+      --ambre-fonce:  #854F0B;
+      --violet:       #7B5EA8;
+      --violet-clair: #EDE6F5;
+      --violet-fonce: #5A4080;
+      --vert:         #7FA86E;
+      --vert-clair:   #EAF3DE;
+      --vert-fonce:   #4A7A36;
+      --bleu-poudre:  #B8C9E0;
+      --bleu-fonce:   #7A9BBF;
+      --rouge:        #C0392B;
+      --rouge-clair:  #FDECEA;
+      --or:           #F6DFA8;
+      --or-fonce:     #C9A227;
+      --texte:        #2A2422;
+      --gris:         #8A8480;
+      --blanc:        #ffffff;
+    }
+
+    html, body {
+      min-height: 100vh;
+      background: #1A1228;
+      font-family: "Nunito", sans-serif;
+      color: var(--blanc);
+    }
+
+    /* Fond étoilé */
+    body::before {
+      content: "";
+      position: fixed; inset: 0; z-index: 0;
+      background:
+        radial-gradient(ellipse 80% 50% at 20% 10%, rgba(123,94,168,0.35) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 40% at 80% 90%, rgba(90,64,128,0.25) 0%, transparent 60%),
+        radial-gradient(ellipse 100% 60% at 50% 50%, rgba(26,18,40,0.8) 0%, transparent 100%);
+      pointer-events: none;
+    }
+
+    .page { position: relative; z-index: 1; max-width: 760px; margin: 0 auto; padding: clamp(24px,5vw,48px) 20px 80px; }
+
+    /* ── NAV ── */
+    .nav-haut {
+      display: flex; align-items: center; gap: 10px;
+      margin-bottom: 32px;
+      opacity: 0; animation: descendre 0.5s ease 0.05s forwards;
+    }
+    .lien-retour {
+      font-size: 12px; color: rgba(255,255,255,0.45);
+      text-decoration: none; border-bottom: 1px dotted rgba(255,255,255,0.2);
+      transition: color 0.15s;
+    }
+    .lien-retour:hover { color: var(--ambre); }
+    .sep-nav { font-size: 12px; color: rgba(255,255,255,0.25); }
+
+    /* ── BANNIÈRE ÉPIQUE ── */
+    .banniere {
+      position: relative;
+      background: linear-gradient(145deg, #2E1B4E 0%, #1A1228 60%, #2A1040 100%);
+      border: 1.5px solid rgba(212,162,78,0.35);
+      border-radius: 22px;
+      padding: clamp(24px,4vw,40px) clamp(22px,4vw,40px) clamp(20px,3vw,32px);
+      margin-bottom: 24px;
+      overflow: hidden;
+      opacity: 0; animation: descendre 0.7s ease 0.1s forwards;
+      box-shadow: 0 0 60px rgba(123,94,168,0.25), inset 0 1px 0 rgba(255,255,255,0.06);
+    }
+
+    /* Lueur dorée en coin */
+    .banniere::before {
+      content: "";
+      position: absolute; top: -40px; right: -40px;
+      width: 160px; height: 160px;
+      background: radial-gradient(circle, rgba(212,162,78,0.18) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .banniere-surtitre {
+      font-size: 10px; text-transform: uppercase; letter-spacing: 0.2em;
+      color: var(--ambre); margin-bottom: 10px; opacity: 0.85;
+    }
+    .banniere-titre {
+      font-family: "Patrick Hand", cursive;
+      font-size: clamp(28px, 5vw, 44px);
+      line-height: 1.15; color: var(--blanc);
+      text-shadow: 0 0 30px rgba(212,162,78,0.3);
+      margin-bottom: 16px;
+    }
+
+    /* Récompenses en ligne */
+    .recompenses {
+      display: flex; flex-wrap: wrap; gap: 10px;
+      margin-bottom: 16px;
+    }
+    .recomp-badge {
+      display: flex; align-items: center; gap: 6px;
+      padding: 6px 14px;
+      border-radius: 100px;
+      font-size: 13px; font-weight: 800;
+    }
+    .recomp-badge svg { width: 16px; height: 16px; flex-shrink: 0; }
+
+    .badge-piastres {
+      background: rgba(212,162,78,0.18);
+      border: 1.5px solid rgba(212,162,78,0.45);
+      color: var(--ambre);
+    }
+    .badge-points {
+      background: rgba(123,94,168,0.2);
+      border: 1.5px solid rgba(123,94,168,0.45);
+      color: #C4AAEE;
+    }
+    .badge-niveau-decouverte {
+      background: rgba(255,255,255,0.07);
+      border: 1.5px solid rgba(255,255,255,0.18);
+      color: rgba(255,255,255,0.7);
+    }
+    .badge-type-action {
+      background: rgba(106,198,140,0.12);
+      border: 1.5px solid rgba(106,198,140,0.35);
+      color: #7FD49F;
+    }
+    .badge-code-inner {
+      background: rgba(0,0,0,0.4);
+      border: 1.5px solid rgba(255,255,255,0.1);
+      color: rgba(255,255,255,0.5);
+      font-size: 11px; letter-spacing: 0.1em; font-weight: 800;
+    }
+
+    /* Éclats décoratifs */
+    .eclat {
+      position: absolute;
+      animation: scintiller 2.4s ease-in-out infinite;
+    }
+    @keyframes scintiller {
+      0%,100% { opacity: 0.3; transform: scale(0.8) rotate(0deg); }
+      50%      { opacity: 1;   transform: scale(1.15) rotate(20deg); }
+    }
+
+    /* ── CONDITION D'OBTENTION ── */
+    .condition-bloc {
+      background: rgba(255,255,255,0.04);
+      border: 1.5px solid rgba(255,255,255,0.1);
+      border-radius: 18px;
+      padding: clamp(18px,3vw,26px) clamp(20px,3.5vw,30px);
+      margin-bottom: 24px;
+      opacity: 0; animation: descendre 0.6s ease 0.3s forwards;
+    }
+    .condition-label {
+      font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.18em;
+      color: var(--ambre); margin-bottom: 12px; opacity: 0.8;
+    }
+    .condition-texte {
+      font-size: 15px; line-height: 1.75; color: rgba(255,255,255,0.85);
+    }
+    .condition-texte strong { color: var(--ambre); }
+    .condition-detail {
+      margin-top: 14px; padding: 12px 16px;
+      background: rgba(123,94,168,0.15);
+      border-left: 3px solid var(--violet);
+      border-radius: 0 10px 10px 0;
+      font-size: 13px; color: #C4AAEE; line-height: 1.6; font-style: italic;
+    }
+
+    /* ── AUTOCOLLANTS ── */
+    .autocollants-section {
+      margin-bottom: 24px;
+      opacity: 0; animation: descendre 0.6s ease 0.45s forwards;
+    }
+    .autocollants-label {
+      font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.18em;
+      color: rgba(255,255,255,0.4); margin-bottom: 18px;
+    }
+    .autocollants-grille {
+      display: flex; gap: 24px; flex-wrap: wrap; justify-content: center;
+    }
+    .autocollant-wrap {
+      display: flex; flex-direction: column; align-items: center; gap: 10px;
+    }
+    .autocollant-img-wrap {
+      position: relative;
+      width: 148px; height: 185px;
+      border-radius: 16px; overflow: hidden;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+      transition: box-shadow 0.4s ease;
+    }
+    .autocollant-img-wrap.actif {
+      box-shadow: 0 0 0 3px var(--ambre), 0 8px 40px rgba(212,162,78,0.35);
+    }
+    .autocollant-img {
+      width: 100%; height: 100%;
+      object-fit: contain; border-radius: 16px;
+      transition: filter 0.6s ease;
+    }
+    .autocollant-img.verrouille {
+      filter: brightness(0.25) saturate(0) blur(2px);
+    }
+    .autocollant-img.deverrouille {
+      filter: none;
+      animation: reveler 0.7s ease forwards;
+    }
+    @keyframes reveler {
+      from { filter: brightness(0.25) saturate(0) blur(2px); }
+      to   { filter: none; }
+    }
+    .autocollant-overlay {
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(26,18,40,0.5);
+      border-radius: 16px;
+      transition: opacity 0.5s ease;
+    }
+    .autocollant-overlay.cache { opacity: 0; pointer-events: none; }
+    .autocollant-overlay svg { width: 44px; height: 44px; }
+    .autocollant-libelle {
+      font-family: "Patrick Hand", cursive;
+      font-size: 14px; color: rgba(255,255,255,0.4);
+      text-align: center; transition: color 0.4s ease;
+    }
+    .autocollant-libelle.actif { color: var(--ambre); }
+
+    /* Bouton téléchargement */
+    .btn-telecharger {
+      display: flex; align-items: center; justify-content: center; gap: 7px;
+      padding: 10px 20px;
+      background: linear-gradient(135deg, #3A7D44 0%, #2A5C32 100%);
+      color: var(--blanc);
+      font-family: "Patrick Hand", cursive; font-size: 15px;
+      border-radius: 100px; border: none; cursor: pointer;
+      box-shadow: 0 4px 16px rgba(42,92,50,0.5);
+      text-decoration: none;
+      transition: transform 0.2s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.2s;
+      opacity: 0; pointer-events: none; margin-top: 4px;
+    }
+    .btn-telecharger.visible { opacity: 1; pointer-events: auto; }
+    .btn-telecharger:hover {
+      transform: translateY(-3px) scale(1.05);
+      box-shadow: 0 8px 24px rgba(42,92,50,0.65);
+    }
+    .btn-telecharger svg { width: 16px; height: 16px; flex-shrink: 0; }
+
+    /* ── ZONE MOT DE PASSE ── */
+    .mdp-section {
+      background: rgba(212,162,78,0.08);
+      border: 1.5px solid rgba(212,162,78,0.3);
+      border-radius: 18px;
+      padding: clamp(18px,3vw,28px) clamp(20px,3.5vw,32px);
+      opacity: 0; animation: descendre 0.6s ease 0.6s forwards;
+      transition: background 0.4s ease, border-color 0.4s ease;
+    }
+    .mdp-section.deverrouille-style {
+      background: rgba(106,198,140,0.08);
+      border-color: rgba(106,198,140,0.3);
+    }
+    .mdp-label {
+      font-family: "Patrick Hand", cursive;
+      font-size: 18px; color: var(--ambre); margin-bottom: 16px;
+      transition: color 0.4s ease;
+    }
+    .mdp-section.deverrouille-style .mdp-label { color: #7FD49F; }
+
+    .mdp-form { display: flex; gap: 10px; margin-bottom: 10px; }
+    .mdp-input {
+      flex: 1; padding: 12px 18px;
+      border: 1.5px solid rgba(212,162,78,0.35);
+      border-radius: 100px;
+      font-family: "Nunito", sans-serif; font-size: 14px; font-weight: 700;
+      color: var(--blanc); background: rgba(0,0,0,0.35);
+      outline: none; letter-spacing: 0.05em;
+      transition: border-color 0.2s;
+    }
+    .mdp-input::placeholder { color: rgba(255,255,255,0.25); }
+    .mdp-input:focus { border-color: var(--ambre); }
+    .mdp-input.erreur { border-color: var(--rouge); }
+
+    .mdp-btn {
+      padding: 12px 22px;
+      background: linear-gradient(135deg, var(--ambre) 0%, var(--ambre-fonce) 100%);
+      color: var(--blanc); font-family: "Patrick Hand", cursive; font-size: 16px;
+      border: none; border-radius: 100px; cursor: pointer;
+      box-shadow: 0 4px 14px rgba(212,162,78,0.35);
+      transition: transform 0.18s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .mdp-btn:hover:not([disabled]) { transform: translateY(-2px) scale(1.04); }
+    .mdp-btn[disabled] { background: var(--vert-fonce); cursor: default; box-shadow: none; }
+
+    .mdp-feedback {
+      font-size: 13px; font-style: italic;
+      min-height: 18px; color: var(--ambre);
+    }
+    .mdp-feedback.succes { color: #7FD49F; font-weight: 700; font-style: normal; }
+    .mdp-feedback.erreur { color: #E07070; }
+    .mdp-hint {
+      margin-top: 10px; font-size: 12px;
+      color: rgba(255,255,255,0.28);
+    }
+
+    /* ── PIED ── */
+    .pied {
+      margin-top: 56px; text-align: center;
+      font-size: 12px; color: rgba(255,255,255,0.2);
+      opacity: 0; animation: descendre 0.5s ease 1s forwards;
+    }
+
+    @keyframes descendre {
+      from { opacity: 0; transform: translateY(14px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <div class="nav-haut">
+    <a class="lien-retour" href="../index.html">← Bravo !</a>
+    <span class="sep-nav">/</span>
+    <a class="lien-retour" href="../titres.html">Titres</a>
+    <span class="sep-nav">/</span>
+    <span style="font-size:12px; color:rgba(255,255,255,0.28);">Le petit pressé</span>
+  </div>
+
+  <!-- ── BANNIÈRE ── -->
+  <div class="banniere">
+
+    <!-- Éclats décoratifs -->
+    <svg class="eclat" style="top:12px; right:60px; width:18px; height:18px;" viewBox="0 0 24 24" fill="none">
+      <path d="M12 2 L14 10 L22 12 L14 14 L12 22 L10 14 L2 12 L10 10 Z" fill="var(--ambre)"/>
+    </svg>
+    <svg class="eclat" style="top:36px; right:24px; width:10px; height:10px; animation-delay:0.8s;" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="12" r="6" fill="#C4AAEE"/>
+    </svg>
+    <svg class="eclat" style="bottom:20px; right:80px; width:14px; height:14px; animation-delay:1.4s;" viewBox="0 0 24 24" fill="none">
+      <path d="M12 2 L14 10 L22 12 L14 14 L12 22 L10 14 L2 12 L10 10 Z" fill="var(--ambre)" opacity="0.6"/>
+    </svg>
+
+    <div class="banniere-surtitre">Titre officiel · ta-d3p3ch3</div>
+    <div class="banniere-titre">
+      Le petit pressé<br>La petite pressée
+    </div>
+
+    <div class="recompenses">
+      <div class="recomp-badge badge-niveau-decouverte">
+        <svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.6"/><path d="M10 6 L10 10 L13 13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+        Niveau 2 — Bronze
+      </div>
+      <div class="recomp-badge badge-type-action">
+        <svg viewBox="0 0 20 20" fill="none"><path d="M10 3 L10 11 M7 8 L10 11 L13 8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 14 L15 14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+        Action requise
+      </div>
+      <div class="recomp-badge badge-piastres">
+        <svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.6"/><text x="10" y="14.5" text-anchor="middle" font-size="9" font-weight="800" fill="currentColor" font-family="Nunito, sans-serif">$</text></svg>
+        + 15 piastres
+      </div>
+      <div class="recomp-badge badge-points">
+        <svg viewBox="0 0 20 20" fill="none"><path d="M10 2 L12.5 7.5 L18.5 8.2 L14.2 12.3 L15.5 18.2 L10 15.3 L4.5 18.2 L5.8 12.3 L1.5 8.2 L7.5 7.5 Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+        + 3 points bonis
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ── CONDITION D'OBTENTION ── -->
+  <div class="condition-bloc">
+    <div class="condition-label">Comment obtenir ce titre</div>
+    <p class="condition-texte">
+      Tu as cliqué sur <strong>« Commençons »</strong> dans les cinq premières secondes après l'ouverture de la page du cours — et hop, la casquette est apparue ! Ce titre récompense les esprits vifs : tu n'as pas traîné, tu as agi, et tu as trouvé ce que les autres ne verront jamais.
+    </p>
+    <div class="condition-detail">
+      Cinq secondes. Pas six. Ceux qui lisent d'abord, qui hésitent, qui prennent leur temps — ils n'ont rien vu. Toi, tu avais déjà cliqué.
+    </div>
+  </div>
+
+  <!-- ── NOTE MOT DE PASSE ── -->
+  <div class="condition-bloc" style="border-color: rgba(196,170,238,0.25); background: rgba(123,94,168,0.07); margin-bottom: 24px;">
+    <div class="condition-label" style="color: #C4AAEE;">Le mot de passe</div>
+    <p class="condition-texte" style="font-size:14px; color: rgba(255,255,255,0.7);">
+      Le mot de passe pour débloquer ce titre est disponible <strong style="color:#C4AAEE;">uniquement auprès de ton professeur</strong>, lors d'un cours. Si tu n'as pas encore de cours avec Raphaël, conserve ce code quelque part — tu pourras l'activer plus tard !
+    </p>
+  </div>
+
+  <!-- ── AUTOCOLLANTS ── -->
+  <div class="autocollants-section">
+    <div class="autocollants-label">Choisis ta version</div>
+    <div class="autocollants-grille">
+
+      <div class="autocollant-wrap" id="wrap-garcon">
+        <div class="autocollant-img-wrap" id="imgwrap-garcon">
+          <img id="img-garcon" class="autocollant-img verrouille"
+               src="../images/titres/ta-d3p3ch3_garcon.png"
+               alt="Le petit pressé — verrouillé">
+          <div class="autocollant-overlay" id="overlay-garcon">
+            <svg viewBox="0 0 32 32" fill="none">
+              <rect x="7" y="14" width="18" height="13" rx="3" fill="white" fill-opacity="0.75"/>
+              <path d="M11 14 V10 C11 7.2 21 7.2 21 10 V14" stroke="white" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+              <circle cx="16" cy="20" r="2" fill="#5A4080" fill-opacity="0.7"/>
+            </svg>
+          </div>
+        </div>
+        <span class="autocollant-libelle" id="lib-garcon">Le petit pressé</span>
+        <a class="btn-telecharger" id="btn-garcon" href="../images/titres/ta-d3p3ch3_garcon.png" download="ta-d3p3ch3_garcon.png">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M12 3 L12 15 M8 11 L12 15 L16 11" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 19 L19 19" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
+          Télécharger
+        </a>
+      </div>
+
+      <div class="autocollant-wrap" id="wrap-fille">
+        <div class="autocollant-img-wrap" id="imgwrap-fille">
+          <img id="img-fille" class="autocollant-img verrouille"
+               src="../images/titres/ta-d3p3ch3_fille.png"
+               alt="La petite pressée — verrouillée">
+          <div class="autocollant-overlay" id="overlay-fille">
+            <svg viewBox="0 0 32 32" fill="none">
+              <rect x="7" y="14" width="18" height="13" rx="3" fill="white" fill-opacity="0.75"/>
+              <path d="M11 14 V10 C11 7.2 21 7.2 21 10 V14" stroke="white" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+              <circle cx="16" cy="20" r="2" fill="#5A4080" fill-opacity="0.7"/>
+            </svg>
+          </div>
+        </div>
+        <span class="autocollant-libelle" id="lib-fille">La petite pressée</span>
+        <a class="btn-telecharger" id="btn-fille" href="../images/titres/ta-d3p3ch3_fille.png" download="ta-d3p3ch3_fille.png">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M12 3 L12 15 M8 11 L12 15 L16 11" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 19 L19 19" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
+          Télécharger
+        </a>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── ZONE MOT DE PASSE ── -->
+  <div class="mdp-section" id="mdp-section">
+    <div class="mdp-label" id="mdp-label">Entre le mot de passe pour débloquer ce titre</div>
+    <div class="mdp-form">
+      <input class="mdp-input" id="mdp-input" type="text"
+             placeholder="Mot de passe…"
+             autocomplete="off" spellcheck="false"
+             onkeydown="if(event.key==='Enter') verifierMdp()">
+      <button class="mdp-btn" id="mdp-btn" onclick="verifierMdp()">Valider</button>
+    </div>
+    <div class="mdp-feedback" id="mdp-feedback"></div>
+    <p class="mdp-hint" id="mdp-hint">Le mot de passe est fourni par ton professeur.</p>
+  </div>
+
+  <div class="pied">Un projet de <strong>Keb &amp; Bek</strong> · Montréal, Québec</div>
+
+</div>
+
+<script>
+  var MDP = "RendezVous9";
+  var estDeverrouille = false;
+
+  function verifierMdp() {
+    var input = document.getElementById("mdp-input");
+    var feedback = document.getElementById("mdp-feedback");
+    var valeur = input.value.trim().toLowerCase().replace(/\s+/g, "");
+    var attendu = MDP.toLowerCase().replace(/\s+/g, "");
+
+    if (!valeur) { input.focus(); return; }
+
+    if (valeur === attendu) {
+      deverrouiller();
+    } else {
+      input.classList.add("erreur");
+      feedback.textContent = "Ce n\u2019est pas le bon mot de passe. V\u00e9rifie avec ton professeur.";
+      feedback.className = "mdp-feedback erreur";
+      setTimeout(function() {
+        input.classList.remove("erreur");
+        feedback.textContent = "";
+        feedback.className = "mdp-feedback";
+      }, 2200);
+    }
+  }
+
+  function deverrouiller() {
+    if (estDeverrouille) return;
+    estDeverrouille = true;
+
+    ["garcon", "fille"].forEach(function(genre) {
+      document.getElementById("img-" + genre).classList.remove("verrouille");
+      document.getElementById("img-" + genre).classList.add("deverrouille");
+      document.getElementById("overlay-" + genre).classList.add("cache");
+      document.getElementById("lib-" + genre).classList.add("actif");
+      setTimeout(function() {
+        document.getElementById("btn-" + genre).classList.add("visible");
+      }, 700);
+    });
+
+    var section = document.getElementById("mdp-section");
+    section.classList.add("deverrouille-style");
+    document.getElementById("mdp-label").textContent = "Titre d\u00e9bloqu\u00e9\u00a0! Choisis ta version ci-dessus.";
+    document.getElementById("mdp-feedback").textContent = "";
+    document.getElementById("mdp-feedback").className = "mdp-feedback succes";
+    document.getElementById("mdp-hint").style.display = "none";
+
+    var input = document.getElementById("mdp-input");
+    input.value = "";
+    input.placeholder = "D\u00e9verrouill\u00e9 \u2713";
+    input.setAttribute("disabled", "");
+
+    var btn = document.getElementById("mdp-btn");
+    btn.setAttribute("disabled", "");
+    btn.textContent = "\u2713";
+  }
+
+
+</script>
+</body>
+</html>
