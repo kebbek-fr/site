@@ -149,7 +149,22 @@
   .langues-titre {
     font-family: "Patrick Hand", cursive; font-size: clamp(24px, 4vw, 32px);
     color: var(--violet-fonce); margin-bottom: 8px; text-align: center;
+    height: 1.4em; /* hauteur fixe pour éviter le saut de layout */
+    display: flex; align-items: center; justify-content: center;
   }
+
+  /* Carrousel de traductions */
+  .langues-titre-texte {
+    display: inline-block;
+    opacity: 1;
+    transition: opacity 0.45s ease;
+  }
+  .langues-titre-texte.fondu-sortie { opacity: 0; }
+  .langues-titre-texte.fondu-entree { opacity: 1; }
+
+  /* Flèche RTL pour l'arabe */
+  .langues-titre-texte[dir="rtl"] { unicode-bidi: embed; }
+
   .langues-sous {
     font-size: 14px; color: var(--gris); margin-bottom: 32px; text-align: center;
   }
@@ -194,7 +209,7 @@
 </head>
 <body>
 
-<a class="btn-retour" href="../index-principal.html">
+<a class="btn-retour" href="https://kebbek-fr.github.io/site/">
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
     <path d="M19 12H5M5 12L11 6M5 12L11 18" stroke="var(--violet-fonce)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
   </svg>
@@ -245,7 +260,9 @@
 <!-- ═══════════════════ SECTION 2 — CHOIX DE LANGUE ═══════════════════ -->
 <section id="section-langues">
 
-  <div class="langues-titre">Dans quelle langue veux-tu apprendre ?</div>
+  <div class="langues-titre">
+    <span class="langues-titre-texte" id="langues-titre-texte">Dans quelle langue veux-tu apprendre ?</span>
+  </div>
   <div class="langues-sous">Les langues grisées arrivent bientôt — reviens les essayer plus tard !</div>
 
   <div class="grille-langues">
@@ -302,6 +319,44 @@
     if (!casquetteActivee) return;
     document.getElementById("lien-code-titre").classList.add("visible");
   });
+
+  /* ── Carrousel du titre "Dans quelle langue…" ── */
+  var phrasesTitre = [
+    { texte: "Dans quelle langue veux-tu apprendre ?",   dir: "ltr" },
+    { texte: "What language do you want to learn in?",   dir: "ltr" },
+    { texte: "¿En qué idioma quieres aprender?",         dir: "ltr" },
+    { texte: "Em que língua queres aprender?",           dir: "ltr" },
+    { texte: "你想用哪种语言来学习？",                       dir: "ltr" },
+    { texte: "In welcher Sprache möchtest du lernen?",   dir: "ltr" },
+    { texte: "In che lingua vuoi imparare?",             dir: "ltr" },
+    { texte: "どの言語で学びたいですか？",                    dir: "ltr" },
+    { texte: "어떤 언어로 배우고 싶나요?",                    dir: "ltr" },
+    { texte: "بأيّ لغة تريد أن تتعلّم؟",                 dir: "rtl" },
+    { texte: "На каком языке ты хочешь учиться?",        dir: "ltr" }
+  ];
+
+  var indexPhrase = 0;
+  var el = document.getElementById("langues-titre-texte");
+  var DUREE_AFFICHAGE = 2800; // ms d'affichage plein
+  var DUREE_FONDU    = 450;  // ms de transition (doit correspondre au CSS)
+
+  function afficherProchainePhrase() {
+    // Fondu sortie
+    el.classList.add("fondu-sortie");
+
+    setTimeout(function () {
+      // Changer le texte pendant l'invisibilité
+      indexPhrase = (indexPhrase + 1) % phrasesTitre.length;
+      el.textContent = phrasesTitre[indexPhrase].texte;
+      el.setAttribute("dir", phrasesTitre[indexPhrase].dir);
+
+      // Fondu entrée
+      el.classList.remove("fondu-sortie");
+    }, DUREE_FONDU);
+  }
+
+  // Démarrer le carrousel — première rotation après DUREE_AFFICHAGE
+  setInterval(afficherProchainePhrase, DUREE_AFFICHAGE + DUREE_FONDU);
 </script>
 
 </body>
