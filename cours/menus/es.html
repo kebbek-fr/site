@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Elige una historia — Le français avec Keb & Bek</title>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Patrick+Hand&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --beige:        #F2EDE3;
+    --beige-clair:  #FDF8F2;
+    --violet:       #7B5EA8;
+    --violet-fonce: #5A4080;
+    --violet-clair: #EDE6F5;
+    --ambre:        #D4A24E;
+    --ambre-clair:  #FAEEDA;
+    --ambre-fonce:  #854F0B;
+    --vert-fonce:   #4A7A36;
+    --vert-clair:   #EAF3DE;
+    --gris:         #8A8480;
+    --gris-clair:   #C9C2BC;
+    --texte:        #2A2422;
+    --blanc:        #ffffff;
+  }
+
+  html, body {
+    background: var(--beige); color: var(--texte);
+    font-family: "Nunito", sans-serif;
+    min-height: 100vh;
+  }
+
+  /* ── Bouton retour ── */
+  .btn-retour {
+    position: fixed; top: 18px; left: 18px; z-index: 100;
+    display: flex; align-items: center; gap: 7px;
+    font-family: "Patrick Hand", cursive; font-size: 15px;
+    color: var(--violet-fonce); text-decoration: none;
+    background: var(--beige-clair); border: 1.5px solid var(--violet);
+    border-radius: 100px; padding: 7px 16px 7px 11px;
+    box-shadow: 0 3px 10px rgba(90,64,128,0.15);
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+  }
+  .btn-retour:hover { transform: translateX(-3px); box-shadow: 0 5px 16px rgba(90,64,128,0.25); }
+
+  /* ── Conteneur principal ── */
+  .page {
+    max-width: 680px; margin: 0 auto;
+    padding: 100px 24px 80px;
+    display: flex; flex-direction: column; align-items: center; gap: 40px;
+  }
+
+  /* ── En-tête ── */
+  .entete { text-align: center; }
+
+  .entete-titre {
+    font-family: "Caveat", cursive; font-weight: 700;
+    font-size: clamp(42px, 9vw, 72px); color: var(--violet-fonce);
+    line-height: 1;
+  }
+
+  .entete-sous {
+    font-family: "Patrick Hand", cursive; font-size: clamp(15px, 2.5vw, 18px);
+    color: var(--gris); margin-top: 6px;
+  }
+
+  .soulignement { width: clamp(180px, 45vw, 320px); height: 14px; margin: 4px auto 0; }
+  .soulignement path {
+    fill: none; stroke: var(--ambre); stroke-width: 3.5; stroke-linecap: round;
+    stroke-dasharray: 460; stroke-dashoffset: 460;
+    animation: tracer 0.7s ease 0.3s forwards;
+  }
+  @keyframes tracer { to { stroke-dashoffset: 0; } }
+
+  /* ── Bloc "Empieza aquí" ── */
+  .bloc-start {
+    width: 100%;
+  }
+
+  .btn-start {
+    display: flex; flex-direction: column; align-items: center;
+    width: 100%; padding: 22px 32px;
+    background: var(--violet-fonce); color: var(--blanc);
+    border: none; border-radius: 20px; cursor: pointer; text-decoration: none;
+    box-shadow: 0 6px 24px rgba(90,64,128,0.35);
+    transition: transform 0.2s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.2s ease;
+    gap: 4px;
+  }
+  .btn-start:hover {
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: 0 10px 32px rgba(90,64,128,0.45);
+  }
+
+  .btn-start-label {
+    font-family: "Patrick Hand", cursive; font-size: clamp(22px, 4vw, 28px);
+    letter-spacing: 0.02em;
+  }
+  .btn-start-desc {
+    font-family: "Nunito", sans-serif; font-size: 13px;
+    opacity: 0.75; font-weight: 400;
+  }
+
+  /* ── Séparateur ── */
+  .separateur {
+    width: 100%; display: flex; align-items: center; gap: 14px;
+    color: var(--gris-clair); font-family: "Patrick Hand", cursive; font-size: 14px;
+  }
+  .separateur::before, .separateur::after {
+    content: ""; flex: 1; height: 1px; background: var(--gris-clair);
+  }
+
+  /* ── Grille des histoires ── */
+  .grille-histoires {
+    width: 100%;
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 14px;
+  }
+
+  .btn-histoire {
+    display: flex; flex-direction: column;
+    padding: 16px 18px; border-radius: 16px;
+    background: var(--beige-clair); border: 2px solid var(--violet);
+    color: var(--violet-fonce); text-decoration: none; cursor: pointer;
+    transition: transform 0.18s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.18s ease, background 0.18s ease;
+    gap: 3px;
+  }
+  .btn-histoire:hover {
+    transform: translateY(-3px) scale(1.03);
+    box-shadow: 0 6px 18px rgba(123,94,168,0.25);
+    background: var(--violet-clair);
+  }
+
+  .btn-histoire-num {
+    font-family: "Patrick Hand", cursive; font-size: 12px;
+    color: var(--gris); letter-spacing: 0.04em; text-transform: uppercase;
+  }
+  .btn-histoire-titre {
+    font-family: "Nunito", sans-serif; font-weight: 700; font-size: 15px;
+    color: var(--violet-fonce);
+  }
+
+  /* Histoires cachées — invisibles mais dans le DOM avec leurs liens */
+  .btn-histoire.cache {
+    display: none;
+  }
+
+  /* ── Pied de page ── */
+  .pied {
+    font-family: "Patrick Hand", cursive; font-size: 13px;
+    color: var(--gris); text-align: center;
+  }
+  .pied a {
+    color: var(--violet); text-decoration: none;
+    border-bottom: 1px dashed var(--violet);
+  }
+  .pied a:hover { color: var(--violet-fonce); }
+</style>
+</head>
+<body>
+
+<a class="btn-retour" href="../">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+    <path d="M19 12H5M5 12L11 6M5 12L11 18" stroke="var(--violet-fonce)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
+  Volver
+</a>
+
+<div class="page">
+
+  <!-- En-tête -->
+  <div class="entete">
+    <div class="entete-titre">Historias</div>
+    <svg class="soulignement" viewBox="0 0 460 14" xmlns="http://www.w3.org/2000/svg">
+      <path d="M5 8 Q 120 2 230 9 Q 340 15 455 6"/>
+    </svg>
+    <div class="entete-sous">Elige una historia para comenzar</div>
+  </div>
+
+  <!-- Bouton Empieza aquí -->
+  <div class="bloc-start">
+    <a class="btn-start" href="../../histoire_000/es_histoire_000_p01.html">
+      <span class="btn-start-label">Empieza aquí</span>
+      <span class="btn-start-desc">Cómo funciona el curso — conoce a Bek</span>
+    </a>
+  </div>
+
+  <div class="separateur">Historias</div>
+
+  <!-- Grille des histoires -->
+  <div class="grille-histoires">
+
+    <a class="btn-histoire cache" href="../../histoire_001/es_histoire_001_p01.html">
+      <span class="btn-histoire-num">Historia 1</span>
+      <span class="btn-histoire-titre">Próximamente</span>
+    </a>
+
+    <a class="btn-histoire cache" href="../../histoire_002/es_histoire_002_p01.html">
+      <span class="btn-histoire-num">Historia 2</span>
+      <span class="btn-histoire-titre">Próximamente</span>
+    </a>
+
+    <a class="btn-histoire cache" href="../../histoire_003/es_histoire_003_p01.html">
+      <span class="btn-histoire-num">Historia 3</span>
+      <span class="btn-histoire-titre">Próximamente</span>
+    </a>
+
+    <a class="btn-histoire cache" href="../../histoire_004/es_histoire_004_p01.html">
+      <span class="btn-histoire-num">Historia 4</span>
+      <span class="btn-histoire-titre">Próximamente</span>
+    </a>
+
+    <a class="btn-histoire cache" href="../../histoire_005/es_histoire_005_p01.html">
+      <span class="btn-histoire-num">Historia 5</span>
+      <span class="btn-histoire-titre">Próximamente</span>
+    </a>
+
+    <a class="btn-histoire cache" href="../../histoire_006/es_histoire_006_p01.html">
+      <span class="btn-histoire-num">Historia 6</span>
+      <span class="btn-histoire-titre">Próximamente</span>
+    </a>
+
+    <a class="btn-histoire cache" href="../../histoire_007/es_histoire_007_p01.html">
+      <span class="btn-histoire-num">Historia 7</span>
+      <span class="btn-histoire-titre">Próximamente</span>
+    </a>
+
+    <a class="btn-histoire cache" href="../../histoire_008/es_histoire_008_p01.html">
+      <span class="btn-histoire-num">Historia 8</span>
+      <span class="btn-histoire-titre">Próximamente</span>
+    </a>
+
+    <a class="btn-histoire cache" href="../../histoire_009/es_histoire_009_p01.html">
+      <span class="btn-histoire-num">Historia 9</span>
+      <span class="btn-histoire-titre">Próximamente</span>
+    </a>
+
+    <a class="btn-histoire cache" href="../../histoire_010/es_histoire_010_p01.html">
+      <span class="btn-histoire-num">Historia 10</span>
+      <span class="btn-histoire-titre">Próximamente</span>
+    </a>
+
+  </div>
+
+  <!-- Pied de page -->
+  <div class="pied">
+    <a href="../">Cambiar de idioma</a>
+  </div>
+
+</div>
+
+</body>
+</html>
