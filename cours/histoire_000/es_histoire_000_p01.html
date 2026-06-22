@@ -527,6 +527,7 @@ var kloeBurbujas = {
 // ─────────────────────────────────────────────
 function crossfadeBek(newSrc) {
   var img = document.getElementById('bekImg');
+  if (img.getAttribute('src') === newSrc) return;
   img.style.opacity = '0';
   setTimeout(function() {
     img.src = newSrc;
@@ -645,6 +646,7 @@ function iniciarEtapa2() {
 
   reemplazarKloe(kloeBurbujas[2], function() {
     agregarCasilla('mot-bravo', 'Bravo', '¡bravo!');
+    agregarCasilla('mot-merci', 'Merci', 'gracias');
   });
 
   crearTimer(function() {
@@ -668,8 +670,6 @@ function iniciarEtapa3() {
   crossfadeBek('images/bek_succes.png');
   document.getElementById('bulleBek').textContent = 'Voilà !';
   document.getElementById('flecheRetour').classList.add('visible');
-
-  agregarCasilla('mot-merci', 'Merci', 'gracias');
 
   ocultarZonaRespuesta();
   setTimeout(function() {
