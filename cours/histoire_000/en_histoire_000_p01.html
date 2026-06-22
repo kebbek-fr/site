@@ -662,6 +662,7 @@ function demarrerEtape2() {
   // Nouveau contenu de Kloé
   remplacerKloe(kloeBulles[2], function() {
     ajouterCheckbox('mot-bravo', 'Bravo', 'well done!');
+    ajouterCheckbox('mot-merci', 'Merci', 'thank you');
   });
 
   // Défilement vers Kloé, puis retour
@@ -689,9 +690,6 @@ function demarrerEtape3() {
 
   // Flèche retour visible
   document.getElementById('flecheRetour').classList.add('visible');
-
-  // Ajouter "Merci" au vocabulaire (confirmé)
-  ajouterCheckbox('mot-merci', 'Merci', 'thank you');
 
   // Zone droite : réponse → image succès
   cacherReponseZone();
