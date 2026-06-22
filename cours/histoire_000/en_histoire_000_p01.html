@@ -530,6 +530,7 @@ var kloeBulles = {
 // ─────────────────────────────────────────────
 function crossfadeBek(newSrc) {
   var img = document.getElementById('bekImg');
+  if (img.getAttribute('src') === newSrc) return;
   img.style.opacity = '0';
   setTimeout(function() {
     img.src = newSrc;
