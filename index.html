@@ -216,6 +216,21 @@
       max-width: 380px;
     }
 
+    .dos-btn-bravo {
+      display: inline-flex; align-items: center; gap: 7px;
+      margin-top: 14px;
+      font-family: "Nunito", sans-serif; font-weight: 700; font-size: 14px;
+      padding: 9px 20px; border-radius: 100px;
+      background: rgba(255,255,255,0.15); color: #fff;
+      border: 1.5px solid rgba(255,255,255,0.45);
+      text-decoration: none;
+      transition: background 0.18s ease, transform 0.18s ease;
+    }
+    .dos-btn-bravo:hover {
+      background: rgba(255,255,255,0.28);
+      transform: translateY(-2px);
+    }
+
     /* scintillement au moment du retournement */
     .scintille {
       position: absolute;
@@ -581,6 +596,12 @@
           <span class="dos-code-valeur">abc123</span>
         </div>
         <p class="dos-instruction">Entre ce code dans Le charriot, sur la page Bravo. Le mot de passe sera demandé une fois sur la page du titre. L'autocollant se remettra à l'endroit dans 30 secondes — tu pourras toujours revenir cliquer à nouveau.</p>
+        <a class="dos-btn-bravo" href="bravo/index.html" target="_blank" rel="noopener">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 5l7 7-7 7"/>
+          </svg>
+          Aller dans Le charriot
+        </a>
       </div>
 
     </div>
