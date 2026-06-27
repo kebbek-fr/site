@@ -436,7 +436,7 @@
   <div class="kloe-linha">
     <div class="kloe-contenu" id="kloeContenu"></div>
     <div class="kloe-zone" id="kloeZone">
-      <img src="../images/kloe/kloe_explique_01.png" alt="Kloé">
+      <img src="../images/kloe/kloe_salue.png" id="kloeImg" alt="Kloé">
     </div>
   </div>
 
@@ -477,7 +477,7 @@
         </button>
       </div>
       <div class="cc-note">Usa estes dados em <strong>Le charriot</strong> na página <strong>Bravo</strong> para desbloquear a tua conquista.</div>
-      <a class="cc-lien-bravo" href="../../bravo/index.html" target="_blank" rel="noopener">
+      <a class="cc-lien-bravo" href="../../bravo/index.html">
         Ir para Bravo
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg>
       </a>
@@ -561,27 +561,47 @@ function crossfadeBek(newSrc) {
 // ─────────────────────────────────────────────
 //  Substituir conteúdo de Kloé
 // ─────────────────────────────────────────────
-function substituirKloe(htmlContent, callback) {
+function substituirKloe(htmlContent, imgSrc, callback) {
   var el = document.getElementById('kloeContenu');
-  el.style.opacity = '0';
-  setTimeout(function() {
+  if (kloeVisible) {
+    el.style.opacity = '0';
+    setTimeout(function() {
+      el.innerHTML = htmlContent;
+      el._pendingCallback = callback;
+      el.style.opacity = '1';
+      var img = document.getElementById('kloeImg');
+      if (img && imgSrc && img.getAttribute('src') !== imgSrc) {
+        img.style.opacity = '0';
+        setTimeout(function() { img.src = imgSrc; img.style.opacity = '1'; }, 300);
+      }
+      el.querySelectorAll('.bulle-kloe').forEach(function(b, i) {
+        b.style.animation = 'apparaitre 0.5s ease ' + (0.1 + i * 0.2) + 's forwards';
+      });
+      if (callback) callback();
+    }, 400);
+  } else {
     el.innerHTML = htmlContent;
-    el.querySelectorAll('.bulle-kloe').forEach(function(b, i) {
-      b.style.animation = 'apparaitre 0.5s ease ' + (0.1 + i * 0.2) + 's forwards';
-    });
     el.style.opacity = '1';
-    if (callback) callback();
-  }, 400);
+    el._pendingCallback = callback;
+    var img = document.getElementById('kloeImg');
+    if (img && imgSrc) img.src = imgSrc;
+  }
 }
 
 // ─────────────────────────────────────────────
-//  Mostrar Kloé
+//  Mostrar Kloé (imagem + balões ao mesmo tempo)
 // ─────────────────────────────────────────────
 function mostrarKloe() {
   if (!kloeVisible) {
     kloeVisible = true;
     var kz = document.getElementById('kloeZone');
     kz.style.opacity = '1';
+    var el = document.getElementById('kloeContenu');
+    el.querySelectorAll('.bulle-kloe').forEach(function(b, i) {
+      b.style.animation = 'apparaitre 0.5s ease ' + (0.1 + i * 0.2) + 's forwards';
+    });
+    var cb = el._pendingCallback;
+    if (cb) { el._pendingCallback = null; cb(); }
   }
 }
 
@@ -637,7 +657,7 @@ function iniciarEtapa1() {
   reiniciarResposta('A Bek acabou de dizer \u00abSalut\u00a0!\u00bb \u2014 responde-lhe!');
   document.getElementById('succesZone').classList.remove('visible');
 
-  substituirKloe(kloeBaloes[1]);
+  substituirKloe(kloeBaloes[1], '../images/kloe/kloe_salue.png');
 
   criarTimer(function() {
     document.getElementById('ecran2').scrollIntoView({behavior:'smooth'});
@@ -667,7 +687,7 @@ function iniciarEtapa2() {
   ocultarZonaResposta();
   reiniciarResposta('A Bek está feliz! Agora diz-lhe \u00abmerci\u00bb para agradeceres.');
 
-  substituirKloe(kloeBaloes[2], function() {
+  substituirKloe(kloeBaloes[2], '../images/kloe/kloe_explique_01.png', function() {
     adicionarCaixa('mot-bravo', 'Bravo', 'bravo!');
     adicionarCaixa('mot-merci', 'Merci', 'obrigado/a');
   });
@@ -699,7 +719,7 @@ function iniciarEtapa3() {
     document.getElementById('succesZone').classList.add('visible');
   }, 600);
 
-  substituirKloe(kloeBaloes[3], function() {
+  substituirKloe(kloeBaloes[3], '../images/kloe/kloe_explique_02.png', function() {
     adicionarCaixa('mot-succes', 'Succès', 'conquista / medalha');
   });
 
