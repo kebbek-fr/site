@@ -163,6 +163,41 @@
   .reponse-feedback.ok{display:block;background:var(--vert-clair);color:var(--vert-fonce);}
   .reponse-feedback.non{display:block;background:var(--corail-clair);color:#8a3624;}
 
+
+  /* ── Titre "UN SUCCÈS" avec étoiles ── */
+  .succes-header{
+    text-align:center;margin-bottom:10px;
+    position:relative;padding:10px 0 4px;
+  }
+  .succes-cri{
+    font-family:"Patrick Hand",cursive;
+    font-size:21px;color:var(--violet-fonce);
+    letter-spacing:0.07em;display:inline-block;
+    transform:rotate(-1.2deg);
+    text-shadow:0 1px 8px rgba(90,64,128,0.18);
+  }
+  .succes-etoile{
+    position:absolute;pointer-events:none;
+    animation:etoile-flotte var(--dur,2.6s) ease-in-out infinite;
+    animation-delay:var(--del,0s);
+  }
+  @keyframes etoile-flotte{
+    0%,100%{transform:translateY(0) rotate(0deg) scale(1);opacity:0.65;}
+    50%{transform:translateY(-9px) rotate(22deg) scale(1.15);opacity:1;}
+  }
+  .succes-chute{
+    position:absolute;pointer-events:none;
+    animation:chute var(--dur,3s) ease-in-out infinite;
+    animation-delay:var(--del,0s);
+    opacity:0;
+  }
+  @keyframes chute{
+    0%{transform:translateY(0) rotate(0deg);opacity:0;}
+    15%{opacity:0.9;}
+    85%{opacity:0.7;}
+    100%{transform:translateY(38px) rotate(30deg);opacity:0;}
+  }
+
   /* Zone succès (étape 3 uniquement) */
   .succes-zone{opacity:0;visibility:hidden;transition:opacity 0.6s ease,visibility 0.6s ease;}
   .succes-zone.visible{opacity:1;visibility:visible;}
@@ -374,6 +409,29 @@
       </div>
 
       <div class="succes-zone" id="succesZone">
+        <div class="succes-header">
+          <!-- étoiles flottantes autour du titre -->
+          <svg class="succes-etoile" style="--dur:2.4s;--del:0s;top:2px;left:18px;width:13px;height:13px;" viewBox="0 0 24 24" fill="none">
+            <path d="M12 2 L13.5 9.5 L22 12 L13.5 14.5 L12 22 L10.5 14.5 L2 12 L10.5 9.5 Z" fill="var(--violet)"/>
+          </svg>
+          <svg class="succes-etoile" style="--dur:3.1s;--del:0.8s;top:0px;right:14px;width:10px;height:10px;" viewBox="0 0 24 24" fill="none">
+            <path d="M12 2 L13.5 9.5 L22 12 L13.5 14.5 L12 22 L10.5 14.5 L2 12 L10.5 9.5 Z" fill="var(--ambre)"/>
+          </svg>
+          <svg class="succes-etoile" style="--dur:2.8s;--del:1.5s;top:12px;right:32px;width:8px;height:8px;" viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="5" fill="var(--violet-fonce)"/>
+          </svg>
+          <svg class="succes-etoile" style="--dur:3.4s;--del:0.4s;top:14px;left:36px;width:8px;height:8px;" viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="5" fill="var(--ambre)"/>
+          </svg>
+          <!-- étoiles en chute -->
+          <svg class="succes-chute" style="--dur:2.2s;--del:0.3s;top:28px;left:28px;width:9px;height:9px;" viewBox="0 0 24 24" fill="none">
+            <path d="M12 2 L13.5 9.5 L22 12 L13.5 14.5 L12 22 L10.5 14.5 L2 12 L10.5 9.5 Z" fill="var(--ambre-fonce)"/>
+          </svg>
+          <svg class="succes-chute" style="--dur:2.9s;--del:1.1s;top:28px;right:24px;width:7px;height:7px;" viewBox="0 0 24 24" fill="none">
+            <path d="M12 2 L13.5 9.5 L22 12 L13.5 14.5 L12 22 L10.5 14.5 L2 12 L10.5 9.5 Z" fill="var(--violet)"/>
+          </svg>
+          <span class="succes-cri">✦ UN SUCCÈS ✦</span>
+        </div>
         <img src="../../bravo/images/succes/sv-sa111uut.png" alt="Succès — Mon premier mot"
           class="succes-img"
           onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
