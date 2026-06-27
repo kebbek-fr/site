@@ -502,14 +502,57 @@
   // Deuxième lettre : type (a=action, c=cours, l=leçon, …à enrichir)
   // Aucune table individuelle à maintenir — si la page existe, ça marche.
 
+  // Préfixes : 1re lettre = catégorie (t=titre, s=succès, f=fiche)
+  //            2e lettre = type (a=action, b=bonus, c=cours, d=découverte,
+  //                              e=exploration, g=grammaire, h=histoire,
+  //                              l=leçon, m=mystère, p=prononciation,
+  //                              r=rare, s=secret, u=unique, v=vocabulaire)
   var DOSSIERS = {
-    'ta': 'titres',
-    'tc': 'titres',
-    'sa': 'succes',
-    'sc': 'succes',
-    'sl': 'succes',
-    'fa': 'fiches',
-    'fc': 'fiches'
+    // ── Titres ──
+    'ta': 'titres',  // action
+    'tb': 'titres',  // bonus
+    'tc': 'titres',  // cours
+    'td': 'titres',  // découverte
+    'te': 'titres',  // exploration
+    'tg': 'titres',  // grammaire
+    'th': 'titres',  // histoire
+    'tl': 'titres',  // leçon
+    'tm': 'titres',  // mystère
+    'tp': 'titres',  // prononciation
+    'tr': 'titres',  // rare
+    'ts': 'titres',  // secret
+    'tu': 'titres',  // unique
+    'tv': 'titres',  // vocabulaire
+    // ── Succès ──
+    'sa': 'succes',  // action
+    'sb': 'succes',  // bonus
+    'sc': 'succes',  // cours
+    'sd': 'succes',  // découverte
+    'se': 'succes',  // exploration
+    'sg': 'succes',  // grammaire
+    'sh': 'succes',  // histoire
+    'sl': 'succes',  // leçon
+    'sm': 'succes',  // mystère
+    'sp': 'succes',  // prononciation
+    'sr': 'succes',  // rare
+    'ss': 'succes',  // secret
+    'su': 'succes',  // unique
+    'sv': 'succes',  // vocabulaire
+    // ── Fiches ──
+    'fa': 'fiches',  // action
+    'fb': 'fiches',  // bonus
+    'fc': 'fiches',  // cours
+    'fd': 'fiches',  // découverte
+    'fe': 'fiches',  // exploration
+    'fg': 'fiches',  // grammaire
+    'fh': 'fiches',  // histoire
+    'fl': 'fiches',  // leçon
+    'fm': 'fiches',  // mystère
+    'fp': 'fiches',  // prononciation
+    'fr': 'fiches',  // rare
+    'fs': 'fiches',  // secret
+    'fu': 'fiches',  // unique
+    'fv': 'fiches'   // vocabulaire
   };
 
   function allerCharriot() {
