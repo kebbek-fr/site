@@ -475,7 +475,7 @@
     <!-- Contenu des bulles — remplacé à chaque étape -->
     <div class="kloe-contenu" id="kloeContenu"></div>
     <div class="kloe-zone" id="kloeZone">
-      <img src="../images/kloe/kloe_explique_01.png" alt="Kloé">
+      <img src="../images/kloe/kloe_salue.png" id="kloeImg" alt="Kloé">
     </div>
   </div>
 
@@ -516,7 +516,7 @@
         </button>
       </div>
       <div class="cc-note">Use these in <strong>Le charriot</strong> on the <strong>Bravo</strong> page to unlock your achievement.</div>
-      <a class="cc-lien-bravo" href="../../bravo/index.html" target="_blank" rel="noopener">
+      <a class="cc-lien-bravo" href="../../bravo/index.html">
         Go to Bravo
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg>
       </a>
@@ -599,27 +599,55 @@ function crossfadeBek(newSrc) {
 // ─────────────────────────────────────────────
 //  Remplacement du contenu de Kloé
 // ─────────────────────────────────────────────
-function remplacerKloe(htmlContent, callback) {
+function remplacerKloe(htmlContent, imgSrc, callback) {
   var el = document.getElementById('kloeContenu');
-  el.style.opacity = '0';
-  setTimeout(function() {
+  // Si Kloé est déjà visible, fondu sortie du contenu avant de le remplacer
+  if (kloeVisible) {
+    el.style.opacity = '0';
+    setTimeout(function() {
+      el.innerHTML = htmlContent;
+      // Stocker les bulles sans animation — elles seront déclenchées par montrerKloe()
+      el._pendingCallback = callback;
+      el.style.opacity = '1';
+      // Changer l'image de Kloé si nécessaire
+      var img = document.getElementById('kloeImg');
+      if (img && imgSrc && img.getAttribute('src') !== imgSrc) {
+        img.style.opacity = '0';
+        setTimeout(function() { img.src = imgSrc; img.style.opacity = '1'; }, 300);
+      }
+      // Déclencher les animations des bulles immédiatement (Kloé déjà visible)
+      el.querySelectorAll('.bulle-kloe').forEach(function(b, i) {
+        b.style.animation = 'apparaitre 0.5s ease ' + (0.1 + i * 0.2) + 's forwards';
+      });
+      if (callback) callback();
+    }, 400);
+  } else {
+    // Kloé pas encore visible : injecter le contenu sans animation,
+    // les bulles s'animeront quand montrerKloe() sera appelée
     el.innerHTML = htmlContent;
-    el.querySelectorAll('.bulle-kloe').forEach(function(b, i) {
-      b.style.animation = 'apparaitre 0.5s ease ' + (0.1 + i * 0.2) + 's forwards';
-    });
     el.style.opacity = '1';
-    if (callback) callback();
-  }, 400);
+    el._pendingCallback = callback;
+    // Changer l'image si différente
+    var img = document.getElementById('kloeImg');
+    if (img && imgSrc) img.src = imgSrc;
+  }
 }
 
 // ─────────────────────────────────────────────
-//  Montrer / cacher Kloé
+//  Montrer Kloé (image + bulles en même temps)
 // ─────────────────────────────────────────────
 function montrerKloe() {
   if (!kloeVisible) {
     kloeVisible = true;
     var kz = document.getElementById('kloeZone');
     kz.style.opacity = '1';
+    // Déclencher les animations des bulles au même moment
+    var el = document.getElementById('kloeContenu');
+    el.querySelectorAll('.bulle-kloe').forEach(function(b, i) {
+      b.style.animation = 'apparaitre 0.5s ease ' + (0.1 + i * 0.2) + 's forwards';
+    });
+    var cb = el._pendingCallback;
+    if (cb) { el._pendingCallback = null; cb(); }
   }
 }
 
@@ -681,7 +709,7 @@ function demarrerEtape1() {
   document.getElementById('succesZone').classList.remove('visible');
 
   // Bulle de Kloé pour étape 1
-  remplacerKloe(kloeBulles[1]);
+  remplacerKloe(kloeBulles[1], '../images/kloe/kloe_salue.png');
 
   // Séquence de minuteries
   creerTimer(function() {
@@ -718,7 +746,7 @@ function demarrerEtape2() {
   reinitialiserReponse('Bek is happy! Now say «\u00a0merci\u00a0» to thank her.');
 
   // Nouveau contenu de Kloé
-  remplacerKloe(kloeBulles[2], function() {
+  remplacerKloe(kloeBulles[2], '../images/kloe/kloe_explique_01.png', function() {
     ajouterCheckbox('mot-bravo', 'Bravo', 'well done!');
     ajouterCheckbox('mot-merci', 'Merci', 'thank you');
   });
@@ -756,7 +784,7 @@ function demarrerEtape3() {
   }, 600);
 
   // Nouveau contenu de Kloé
-  remplacerKloe(kloeBulles[3], function() {
+  remplacerKloe(kloeBulles[3], '../images/kloe/kloe_explique_02.png', function() {
     ajouterCheckbox('mot-succes', 'Succès', 'achievement / badge');
   });
 
