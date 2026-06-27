@@ -436,7 +436,7 @@
   <div class="kloe-ligne">
     <div class="kloe-contenu" id="kloeContenu"></div>
     <div class="kloe-zone" id="kloeZone">
-      <img src="../images/kloe/kloe_explique_01.png" alt="Kloé">
+      <img src="../images/kloe/kloe_salue.png" id="kloeImg" alt="Kloé">
     </div>
   </div>
 
@@ -477,7 +477,7 @@
         </button>
       </div>
       <div class="cc-note">Usa estos datos en <strong>Le charriot</strong> en la página <strong>Bravo</strong> para desbloquear tu logro.</div>
-      <a class="cc-lien-bravo" href="../../bravo/index.html" target="_blank" rel="noopener">
+      <a class="cc-lien-bravo" href="../../bravo/index.html">
         Ir a Bravo
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg>
       </a>
@@ -561,27 +561,47 @@ function crossfadeBek(newSrc) {
 // ─────────────────────────────────────────────
 //  Reemplazar contenido de Kloé
 // ─────────────────────────────────────────────
-function reemplazarKloe(htmlContent, callback) {
+function reemplazarKloe(htmlContent, imgSrc, callback) {
   var el = document.getElementById('kloeContenu');
-  el.style.opacity = '0';
-  setTimeout(function() {
+  if (kloeVisible) {
+    el.style.opacity = '0';
+    setTimeout(function() {
+      el.innerHTML = htmlContent;
+      el._pendingCallback = callback;
+      el.style.opacity = '1';
+      var img = document.getElementById('kloeImg');
+      if (img && imgSrc && img.getAttribute('src') !== imgSrc) {
+        img.style.opacity = '0';
+        setTimeout(function() { img.src = imgSrc; img.style.opacity = '1'; }, 300);
+      }
+      el.querySelectorAll('.bulle-kloe').forEach(function(b, i) {
+        b.style.animation = 'apparaitre 0.5s ease ' + (0.1 + i * 0.2) + 's forwards';
+      });
+      if (callback) callback();
+    }, 400);
+  } else {
     el.innerHTML = htmlContent;
-    el.querySelectorAll('.bulle-kloe').forEach(function(b, i) {
-      b.style.animation = 'apparaitre 0.5s ease ' + (0.1 + i * 0.2) + 's forwards';
-    });
     el.style.opacity = '1';
-    if (callback) callback();
-  }, 400);
+    el._pendingCallback = callback;
+    var img = document.getElementById('kloeImg');
+    if (img && imgSrc) img.src = imgSrc;
+  }
 }
 
 // ─────────────────────────────────────────────
-//  Mostrar Kloé
+//  Mostrar Kloé (imagen + burbujas al mismo tiempo)
 // ─────────────────────────────────────────────
 function mostrarKloe() {
   if (!kloeVisible) {
     kloeVisible = true;
     var kz = document.getElementById('kloeZone');
     kz.style.opacity = '1';
+    var el = document.getElementById('kloeContenu');
+    el.querySelectorAll('.bulle-kloe').forEach(function(b, i) {
+      b.style.animation = 'apparaitre 0.5s ease ' + (0.1 + i * 0.2) + 's forwards';
+    });
+    var cb = el._pendingCallback;
+    if (cb) { el._pendingCallback = null; cb(); }
   }
 }
 
@@ -637,7 +657,7 @@ function iniciarEtapa1() {
   reiniciarRespuesta('Bek acaba de decir \u00abSalut\u00a0!\u00bb \u2014 \u00a1d\u00edselo t\u00fa tambi\u00e9n!');
   document.getElementById('succesZone').classList.remove('visible');
 
-  reemplazarKloe(kloeBurbujas[1]);
+  reemplazarKloe(kloeBurbujas[1], '../images/kloe/kloe_salue.png');
 
   crearTimer(function() {
     document.getElementById('ecran2').scrollIntoView({behavior:'smooth'});
@@ -667,7 +687,7 @@ function iniciarEtapa2() {
   ocultarZonaRespuesta();
   reiniciarRespuesta('¡Bek está contenta! Ahora dile \u00abmerci\u00bb para agradecerle.');
 
-  reemplazarKloe(kloeBurbujas[2], function() {
+  reemplazarKloe(kloeBurbujas[2], '../images/kloe/kloe_explique_01.png', function() {
     agregarCasilla('mot-bravo', 'Bravo', '¡bravo!');
     agregarCasilla('mot-merci', 'Merci', 'gracias');
   });
@@ -699,7 +719,7 @@ function iniciarEtapa3() {
     document.getElementById('succesZone').classList.add('visible');
   }, 600);
 
-  reemplazarKloe(kloeBurbujas[3], function() {
+  reemplazarKloe(kloeBurbujas[3], '../images/kloe/kloe_explique_02.png', function() {
     agregarCasilla('mot-succes', 'Succès', 'logro / insignia');
   });
 
