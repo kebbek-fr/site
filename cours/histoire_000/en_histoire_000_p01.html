@@ -144,7 +144,7 @@
   #flecheRetour:hover{transform:translateY(-50%) translateX(-2px);box-shadow:0 4px 12px rgba(90,64,128,0.25);}
 
   /* Zone droite de Bek : réponse (étapes 1-2) ou succès (étape 3) */
-  .zone-droite{width:240px;margin-top:60px;flex-shrink:0;display:flex;flex-direction:column;}
+  .zone-droite{width:240px;margin-top:20px;flex-shrink:0;display:flex;flex-direction:column;}
 
   .reponse-zone{opacity:0;visibility:hidden;transition:opacity 0.5s ease,visibility 0.5s ease;}
   .reponse-zone.visible{opacity:1;visibility:visible;}
@@ -288,6 +288,13 @@
     box-shadow:0 3px 10px rgba(133,79,11,0.3);transition:transform 0.15s,box-shadow 0.15s;
   }
   .cc-lien-bravo:hover{transform:translateY(-2px);box-shadow:0 5px 14px rgba(133,79,11,0.4);}
+  .cc-btn-continuer{
+    display:flex;align-items:center;justify-content:center;gap:7px;margin-top:10px;width:100%;
+    background:var(--vert-fonce);color:#fff;text-decoration:none;
+    font-family:"Patrick Hand",cursive;font-size:16px;padding:9px 18px;border-radius:100px;border:none;cursor:pointer;
+    box-shadow:0 3px 10px rgba(74,122,54,0.35);transition:transform 0.15s,box-shadow 0.15s;
+  }
+  .cc-btn-continuer:hover{transform:translateY(-2px);box-shadow:0 5px 14px rgba(74,122,54,0.45);}
 
   /* ── Section vocabulaire ── */
   .section-cocher{
@@ -516,10 +523,14 @@
         </button>
       </div>
       <div class="cc-note">Use these in <strong>Le charriot</strong> on the <strong>Bravo</strong> page to unlock your achievement.</div>
-      <a class="cc-lien-bravo" href="../../bravo/index.html">
+      <a class="cc-lien-bravo" id="lienBravo" href="../../bravo/index.html" target="_blank" rel="noopener" onclick="apresClicBravo()">
         Go to Bravo
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg>
       </a>
+      <button class="cc-btn-continuer" id="btnContinuer" onclick="continuerApresSucces()" style="display:none;">
+        Continue
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg>
+      </button>
     </div>
   </div>
 
@@ -803,8 +814,45 @@ function demarrerEtape3() {
 // ─────────────────────────────────────────────
 //  Retour à l'étape précédente
 // ─────────────────────────────────────────────
-function revenirEtape() {
-  if (etape === 2) {
+// ─────────────────────────────────────────────
+//  Après clic sur "Go to Bravo"
+// ─────────────────────────────────────────────
+function apresClicBravo() {
+  // Kloé change d'image et de texte
+  remplacerKloe(
+    '<div class="bulle-kloe avec-pointe">Let me know when you\'ve finished downloading your achievement. I have more things to show you!</div>',
+    '../images/kloe/kloe_attend_01.png',
+    null
+  );
+  // Faire défiler vers Kloé
+  setTimeout(function() {
+    document.getElementById('ecran2').scrollIntoView({behavior:'smooth'});
+  }, 300);
+  // Afficher le bouton Continuer, masquer le lien Bravo
+  setTimeout(function() {
+    document.getElementById('lienBravo').style.display = 'none';
+    var btn = document.getElementById('btnContinuer');
+    btn.style.display = 'flex';
+  }, 500);
+}
+
+function continuerApresSucces() {
+  // Activer le bouton Suivant
+  var btnSuivant = document.getElementById('btnSuivant');
+  btnSuivant.classList.remove('indisponible');
+  btnSuivant.setAttribute('href', 'en_histoire_000_p02.html');
+  btnSuivant.tagName === 'SPAN' && (function() {
+    var a = document.createElement('a');
+    a.className = btnSuivant.className.replace('indisponible','');
+    a.href = 'en_histoire_000_p02.html';
+    a.innerHTML = btnSuivant.innerHTML;
+    btnSuivant.parentNode.replaceChild(a, btnSuivant);
+  })();
+  // Défiler vers la nav
+  document.getElementById('ecran1').scrollIntoView({behavior:'smooth'});
+}
+
+function revenirEtape() {  if (etape === 2) {
     // Cacher la carte si elle était visible (peu probable mais sûr)
     document.getElementById('carteCode').classList.remove('visible');
     demarrerEtape1();
