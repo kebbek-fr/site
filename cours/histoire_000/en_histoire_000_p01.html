@@ -250,12 +250,13 @@
 
   /* ── Carte ticket (étape 3) ── */
   .carte-code{
-    position:relative;margin:48px auto 0;max-width:360px;
+    position:relative;margin:0 auto 0;max-width:360px;
     background:var(--blanc);border:2px solid var(--ambre);border-radius:18px;
     box-shadow:0 6px 20px var(--ombre);transform:rotate(-1.2deg);
-    opacity:0;visibility:hidden;transition:opacity 0.6s ease,visibility 0.6s ease;
+    opacity:0;visibility:hidden;max-height:0;overflow:hidden;
+    transition:opacity 0.5s ease,visibility 0.5s ease,max-height 0.7s cubic-bezier(0.22,1,0.36,1),margin-top 0.7s cubic-bezier(0.22,1,0.36,1);
   }
-  .carte-code.visible{opacity:1;visibility:visible;}
+  .carte-code.visible{opacity:1;visibility:visible;max-height:520px;margin-top:48px;}
   .cc-entete{
     display:flex;align-items:center;gap:9px;background:var(--ambre-clair);color:var(--ambre-fonce);
     font-family:"Patrick Hand",cursive;font-size:19px;
@@ -917,6 +918,10 @@ function apresClicBravo() {
 
 function continuerApresSucces() {
   document.getElementById('btnContinuer').classList.remove('appel');
+
+  // La fiche du succès (code + mot de passe) se referme — l'espace qu'elle
+  // avait ouvert entre Kloé et le vocabulaire se referme avec elle.
+  document.getElementById('carteCode').classList.remove('visible');
 
   // Kloé pointe bas — encourage à copier les mots
   remplacerKloe(
