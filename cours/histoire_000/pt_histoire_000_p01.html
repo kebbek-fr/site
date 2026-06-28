@@ -1341,7 +1341,6 @@ function validerChocolat() {
       document.querySelector('.rc-aide').style.display = 'none';
       feedback.style.display = 'none';
       document.getElementById('rcSucces').classList.add('visible');
-      crossfadeBek('images/bek_chocolat.png');
       ajouterCheckbox('mot-chocolat', 'Le chocolat', 'o chocolate');
     }, 1800);
   } else {
@@ -1365,6 +1364,7 @@ function apresClicBravoChocolat() {
 }
 
 function fecharChocolatSucesso() {
+  crossfadeBek('images/bek_chocolat.png');
   var rc = document.getElementById('reponseChocolat');
   rc.classList.remove('visible');
   setTimeout(function() {
