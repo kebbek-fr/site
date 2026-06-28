@@ -454,6 +454,15 @@
   .rc-succes-continuer.visible { display:flex; }
   .rc-succes-continuer:hover { transform:translateY(-2px); }
   @keyframes apparaitre{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
+  .cf-btn-continuer{
+    display:flex;align-items:center;justify-content:center;gap:7px;margin-top:14px;width:100%;
+    background:var(--vert-fonce);color:#fff;text-decoration:none;
+    font-family:"Patrick Hand",cursive;font-size:16px;padding:9px 18px;border-radius:100px;border:none;cursor:pointer;
+    box-shadow:0 3px 10px rgba(74,122,54,0.35);transition:transform 0.15s,box-shadow 0.15s;
+    opacity:0;pointer-events:none;
+  }
+  .cf-btn-continuer.visible{opacity:1;pointer-events:auto;}
+  .cf-btn-continuer:hover{transform:translateY(-2px);box-shadow:0 5px 14px rgba(74,122,54,0.45);}
 </style>
 </head>
 <body>
@@ -664,7 +673,7 @@
         <div class="rc-succes-titre">🍫 Secret de Bek</div>
         <div class="rc-succes-linha">
           <div class="rc-succes-info">
-            <span class="rc-succes-label">Código</span>
+            <span class="rc-succes-label">Code</span>
             <span class="rc-succes-valeur" id="rcCode">sn-ch0kb3k</span>
           </div>
           <button class="rc-succes-copier" onclick="copiarRcSucces('rcCode',this)">Copier</button>
@@ -682,7 +691,7 @@
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M9 5l7 7-7 7"/></svg>
         </a>
         <button class="rc-succes-continuer" id="rcContinuer" onclick="fecharChocolatSucesso()">
-          Continuer
+          Continuar
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M9 5l7 7-7 7"/></svg>
         </button>
       </div>
@@ -746,20 +755,24 @@
         <div class="cf-label">Codigo</div>
         <div class="cf-valeur">fi-n1v30un</div>
       </div>
-      <button class="cf-copier-btn" onclick="copiarCF('fi-n1v30un', this)">Copier</button>
+      <button class="cf-copier-btn" onclick="copiarCF('fi-n1v30un', this)">Copiar</button>
     </div>
     <div class="cf-ligne">
       <div class="cf-info">
         <div class="cf-label">Senha</div>
         <div class="cf-valeur">maFiche01</div>
       </div>
-      <button class="cf-copier-btn" onclick="copiarCF('maFiche01', this)">Copier</button>
+      <button class="cf-copier-btn" onclick="copiarCF('maFiche01', this)">Copiar</button>
     </div>
     <div class="cf-note">Va a <strong>Bravo</strong> e introduz o codigo para descarregar a tua ficha. Guarda-a — vais adicionar os teus sucessos!</div>
-    <a class="cf-lien-bravo" href="../../bravo/index.html" target="_blank" rel="noopener">
+    <a class="cf-lien-bravo" href="../../bravo/index.html" target="_blank" rel="noopener" onclick="apresClicBravoFiche()">
       Ir a Bravo
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg>
     </a>
+    <button class="cf-btn-continuer" id="cfBtnContinuar" onclick="continuerDepuisFiche()">
+      Continuar
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M9 5l7 7-7 7"/></svg>
+    </button>
   </div>
 </div>
 
@@ -950,7 +963,7 @@ function iniciarEtapa1() {
   criarTimer(function() {
     document.getElementById('ecran2').scrollIntoView({behavior:'smooth'});
     mostrarKloe();
-    ajouterCheckbox('mot-salut', 'Salut', 'oi (informal)');
+    ajouterCheckbox('mot-salut', 'salut', 'oi (informal)');
   }, 5000);
 
   criarTimer(function() {
@@ -973,14 +986,14 @@ function iniciarEtapa2() {
   bulleBek.textContent = 'Bravo !';
   document.getElementById('flecheRetour').classList.add('visible');
 
-  ajouterCheckbox('mot-salut', 'Salut', 'oi (informal)');
+  ajouterCheckbox('mot-salut', 'salut', 'oi (informal)');
 
   ocultarZonaResposta();
   reiniciarResposta('A Bek está feliz! Agora diz-lhe \u00abmerci\u00bb para agradeceres.');
 
   substituirKloe(kloeBaloes[2], '../images/kloe/kloe_explique_01.png', function() {
-    ajouterCheckbox('mot-bravo', 'Bravo', 'bravo!');
-    ajouterCheckbox('mot-merci', 'Merci', 'obrigado/a');
+    ajouterCheckbox('mot-bravo', 'bravo', 'bravo!');
+    ajouterCheckbox('mot-merci', 'merci', 'obrigado/a');
   });
 
   criarTimer(function() {
@@ -1011,7 +1024,7 @@ function iniciarEtapa3() {
   }, 600);
 
   substituirKloe(kloeBaloes[3], '../images/kloe/kloe_explique_02.png', function() {
-    ajouterCheckbox('mot-succes', 'Succès', 'conquista / medalha');
+    ajouterCheckbox('mot-succes', 'succès', 'conquista / medalha');
   });
 
   criarTimer(function() {
@@ -1059,10 +1072,10 @@ function continuerApresSucces() {
   creerTimer(function() {
     document.getElementById('bulleNuage').classList.add('visible');
   }, 800);
-  // Kloé pointe bas
+  // Kloé pointe bas — parle de la fiche sur Bravo
   remplacerKloe(
-    '<div class="bulle-kloe avec-pointe">Aqui em baixo encontras todas as palavras em frances desta pagina. Copia-as para um ficheiro ou para a tua ficha pessoal.</div><button class="btn-quoi-fiche" onclick="mostrarFicha()">&#10022; O que e uma ficha?</button>',
-    '../images/kloe/kloe_pointe_bas_01.png',
+    '<div class="bulle-kloe avec-pointe">A tua <strong>ficha pessoal</strong> está disponível no Bravo! Introduz o teu código no <strong>Le charriot</strong> para a descarregar — vais poder adicionar as tuas conquistas!</div><button class="btn-quoi-fiche" onclick="mostrarFicha()">&#10022; O que é uma ficha?</button>',
+    '../images/kloe/kloe_pointe_bas_02.png',
     null
   );
   var sc = document.getElementById('sectionCocher');
@@ -1096,8 +1109,17 @@ function mostrarFicha() {
     bulleBek.textContent = 'Tadam !';
     bulleBek.style.opacity = '1';
     document.getElementById('ficheZone').classList.add('visible');
-    ajouterCheckbox('mot-tadam', 'Tadam', 'ta-dá! / voilà!');
+    ajouterCheckbox('mot-tadam', 'tadam', 'ta-dá! / voilà!');
   }, 2400);
+  // Kloé avec kloe_pointe_bas_02 explique qu'on télécharge la fiche sur Bravo
+  criarTimer(function() {
+    remplacerKloe(
+      '<div class="bulle-kloe avec-pointe">A tua <strong>ficha pessoal</strong> está disponível no Bravo! Introduz o teu código no <strong>Le charriot</strong> para a descarregar — vais poder adicionar as tuas conquistas!</div>',
+      '../images/kloe/kloe_pointe_bas_02.png',
+      null
+    );
+    document.getElementById('ecran2').scrollIntoView({behavior:'smooth', block:'start'});
+  }, 3600);
   criarTimer(function() {
     var cf = document.getElementById('carteFiche');
     if (cf) { cf.classList.add('visible'); cf.scrollIntoView({behavior:'smooth', block:'start'}); }
@@ -1111,6 +1133,22 @@ function copiarCF(valeur, btn) {
     btn.classList.add('copie');
     setTimeout(function() { btn.textContent = original; btn.classList.remove('copie'); }, 1600);
   });
+}
+
+function apresClicBravoFiche() {
+  var btn = document.getElementById('cfBtnContinuar');
+  if (btn) {
+    setTimeout(function() {
+      btn.classList.add('visible');
+      btn.scrollIntoView({behavior:'smooth', block:'nearest'});
+    }, 800);
+  }
+}
+
+function continuerDepuisFiche() {
+  var bs = document.getElementById('btnSeguinte');
+  if (bs) { bs.classList.remove('indisponible'); bs.setAttribute('href', 'pt_histoire_000_p02.html'); }
+  window.location.href = 'pt_histoire_000_p02.html';
 }
 
 function revenirEtapa() {
@@ -1344,7 +1382,7 @@ function validerChocolat() {
       document.querySelector('.rc-aide').style.display = 'none';
       feedback.style.display = 'none';
       document.getElementById('rcSucces').classList.add('visible');
-      ajouterCheckbox('mot-chocolat', 'Le chocolat', 'o chocolate');
+      ajouterCheckbox('mot-chocolat', 'le chocolat', 'o chocolate');
     }, 1800);
   } else {
     feedback.textContent = 'Indice : pense à quelque chose de délicieux…';
