@@ -832,6 +832,7 @@ function crossfadeBek(newSrc) {
   img.style.opacity = '0';
   setTimeout(function() {
     img.src = newSrc;
+    void img.offsetWidth; // force reflow — évite le flash
     img.style.opacity = '1';
   }, 500);
 }
@@ -862,7 +863,7 @@ function reemplazarKloe(htmlContent, imgSrc, callback) {
       var img = document.getElementById('kloeImg');
       if (img && imgSrc && img.getAttribute('src') !== imgSrc) {
         img.style.opacity = '0';
-        setTimeout(function() { img.src = imgSrc; img.style.opacity = '1'; }, 300);
+        setTimeout(function() { img.src = imgSrc; void img.offsetWidth; img.style.opacity = '1'; }, 500);
       }
       el.querySelectorAll('.bulle-kloe').forEach(function(b, i) {
         b.style.animation = 'apparaitre 0.5s ease ' + (0.1 + i * 0.2) + 's forwards';
@@ -1046,6 +1047,8 @@ function apresClicBravo() {
 
 function continuerApresSucces() {
   annulerTimers();
+  var _nuage = document.getElementById('bulleNuage'); if (_nuage) _nuage.classList.remove('visible');
+  var _nuage = document.getElementById('bulleNuage'); if (_nuage) _nuage.classList.remove('visible');
   document.getElementById('btnContinuer').classList.remove('appel');
   // Faire disparaître la carte succès ET refermer l'espace
   var carteCode = document.getElementById('carteCode');
@@ -1111,10 +1114,17 @@ function copiarCF(valeur, btn) {
 }
 
 function revenirEtape() {
-  if (etapa === 2) {
+  annulerTimers();
+  // Cacher le nuage de pensée si visible
+  var nuage = document.getElementById('bulleNuage');
+  if (nuage) nuage.classList.remove('visible');
+  // Restaurer la visibilité de la bulle Bek si elle avait été masquée
+  var bulle = document.getElementById('bulleBek');
+  if (bulle) bulle.style.display = '';
+  if (etape === 2) {
     document.getElementById('carteCode').classList.remove('visible');
     iniciarEtapa1();
-  } else if (etapa === 3) {
+  } else if (etape === 3) {
     document.getElementById('carteCode').classList.remove('visible');
     document.getElementById('succesZone').classList.remove('visible');
     iniciarEtapa2();
@@ -1255,7 +1265,7 @@ function remplacerKloe(htmlContent, imgSrc, callback) {
       var img = document.getElementById('kloeImg');
       if (img && imgSrc && img.getAttribute('src') !== imgSrc) {
         img.style.opacity = '0';
-        setTimeout(function() { img.src = imgSrc; img.style.opacity = '1'; }, 300);
+        setTimeout(function() { img.src = imgSrc; void img.offsetWidth; img.style.opacity = '1'; }, 500);
       }
       // Déclencher les animations des bulles immédiatement (Kloé déjà visible)
       el.querySelectorAll('.bulle-kloe').forEach(function(b, i) {
