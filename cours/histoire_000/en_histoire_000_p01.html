@@ -319,12 +319,20 @@
 
   /* ── Carte fiche ── */
   .carte-fiche{
-    display:none;margin-top:20px;
+    max-height:0;overflow:hidden;opacity:0;visibility:hidden;
+    margin-top:0;
     background:var(--beige-clair);border:1.5px dashed var(--violet);border-radius:14px;
-    padding:18px 20px;box-shadow:0 3px 10px var(--ombre);
-    animation:apparaitre 0.5s ease forwards;
+    padding:0 20px;box-shadow:0 3px 10px var(--ombre);
+    transition:max-height 0.6s cubic-bezier(0.22,1,0.36,1),
+               opacity 0.4s ease 0.15s,
+               visibility 0.4s ease 0.15s,
+               margin-top 0.4s ease,
+               padding 0.4s ease;
   }
-  .carte-fiche.visible{display:block;}
+  .carte-fiche.visible{
+    max-height:600px;opacity:1;visibility:visible;
+    margin-top:20px;padding:18px 20px;
+  }
   .cf-titre{font-family:"Patrick Hand",cursive;font-size:17px;color:var(--violet-fonce);margin-bottom:12px;}
   .cf-ligne{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px;}
   .cf-info{display:flex;flex-direction:column;gap:3px;min-width:0;}
@@ -370,6 +378,70 @@
   /* Apparition d'un nouveau mot dans la liste */
   .sc-item-nouveau{animation:apparaitre 0.5s ease forwards;}
 
+  
+  /* ── Bulle de réflexion (nuage BD) ── */
+  .bulle-nuage-wrap {
+    position: absolute;
+    top: -72px; left: 50%; transform: translateX(-50%);
+    cursor: pointer; z-index: 10;
+    display: none;
+    filter: drop-shadow(0 4px 10px rgba(90,64,128,0.18));
+    animation: flotter-nuage 3.4s ease-in-out infinite;
+    transition: filter 0.2s ease;
+  }
+  .bulle-nuage-wrap.visible { display: block; }
+  .bulle-nuage-wrap:hover {
+    filter: drop-shadow(0 6px 16px rgba(90,64,128,0.35));
+    animation-play-state: paused;
+  }
+  @keyframes flotter-nuage {
+    0%, 100% { transform: translateX(-50%) translateY(0) rotate(-0.5deg); }
+    50%       { transform: translateX(-50%) translateY(-8px) rotate(0.5deg); }
+  }
+
+  /* Zone réponse chocolat — modal plein écran */
+  .reponse-chocolat {
+    display: none;
+    position: fixed; inset: 0; z-index: 350;
+    background: rgba(30,22,42,0.72);
+    backdrop-filter: blur(3px);
+    align-items: center; justify-content: center;
+    animation: apparaitre 0.3s ease forwards;
+  }
+  .reponse-chocolat.visible { display: flex; }
+  .rc-boite {
+    background: var(--beige-clair);
+    border: 2px solid var(--vert-fonce);
+    border-radius: 20px;
+    padding: 28px 28px 22px;
+    max-width: 340px; width: 90%;
+    box-shadow: 0 16px 48px rgba(0,0,0,0.35);
+    position: relative;
+    animation: apparaitre 0.35s cubic-bezier(0.34,1.56,0.64,1) forwards;
+  }
+  .rc-fermer {
+    position: absolute; top: 12px; right: 14px;
+    background: none; border: none; cursor: pointer;
+    font-size: 18px; color: var(--gris); line-height: 1;
+    transition: color 0.15s;
+  }
+  .rc-fermer:hover { color: var(--texte); }
+  .rc-label { font-size: 12px; font-weight: 800; color: var(--vert-fonce);
+    text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 10px; }
+  .rc-question { font-family: "Patrick Hand", cursive; font-size: 20px;
+    color: var(--texte); margin-bottom: 14px; line-height: 1.4; }
+  .rc-input { width: 100%; padding: 9px 13px; border: 1.5px solid var(--bleu-poudre);
+    border-radius: 9px; font-size: 16px; font-family: "Nunito", sans-serif; outline: none; }
+  .rc-input:focus { border-color: var(--vert-fonce); }
+  .rc-btn { margin-top: 9px; width: 100%; background: var(--vert-fonce); color: #fff;
+    border: none; border-radius: 9px; padding: 9px; font-size: 14px; font-weight: 700;
+    cursor: pointer; transition: background 0.15s; }
+  .rc-btn:hover { background: #3d6a28; }
+  .rc-aide { font-size: 11px; color: var(--gris); margin-top: 6px; text-align: center; }
+  .rc-feedback { margin-top: 9px; font-size: 13px; font-weight: 700; text-align: center;
+    border-radius: 8px; padding: 7px; display: none; }
+  .rc-feedback.ok { display: block; background: var(--vert-clair); color: var(--vert-fonce); }
+  .rc-feedback.non { display: block; background: var(--corail-clair); color: #8a3624; }
   @keyframes apparaitre{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
 </style>
 </head>
@@ -457,7 +529,25 @@
 
       <div class="bulle-bek" id="bulleBek">Salut !</div>
       <img id="bekImg" src="images/bek_salue.png" alt="Bek">
-    </div>
+      <!-- Bulle de réflexion (nuage BD) — apparaît après continuerApresSucces() -->
+      <div class="bulle-nuage-wrap" id="bulleNuage" onclick="montrerReponseChocolat()" role="button" aria-label="Bek pense à quelque chose…">
+        <svg width="110" height="76" viewBox="0 0 110 76" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Corps principal -->
+          <ellipse cx="54" cy="36" rx="38" ry="24" fill="white" stroke="#C8C0E0" stroke-width="1.8"/>
+          <!-- Bosses supérieures -->
+          <ellipse cx="30" cy="24" rx="16" ry="13" fill="white" stroke="#C8C0E0" stroke-width="1.6"/>
+          <ellipse cx="54" cy="17" rx="18" ry="13" fill="white" stroke="#C8C0E0" stroke-width="1.6"/>
+          <ellipse cx="76" cy="23" rx="15" ry="12" fill="white" stroke="#C8C0E0" stroke-width="1.6"/>
+          <!-- Fond blanc pour couvrir les jointures -->
+          <ellipse cx="54" cy="34" rx="36" ry="20" fill="white"/>
+          <!-- Icône nourriture -->
+          <text x="54" y="44" text-anchor="middle" font-size="18">🍕</text>
+          <!-- Queue pointillée (bas gauche) -->
+          <circle cx="26" cy="57" r="5.5" fill="white" stroke="#C8C0E0" stroke-width="1.5"/>
+          <circle cx="16" cy="66" r="3.8" fill="white" stroke="#C8C0E0" stroke-width="1.3"/>
+          <circle cx="9"  cy="73" r="2.4" fill="white" stroke="#C8C0E0" stroke-width="1.1"/>
+        </svg>
+      </div>    </div>
 
     <!-- Zone droite : réponse ou image succès -->
     <div class="zone-droite">
@@ -510,10 +600,7 @@
       </div>
 
       <!-- Zone fiche (remplace le succès quand on clique "What's a profile card?") -->
-      <div class="fiche-zone" id="ficheZone">
-        <img src="images/bek_fiche.png" alt="Ta fiche personnelle — Niveau 1" class="fiche-img-apercu"
-          onerror="this.style.display='none';">
-      </div>
+      <div class="fiche-zone" id="ficheZone"><img src="../../bravo/images/fiches/fiche-image-niveau_01.png" alt="Fiche Niveau 1" class="fiche-img-apercu" onerror="this.style.display='none';"></div>
     </div>
   </div>
 
@@ -551,6 +638,20 @@
   </div>
 
   <!-- Carte ticket (étape 3 uniquement) -->
+  
+  <!-- Zone réponse chocolat -->
+  <div class="reponse-chocolat" id="reponseChocolat" onclick="fermerChocolat(event)">
+    <div class="rc-boite" onclick="event.stopPropagation()">
+      <button class="rc-fermer" onclick="fermerChocolat()" title="Fermer">✕</button>
+      <div class="rc-label">Bek réfléchit…</div>
+      <div class="rc-question">À quoi Bek pense-t-elle ?</div>
+      <input type="text" class="rc-input" id="inputChocolat" placeholder="..." autocomplete="off" spellcheck="false"
+        onkeydown="if(event.key==='Enter') validerChocolat();">
+      <button class="rc-btn" onclick="validerChocolat()">Vérifier</button>
+      <div class="rc-aide">Sur ordinateur : appuie sur Entrée ↵</div>
+      <div class="rc-feedback" id="feedbackChocolat"></div>
+    </div>
+  </div>
   <div class="carte-code" id="carteCode">
     <div class="cc-entete">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -587,7 +688,7 @@
         </button>
       </div>
       <div class="cc-note">Use these in <strong>Le charriot</strong> on the <strong>Bravo</strong> page to unlock your achievement.</div>
-      <a class="cc-lien-bravo" id="lienBravo" href="../../bravo/index.html" target="_blank" rel="noopener" onclick="apresClicBravo()">
+            <a class="cc-lien-bravo" id="lienBravo" href="../../bravo/index.html" target="_blank" rel="noopener" onclick="apresClicBravo()">
         Go to Bravo
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg>
       </a>
@@ -933,71 +1034,60 @@ function apresClicBravo() {
 }
 
 function continuerApresSucces() {
+  annulerTimers();
   document.getElementById('btnContinuer').classList.remove('appel');
-
-  // La fiche du succès (code + mot de passe) se referme — l'espace qu'elle
-  // avait ouvert entre Kloé et le vocabulaire se referme avec elle.
-  document.getElementById('carteCode').classList.remove('visible');
-
-  // Kloé pointe bas — encourage à copier les mots
+  // Faire disparaître la carte succès ET refermer l'espace
+  var carteCode = document.getElementById('carteCode');
+  if (carteCode) carteCode.classList.remove('visible');
+  document.getElementById('succesZone').classList.remove('visible');
+  // Bek en mode attente — bulle retirée
+  crossfadeBek('images/bek_attend.png');
+  document.getElementById('bulleBek').style.display = 'none';
+  creerTimer(function() {
+    document.getElementById('bulleNuage').classList.add('visible');
+  }, 800);
+  // Kloé pointe bas
   remplacerKloe(
-    '<div class="bulle-kloe avec-pointe">Below, you\'ll find all the French words from this page. Copy them into a file or add them to your profile card to keep track of your progress!</div><button class="btn-quoi-fiche" onclick="montrerFiche()">✦ What\'s a profile card?</button>',
+    '<div class="bulle-kloe avec-pointe">Below, you\'ll find all the French words from this page. Copy them into a file or add them to your profile card!</div><button class="btn-quoi-fiche" onclick="montrerFiche()">&#10022; What\'s a profile card?</button>',
     '../images/kloe/kloe_pointe_bas_01.png',
     null
   );
-
-  // Afficher la section vocabulaire
-  var sectionCocher = document.getElementById('sectionCocher');
-  if (sectionCocher) sectionCocher.style.display = 'block';
-
-  // Scroll vers Kloé d'abord — pour qu'on puisse lire son message
-  setTimeout(function() {
-    var kloeZone = document.getElementById('ecran2');
-    if (kloeZone) kloeZone.scrollIntoView({behavior:'smooth', block:'start'});
+  var sc = document.getElementById('sectionCocher');
+  if (sc) sc.style.display = 'block';
+  creerTimer(function() {
+    var e2 = document.getElementById('ecran2');
+    if (e2) e2.scrollIntoView({behavior:'smooth', block:'start'});
   }, 300);
-
-  // Puis vers le vocabulaire, après un délai de lecture suffisant
-  setTimeout(function() {
-    var sc = document.getElementById('sectionCocher');
+  creerTimer(function() {
     if (sc) sc.scrollIntoView({behavior:'smooth', block:'start'});
   }, 2600);
-
-  // Activer bouton Suivant
-  setTimeout(function() {
-    var btnSuivant = document.getElementById('btnSuivant');
-    if (btnSuivant) {
-      btnSuivant.classList.remove('indisponible');
-      btnSuivant.setAttribute('href', 'en_histoire_000_p02.html');
-    }
+  creerTimer(function() {
+    var bs = document.getElementById('btnSuivant');
+    if (bs) { bs.classList.remove('indisponible'); bs.setAttribute('href', 'en_histoire_000_p02.html'); }
   }, 800);
 }
 
 function montrerFiche() {
-  // Remonter vers Bek
+  annulerTimers();
+  // Bulle nuage disparaît immédiatement — c'est le secret
+  var bn = document.getElementById('bulleNuage');
+  if (bn) bn.classList.remove('visible');
   window.scrollTo({top: 0, behavior: 'smooth'});
-
-  setTimeout(function() {
-    // Fermer le succès, ouvrir la fiche à sa place
-    document.getElementById('succesZone').classList.remove('visible');
+  // Bek pense à la nourriture un instant (bek_attend), puis présente la fiche
+  crossfadeBek('images/bek_attend.png');
+  document.getElementById('bulleBek').textContent = '';
+  creerTimer(function() {
     crossfadeBek('images/bek_fiche.png');
-    remplacerBulleBek('Want to keep all your achievements, vocabulary and rewards in one place? You can download your <strong>Level&nbsp;1 profile card</strong>!', 'longue');
-  }, 600);
-
-  setTimeout(function() {
-    // Bek dit "Tadam !" et montre la fiche
-    remplacerBulleBek('Tadam !');
+  }, 1200);
+  creerTimer(function() {
+    document.getElementById('bulleBek').textContent = 'Tadam !';
     document.getElementById('ficheZone').classList.add('visible');
-    ajouterCheckbox('mot-tadam', 'Tadam', 'ta-dah! / voilà!');
-  }, 3000);
-
-  // 5 secondes pour regarder avant de descendre vers la carte fiche
-  setTimeout(function() {
-    var carteFiche = document.getElementById('carteFiche');
-    if (carteFiche) {
-      carteFiche.classList.add('visible');
-      carteFiche.scrollIntoView({behavior:'smooth', block:'start'});
-    }
-  }, 6400);
+    ajouterCheckbox('mot-tadam', 'Tadam', 'ta-dah! / voila!');
+  }, 2400);
+  creerTimer(function() {
+    var cf = document.getElementById('carteFiche');
+    if (cf) { cf.classList.add('visible'); cf.scrollIntoView({behavior:'smooth', block:'start'}); }
+  }, 5000);
 }
 
 function copierCF(valeur, btn) {
@@ -1128,6 +1218,62 @@ function confirmerPurge() {
 rafraichirAffichage();
 // Court délai pour laisser l'animation d'entrée de Bek se faire avant de démarrer
 setTimeout(function() { demarrerEtape1(); }, 100);
+function fermerChocolat(e) {
+  if (e && e.target !== document.getElementById('reponseChocolat')) return;
+  document.getElementById('reponseChocolat').classList.remove('visible');
+}
+
+function montrerReponseChocolat() {
+  document.getElementById('bulleNuage').classList.remove('visible');
+  var rc = document.getElementById('reponseChocolat');
+  rc.classList.add('visible');
+  rc.scrollIntoView({behavior:'smooth', block:'center'});
+  creerTimer(function() { document.getElementById('inputChocolat').focus(); }, 400);
+}
+
+function validerChocolat() {
+  var val = document.getElementById('inputChocolat').value
+    .trim().toLowerCase()
+    .replace(/^elle pense\s*/i, '')
+    .replace(/[.,!?;]/g, '')
+    .replace(/\s+/g, ' ');
+  var feedback = document.getElementById('feedbackChocolat');
+  var acceptees = [
+    'a un gateau au chocolat',
+    'au gateau au chocolat',
+    'au gateau au chocolat de sa mere',
+    'à un gâteau au chocolat',
+    'au gâteau au chocolat',
+    'au gâteau au chocolat de sa mère'
+  ];
+  feedback.classList.remove('ok', 'non');
+  if (!val) return;
+  if (acceptees.indexOf(val) !== -1) {
+    feedback.textContent = '🍫 Oui ! Bek pense au gâteau au chocolat de sa mère !';
+    feedback.classList.add('ok');
+    creerTimer(function() {
+      document.getElementById('reponseChocolat').classList.remove('visible');
+      crossfadeBek('images/bek_chocolat.png');
+      ajouterCheckbox('mot-chocolat', 'Le chocolat', 'chocolate');
+      // Mettre à jour la carte avec le succès narratif
+      var elCode = document.getElementById('ccCode');
+      var elMdp = document.getElementById('ccMdp');
+      if (elCode) elCode.textContent = 'sn-ch0kb3k';
+      if (elMdp) elMdp.textContent = 'd8l1ci8useOBseS1ion';
+      var titre = document.querySelector('.cc-entete');
+      if (titre) titre.innerHTML = titre.innerHTML.replace(/Your first achievement|Tu primer logro|O teu primeiro sucesso/, '🍫 ' + 'Secret de Bek');
+      var carteCode = document.getElementById('carteCode');
+      if (carteCode) {
+        carteCode.classList.add('visible');
+        carteCode.scrollIntoView({behavior:'smooth', block:'center'});
+      }
+    }, 1800);
+  } else {
+    feedback.textContent = 'Indice : pense à quelque chose de délicieux…';
+    feedback.classList.add('non');
+  }
+}
+
 </script>
 </body>
 </html>
