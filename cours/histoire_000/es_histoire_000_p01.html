@@ -440,6 +440,23 @@
     border-radius: 8px; padding: 7px; display: none; }
   .rc-feedback.ok { display: block; background: var(--vert-clair); color: var(--vert-fonce); }
   .rc-feedback.non { display: block; background: var(--corail-clair); color: #8a3624; }
+  .rc-succes { display:none; flex-direction:column; gap:10px; width:100%; }
+  .rc-succes.visible { display:flex; }
+  .rc-succes-titre { font-family:"Patrick Hand",cursive; font-size:17px; color:var(--ambre-fonce); text-align:center; margin-bottom:2px; }
+  .rc-succes-ligne { display:flex; align-items:center; justify-content:space-between; gap:8px; }
+  .rc-succes-info { display:flex; flex-direction:column; gap:2px; }
+  .rc-succes-label { font-size:10px; color:var(--gris); text-transform:uppercase; letter-spacing:0.05em; font-weight:700; }
+  .rc-succes-valeur { font-family:"Courier New",monospace; font-size:15px; font-weight:700; color:var(--texte); }
+  .rc-succes-copier { background:none; border:1.5px solid var(--ambre); color:var(--ambre-fonce); border-radius:7px; padding:5px 10px; font-size:11px; font-weight:700; cursor:pointer; transition:background 0.15s; white-space:nowrap; }
+  .rc-succes-copier:hover { background:var(--ambre-clair); }
+  .rc-succes-copier.copie { background:var(--vert-fonce); border-color:var(--vert-fonce); color:#fff; }
+  .rc-succes-note { font-size:12px; color:var(--gris); text-align:center; line-height:1.5; border-top:1px dotted rgba(138,128,115,0.3); padding-top:10px; }
+  .rc-succes-note strong { color:var(--ambre-fonce); }
+  .rc-succes-bravo { display:flex; align-items:center; justify-content:center; gap:7px; background:var(--ambre); color:#fff; text-decoration:none; font-family:"Patrick Hand",cursive; font-size:15px; padding:8px 16px; border-radius:100px; box-shadow:0 3px 10px rgba(133,79,11,0.3); transition:transform 0.15s,box-shadow 0.15s; }
+  .rc-succes-bravo:hover { transform:translateY(-2px); box-shadow:0 5px 14px rgba(133,79,11,0.4); }
+  .rc-succes-continuer { display:none; align-items:center; justify-content:center; gap:7px; width:100%; background:var(--vert-fonce); color:#fff; font-family:"Patrick Hand",cursive; font-size:15px; padding:8px 16px; border-radius:100px; border:none; cursor:pointer; box-shadow:0 3px 10px rgba(74,122,54,0.3); transition:transform 0.15s,box-shadow 0.15s; }
+  .rc-succes-continuer.visible { display:flex; }
+  .rc-succes-continuer:hover { transform:translateY(-2px); }
   @keyframes apparaitre{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
 </style>
 </head>
@@ -647,6 +664,32 @@
       <button class="rc-btn" onclick="validerChocolat()">Vérifier</button>
       <div class="rc-aide">Sur ordinateur : appuie sur Entrée ↵</div>
       <div class="rc-feedback" id="feedbackChocolat"></div>
+      <div class="rc-succes" id="rcSucces">
+        <div class="rc-succes-titre">🍫 Secret de Bek</div>
+        <div class="rc-succes-ligne">
+          <div class="rc-succes-info">
+            <span class="rc-succes-label">Código</span>
+            <span class="rc-succes-valeur" id="rcCode">sn-ch0kb3k</span>
+          </div>
+          <button class="rc-succes-copier" onclick="copiarRcSucces('rcCode',this)">Copier</button>
+        </div>
+        <div class="rc-succes-ligne">
+          <div class="rc-succes-info">
+            <span class="rc-succes-label">Mot de passe</span>
+            <span class="rc-succes-valeur" id="rcMdp">d8l1ci8useOBseS1ion</span>
+          </div>
+          <button class="rc-succes-copier" onclick="copiarRcSucces('rcMdp',this)">Copier</button>
+        </div>
+        <div class="rc-succes-note">Utilise ces données dans <strong>Le charriot</strong> sur la page <strong>Bravo</strong>.</div>
+        <a class="rc-succes-bravo" href="../../bravo/index.html" target="_blank" rel="noopener" onclick="apresClicBravoChocolat()">
+          Aller sur Bravo
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M9 5l7 7-7 7"/></svg>
+        </a>
+        <button class="rc-succes-continuer" id="rcContinuer" onclick="cerrarChocolatExito()">
+          Continuer
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M9 5l7 7-7 7"/></svg>
+        </button>
+      </div>
     </div>
   </div>
   <div class="carte-code" id="carteCode">
@@ -706,16 +749,16 @@
     <div class="cf-ligne">
       <div class="cf-info">
         <div class="cf-label">Código</div>
-        <div class="cf-valeur">fi-n1v30</div>
+        <div class="cf-valeur">fi-n1v30un</div>
       </div>
-      <button class="cf-copier-btn" onclick="copiarCF('fi-n1v30', this)">Copiar</button>
+      <button class="cf-copier-btn" onclick="copiarCF('fi-n1v30un', this)">Copier</button>
     </div>
     <div class="cf-ligne">
       <div class="cf-info">
         <div class="cf-label">Contraseña</div>
         <div class="cf-valeur">maFiche01</div>
       </div>
-      <button class="cf-copier-btn" onclick="copiarCF('maFiche01', this)">Copiar</button>
+      <button class="cf-copier-btn" onclick="copiarCF('maFiche01', this)">Copier</button>
     </div>
     <div class="cf-note">Ve a <strong>Bravo</strong> e introduce el código para descargar tu ficha. ¡Consérvala — añadirás tus logros y vocabulario!</div>
     <a class="cf-lien-bravo" href="../../bravo/index.html" target="_blank" rel="noopener">
@@ -1041,12 +1084,14 @@ function mostrarFicha() {
   if (bn) bn.classList.remove('visible');
   window.scrollTo({top: 0, behavior: 'smooth'});
   crossfadeBek('images/bek_attend.png');
-  document.getElementById('bulleBek').textContent = '';
+  var bulleBek = document.getElementById('bulleBek');
+  bulleBek.style.opacity = '0';
   creerTimer(function() {
     crossfadeBek('images/bek_fiche.png');
   }, 1200);
   creerTimer(function() {
-    document.getElementById('bulleBek').textContent = 'Tadam !';
+    bulleBek.textContent = 'Tadam !';
+    bulleBek.style.opacity = '1';
     document.getElementById('ficheZone').classList.add('visible');
     ajouterCheckbox('mot-tadam', 'Tadam', '¡ta-chán! / ¡voilà!');
   }, 2400);
@@ -1243,6 +1288,7 @@ function copierListe() {
   });
 }
 
+
 function fermerChocolat(e) {
   if (e && e.target !== document.getElementById('reponseChocolat')) return;
   document.getElementById('reponseChocolat').classList.remove('visible');
@@ -1274,29 +1320,53 @@ function validerChocolat() {
   feedback.classList.remove('ok', 'non');
   if (!val) return;
   if (acceptees.indexOf(val) !== -1) {
-    feedback.textContent = '🍫 Oui ! Bek pense au gâteau au chocolat de sa mère !';
+    feedback.textContent = '🍫 Oui ! Bek pense au gâteau au chocolat de sa mère !';
     feedback.classList.add('ok');
     creerTimer(function() {
-      document.getElementById('reponseChocolat').classList.remove('visible');
+      document.querySelector('.rc-label').style.display = 'none';
+      document.querySelector('.rc-question').style.display = 'none';
+      document.querySelector('.rc-input').style.display = 'none';
+      document.querySelector('.rc-btn').style.display = 'none';
+      document.querySelector('.rc-aide').style.display = 'none';
+      feedback.style.display = 'none';
+      document.getElementById('rcSucces').classList.add('visible');
       crossfadeBek('images/bek_chocolat.png');
-      ajouterCheckbox('mot-chocolat', 'Le chocolat', 'chocolate');
-      // Mettre à jour la carte avec le succès narratif
-      var elCode = document.getElementById('ccCode');
-      var elMdp = document.getElementById('ccMdp');
-      if (elCode) elCode.textContent = 'sn-ch0kb3k';
-      if (elMdp) elMdp.textContent = 'd8l1ci8useOBseS1ion';
-      var titre = document.querySelector('.cc-entete');
-      if (titre) titre.innerHTML = titre.innerHTML.replace(/Your first achievement|Tu primer logro|O teu primeiro sucesso/, '🍫 ' + 'Secreto de Bek');
-      var carteCode = document.getElementById('carteCode');
-      if (carteCode) {
-        carteCode.classList.add('visible');
-        carteCode.scrollIntoView({behavior:'smooth', block:'center'});
-      }
+      ajouterCheckbox('mot-chocolat', 'Le chocolat', '¡el chocolate!');
     }, 1800);
   } else {
-    feedback.textContent = 'Indice : pense à quelque chose de délicieux…';
+    feedback.textContent = 'Indice : pense à quelque chose de délicieux…';
     feedback.classList.add('non');
   }
+}
+
+function copiarRcSucces(id, btn) {
+  navigator.clipboard.writeText(document.getElementById(id).textContent).then(function() {
+    var original = btn.textContent;
+    btn.textContent = '✓'; btn.classList.add('copie');
+    setTimeout(function(){ btn.textContent = original; btn.classList.remove('copie'); }, 1800);
+  });
+}
+
+function apresClicBravoChocolat() {
+  setTimeout(function() {
+    document.getElementById('rcContinuer').classList.add('visible');
+  }, 400);
+}
+
+function cerrarChocolatExito() {
+  var rc = document.getElementById('reponseChocolat');
+  rc.classList.remove('visible');
+  setTimeout(function() {
+    document.querySelector('.rc-label').style.display = '';
+    document.querySelector('.rc-question').style.display = '';
+    document.querySelector('.rc-input').style.display = '';
+    document.querySelector('.rc-btn').style.display = '';
+    document.querySelector('.rc-aide').style.display = '';
+    document.getElementById('feedbackChocolat').style.display = '';
+    document.getElementById('rcSucces').classList.remove('visible');
+    document.getElementById('rcContinuer').classList.remove('visible');
+    document.getElementById('inputChocolat').value = '';
+  }, 400);
 }
 
 </script>
