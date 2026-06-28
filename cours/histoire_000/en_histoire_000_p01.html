@@ -840,7 +840,13 @@ function remplacerBulleBek(html, classeExtra) {
 
 function crossfadeBek(newSrc) {
   var img = document.getElementById('bekImg');
-  if (img.getAttribute('src') === newSrc) return;
+  if (img.getAttribute('src') === newSrc) {
+    // Même source — forcer un rechargement visible uniquement si l'image
+    // n'est pas encore affichée correctement (naturalWidth === 0)
+    if (img.naturalWidth > 0) return;
+    img.src = newSrc + '?r=' + Date.now();
+    return;
+  }
   img.style.opacity = '0';
   setTimeout(function() {
     img.src = newSrc;
@@ -952,7 +958,10 @@ function demarrerEtape1() {
 
   // Bek
   crossfadeBek('images/bek_salue.png');
-  document.getElementById('bulleBek').textContent = 'Salut !';
+  var bulleBek = document.getElementById('bulleBek');
+  bulleBek.style.display = '';
+  bulleBek.style.opacity = '1';
+  bulleBek.textContent = 'Salut !';
 
   // Flèche retour cachée
   document.getElementById('flecheRetour').classList.remove('visible');
@@ -988,7 +997,10 @@ function demarrerEtape2() {
 
   // Bek
   crossfadeBek('images/bek_bravo.png');
-  document.getElementById('bulleBek').textContent = 'Bravo !';
+  var bulleBek = document.getElementById('bulleBek');
+  bulleBek.style.display = '';
+  bulleBek.style.opacity = '1';
+  bulleBek.textContent = 'Bravo !';
 
   // Flèche retour visible
   document.getElementById('flecheRetour').classList.add('visible');
@@ -1154,9 +1166,10 @@ function revenirEtape() {
   // Cacher le nuage de pensée si visible
   var nuage = document.getElementById('bulleNuage');
   if (nuage) nuage.classList.remove('visible');
-  // Restaurer la visibilité de la bulle Bek si elle avait été masquée
+  // Restaurer entièrement la bulle Bek (display ET opacity, quelle que soit
+  // la combinaison de masquages successifs qui a pu l'affecter)
   var bulle = document.getElementById('bulleBek');
-  if (bulle) bulle.style.display = '';
+  if (bulle) { bulle.style.display = ''; bulle.style.opacity = '1'; }
   if (etape === 2) {
     document.getElementById('carteCode').classList.remove('visible');
     demarrerEtape1();
