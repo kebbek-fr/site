@@ -1088,6 +1088,7 @@ function mostrarFicha() {
   window.scrollTo({top: 0, behavior: 'smooth'});
   crossfadeBek('images/bek_chocolat.png');
   var bulleBek = document.getElementById('bulleBek');
+  bulleBek.style.display = '';
   bulleBek.style.opacity = '0';
   criarTimer(function() {
     crossfadeBek('images/bek_fiche.png');
@@ -1122,6 +1123,9 @@ function revenirEtapa() {
   // Restaurer entièrement la bulle Bek (display ET opacity)
   var bulle = document.getElementById('bulleBek');
   if (bulle) { bulle.style.display = ''; bulle.style.opacity = '1'; }
+  // Cacher ficheZone et carteFiche si on revient en arrière
+  var fz = document.getElementById('ficheZone'); if (fz) fz.classList.remove('visible');
+  var cf = document.getElementById('carteFiche'); if (cf) cf.classList.remove('visible');
   if (etape === 2) {
     document.getElementById('carteCode').classList.remove('visible');
     iniciarEtapa1();
