@@ -844,6 +844,7 @@ function crossfadeBek(newSrc) {
   img.style.opacity = '0';
   setTimeout(function() {
     img.src = newSrc;
+    void img.offsetWidth; // force reflow — évite le flash
     img.style.opacity = '1';
   }, 500);
 }
@@ -865,7 +866,7 @@ function remplacerKloe(htmlContent, imgSrc, callback) {
       var img = document.getElementById('kloeImg');
       if (img && imgSrc && img.getAttribute('src') !== imgSrc) {
         img.style.opacity = '0';
-        setTimeout(function() { img.src = imgSrc; img.style.opacity = '1'; }, 300);
+        setTimeout(function() { img.src = imgSrc; void img.offsetWidth; img.style.opacity = '1'; }, 500);
       }
       // Déclencher les animations des bulles immédiatement (Kloé déjà visible)
       el.querySelectorAll('.bulle-kloe').forEach(function(b, i) {
@@ -946,6 +947,7 @@ function ajouterCheckbox(id, mot, trad) {
 // ─────────────────────────────────────────────
 function demarrerEtape1() {
   annulerTimers();
+  var _nuage = document.getElementById('bulleNuage'); if (_nuage) _nuage.classList.remove('visible');
   etape = 1;
 
   // Bek
@@ -981,6 +983,7 @@ function demarrerEtape1() {
 // ─────────────────────────────────────────────
 function demarrerEtape2() {
   annulerTimers();
+  var _nuage = document.getElementById('bulleNuage'); if (_nuage) _nuage.classList.remove('visible');
   etape = 2;
 
   // Bek
@@ -1146,8 +1149,15 @@ function copierCF(valeur, btn) {
   });
 }
 
-function revenirEtape() {  if (etape === 2) {
-    // Cacher la carte si elle était visible (peu probable mais sûr)
+function revenirEtape() {
+  annulerTimers();
+  // Cacher le nuage de pensée si visible
+  var nuage = document.getElementById('bulleNuage');
+  if (nuage) nuage.classList.remove('visible');
+  // Restaurer la visibilité de la bulle Bek si elle avait été masquée
+  var bulle = document.getElementById('bulleBek');
+  if (bulle) bulle.style.display = '';
+  if (etape === 2) {
     document.getElementById('carteCode').classList.remove('visible');
     demarrerEtape1();
   } else if (etape === 3) {
