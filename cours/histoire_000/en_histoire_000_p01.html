@@ -1136,6 +1136,7 @@ function montrerFiche() {
   // Bek pense à la nourriture (bek_chocolat), puis présente la fiche
   crossfadeBek('images/bek_chocolat.png');
   var bulleBek = document.getElementById('bulleBek');
+  bulleBek.style.display = '';
   bulleBek.style.opacity = '0';
   creerTimer(function() {
     crossfadeBek('images/bek_fiche.png');
@@ -1170,6 +1171,9 @@ function revenirEtape() {
   // la combinaison de masquages successifs qui a pu l'affecter)
   var bulle = document.getElementById('bulleBek');
   if (bulle) { bulle.style.display = ''; bulle.style.opacity = '1'; }
+  // Cacher ficheZone et carteFiche si on revient en arrière
+  var fz = document.getElementById('ficheZone'); if (fz) fz.classList.remove('visible');
+  var cf = document.getElementById('carteFiche'); if (cf) cf.classList.remove('visible');
   if (etape === 2) {
     document.getElementById('carteCode').classList.remove('visible');
     demarrerEtape1();
