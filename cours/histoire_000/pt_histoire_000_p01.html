@@ -830,7 +830,11 @@ function remplacerBulleBek(html, classeExtra) {
 
 function crossfadeBek(newSrc) {
   var img = document.getElementById('bekImg');
-  if (img.getAttribute('src') === newSrc) return;
+  if (img.getAttribute('src') === newSrc) {
+    if (img.naturalWidth > 0) return;
+    img.src = newSrc + '?r=' + Date.now();
+    return;
+  }
   img.style.opacity = '0';
   setTimeout(function() {
     img.src = newSrc;
@@ -931,7 +935,10 @@ function iniciarEtapa1() {
   etapa = 1;
 
   crossfadeBek('images/bek_salue.png');
-  document.getElementById('bulleBek').textContent = 'Salut !';
+  var bulleBek = document.getElementById('bulleBek');
+  bulleBek.style.display = '';
+  bulleBek.style.opacity = '1';
+  bulleBek.textContent = 'Salut !';
   document.getElementById('flecheRetour').classList.remove('visible');
 
   ocultarZonaResposta();
@@ -960,7 +967,10 @@ function iniciarEtapa2() {
   etapa = 2;
 
   crossfadeBek('images/bek_bravo.png');
-  document.getElementById('bulleBek').textContent = 'Bravo !';
+  var bulleBek = document.getElementById('bulleBek');
+  bulleBek.style.display = '';
+  bulleBek.style.opacity = '1';
+  bulleBek.textContent = 'Bravo !';
   document.getElementById('flecheRetour').classList.add('visible');
 
   ajouterCheckbox('mot-salut', 'Salut', 'oi (informal)');
@@ -1104,13 +1114,14 @@ function copiarCF(valeur, btn) {
 }
 
 function revenirEtapa() {
-  annulerTimers();
+  cancelarTimers();
+  annulerTimers(); // vide aussi l'ancien tableau résiduel timersActifs
   // Cacher le nuage de pensée si visible
   var nuage = document.getElementById('bulleNuage');
   if (nuage) nuage.classList.remove('visible');
-  // Restaurer la visibilité de la bulle Bek si elle avait été masquée
+  // Restaurer entièrement la bulle Bek (display ET opacity)
   var bulle = document.getElementById('bulleBek');
-  if (bulle) bulle.style.display = '';
+  if (bulle) { bulle.style.display = ''; bulle.style.opacity = '1'; }
   if (etape === 2) {
     document.getElementById('carteCode').classList.remove('visible');
     iniciarEtapa1();
