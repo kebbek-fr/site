@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ma fiche — Niveau 1</title>
+  <style>
+    /* ══════════════════════════════════════════
+       STYLE RÉTRO OFFICE 97
+    ══════════════════════════════════════════ */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: #008080; /* teal classique Windows 95/97 */
+      font-family: "Arial", sans-serif;
+      font-size: 13px;
+      color: #000000;
+      min-height: 100vh;
+      padding: 16px;
+    }
+
+    /* Fenêtre principale */
+    .fenetre {
+      background: #D4D0C8;
+      border-top: 2px solid #FFFFFF;
+      border-left: 2px solid #FFFFFF;
+      border-right: 2px solid #808080;
+      border-bottom: 2px solid #808080;
+      max-width: 760px;
+      margin: 0 auto;
+      box-shadow: 2px 2px 0 #000000;
+    }
+
+    /* Barre de titre */
+    .barre-titre {
+      background: linear-gradient(to right, #000080, #1084d0);
+      color: #FFFFFF;
+      font-weight: bold;
+      font-size: 12px;
+      padding: 3px 6px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      user-select: none;
+    }
+    .barre-titre-texte { display: flex; align-items: center; gap: 6px; }
+    .barre-titre-icone {
+      width: 16px; height: 16px;
+      background: #FFD700;
+      border: 1px solid #808080;
+      display: inline-flex; align-items: center; justify-content: center;
+      font-size: 10px; font-weight: bold; color: #000;
+    }
+    .barre-btns { display: flex; gap: 2px; }
+    .barre-btn {
+      width: 16px; height: 14px;
+      background: #D4D0C8;
+      border-top: 1px solid #FFFFFF;
+      border-left: 1px solid #FFFFFF;
+      border-right: 1px solid #808080;
+      border-bottom: 1px solid #808080;
+      font-size: 9px; font-weight: bold;
+      display: flex; align-items: center; justify-content: center;
+      cursor: default;
+    }
+
+    /* Corps de la fenêtre */
+    .corps { padding: 8px; }
+
+    /* En-tête MA FICHE */
+    .entete-fiche {
+      text-align: center;
+      padding: 6px 0 10px;
+      border-bottom: 1px solid #808080;
+      margin-bottom: 8px;
+    }
+    .entete-fiche h1 {
+      font-size: 18px;
+      font-weight: bold;
+      color: #000080;
+      letter-spacing: 1px;
+    }
+    .entete-fiche .niveau-badge {
+      display: inline-block;
+      background: #000080;
+      color: #FFFFFF;
+      font-size: 10px;
+      font-weight: bold;
+      padding: 1px 8px;
+      margin-top: 2px;
+      letter-spacing: 0.08em;
+    }
+
+    /* Totaux en haut */
+    .totaux-barre {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    .total-boite {
+      flex: 1;
+      background: #FFFFFF;
+      border-top: 1px solid #808080;
+      border-left: 1px solid #808080;
+      border-right: 1px solid #FFFFFF;
+      border-bottom: 1px solid #FFFFFF;
+      padding: 4px 8px;
+      text-align: center;
+    }
+    .total-label {
+      font-size: 10px;
+      color: #808080;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .total-valeur {
+      font-size: 20px;
+      font-weight: bold;
+      color: #000080;
+    }
+    .total-unite { font-size: 10px; color: #808080; }
+
+    /* Onglets style Office 97 */
+    .onglets {
+      display: flex;
+      gap: 0;
+      margin-bottom: -1px;
+      position: relative;
+      z-index: 1;
+    }
+    .onglet {
+      background: #D4D0C8;
+      border-top: 2px solid #FFFFFF;
+      border-left: 2px solid #FFFFFF;
+      border-right: 2px solid #808080;
+      border-bottom: none;
+      padding: 3px 12px 4px;
+      font-size: 12px;
+      cursor: pointer;
+      margin-right: 3px;
+      position: relative;
+      top: 1px;
+      color: #000000;
+      font-weight: normal;
+      white-space: nowrap;
+    }
+    .onglet.actif {
+      background: #D4D0C8;
+      font-weight: bold;
+      top: 0;
+      padding-bottom: 5px;
+      border-top: 2px solid #FFFFFF;
+      z-index: 2;
+    }
+    .onglet:not(.actif) {
+      background: #C0C0C0;
+      color: #444;
+      top: 2px;
+    }
+
+    /* Panneau de contenu */
+    .panneau {
+      border: 2px solid;
+      border-color: #808080 #FFFFFF #FFFFFF #808080;
+      background: #D4D0C8;
+      padding: 10px;
+      min-height: 200px;
+      display: none;
+      position: relative;
+      z-index: 0;
+    }
+    .panneau.actif { display: block; }
+
+    /* Groupbox rétro */
+    .groupbox {
+      border: 1px solid #808080;
+      border-top: 1px solid #FFFFFF;
+      padding: 10px 10px 8px;
+      margin-bottom: 10px;
+      position: relative;
+    }
+    .groupbox-titre {
+      position: absolute;
+      top: -8px; left: 8px;
+      background: #D4D0C8;
+      padding: 0 4px;
+      font-size: 11px;
+      font-weight: bold;
+      color: #000080;
+    }
+
+    /* Grille des autocollants */
+    .autocollants-grille {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      min-height: 90px;
+      padding-top: 4px;
+    }
+    .autocollant-slot {
+      width: 80px; height: 80px;
+      border: 1px dashed #808080;
+      background: #FFFFFF;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 9px;
+      color: #C0C0C0;
+      text-align: center;
+    }
+    .autocollant-slot img {
+      width: 100%; height: 100%;
+      object-fit: contain;
+    }
+
+    /* Vocabulaire */
+    .vocab-liste {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px,1fr));
+      gap: 4px;
+      padding-top: 4px;
+    }
+    .vocab-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 12px;
+      padding: 2px 4px;
+      background: #FFFFFF;
+      border: 1px solid #D4D0C8;
+    }
+    .vocab-item input[type="checkbox"] { width: 12px; height: 12px; }
+    .vocab-mot { font-weight: bold; color: #000080; }
+
+    /* Onglet instructions */
+    .instructions-lang {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin-bottom: 10px;
+    }
+    .lang-btn {
+      background: #D4D0C8;
+      border-top: 1px solid #FFFFFF;
+      border-left: 1px solid #FFFFFF;
+      border-right: 1px solid #808080;
+      border-bottom: 1px solid #808080;
+      padding: 2px 10px;
+      font-size: 11px;
+      cursor: pointer;
+      font-weight: normal;
+    }
+    .lang-btn.actif {
+      background: #000080;
+      color: #FFFFFF;
+      font-weight: bold;
+      border-top: 1px solid #808080;
+      border-left: 1px solid #808080;
+      border-right: 1px solid #FFFFFF;
+      border-bottom: 1px solid #FFFFFF;
+    }
+    .lang-contenu { display: none; }
+    .lang-contenu.actif { display: block; }
+
+    .instructions-texte {
+      background: #FFFFFF;
+      border-top: 1px solid #808080;
+      border-left: 1px solid #808080;
+      border-right: 1px solid #FFFFFF;
+      border-bottom: 1px solid #FFFFFF;
+      padding: 10px 12px;
+      font-size: 12px;
+      line-height: 1.7;
+      color: #000000;
+    }
+    .instructions-texte h3 {
+      font-size: 12px;
+      font-weight: bold;
+      color: #000080;
+      margin-bottom: 6px;
+      border-bottom: 1px solid #000080;
+      padding-bottom: 2px;
+    }
+    .instructions-texte ol { padding-left: 18px; }
+    .instructions-texte li { margin-bottom: 4px; }
+    .instructions-texte code {
+      background: #D4D0C8;
+      border: 1px solid #808080;
+      padding: 0 3px;
+      font-family: "Courier New", monospace;
+      font-size: 11px;
+    }
+
+    /* Invite Claude */
+    .invite-bloc {
+      margin-top: 10px;
+      background: #FFFFF0;
+      border: 1px solid #808080;
+      padding: 8px 10px;
+      font-size: 11px;
+      line-height: 1.6;
+    }
+    .invite-bloc strong { color: #000080; }
+    .invite-titre {
+      font-weight: bold;
+      font-size: 11px;
+      color: #000080;
+      margin-bottom: 4px;
+      border-bottom: 1px dotted #808080;
+      padding-bottom: 2px;
+    }
+
+    /* Codes en attente */
+    .code-attente-item {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      background: #FFFFFF;
+      border: 1px solid #D4D0C8;
+      padding: 3px 6px;
+      font-size: 11px;
+    }
+    .ca-code {
+      font-family: "Courier New", monospace;
+      font-weight: bold;
+      color: #000080;
+      white-space: nowrap;
+    }
+    .ca-note {
+      color: #808080;
+      font-style: italic;
+    }
+
+    /* Barre de statut en bas */
+    .barre-statut {
+      background: #D4D0C8;
+      border-top: 1px solid #808080;
+      padding: 2px 8px;
+      font-size: 11px;
+      color: #000080;
+      display: flex;
+      justify-content: space-between;
+    }
+    .barre-statut-case {
+      border-top: 1px solid #808080;
+      border-left: 1px solid #808080;
+      border-right: 1px solid #FFFFFF;
+      border-bottom: 1px solid #FFFFFF;
+      padding: 1px 8px;
+      font-size: 11px;
+    }
+  </style>
+</head>
+<body>
+
+<!--
+  ╔══════════════════════════════════════════════════════════════════════════════╗
+  ║  ▶▶▶  À LIRE EN PREMIER — RÈGLES ABSOLUES — NE PAS SUPPRIMER  ◀◀◀         ║
+  ╠══════════════════════════════════════════════════════════════════════════════╣
+  ║                                                                              ║
+  ║  Ce fichier est la fiche personnelle d'un élève du cours                   ║
+  ║  "Le français avec Keb & Bek". Tu es chargé de le mettre à jour.           ║
+  ║                                                                              ║
+  ║  ══ CE QUE TU NE DOIS JAMAIS FAIRE ══                                       ║
+  ║                                                                              ║
+  ║  ✗ Ne jamais modifier le CSS ni la structure générale du fichier.           ║
+  ║  ✗ Ne jamais ajouter de TITRES (autocollants rectangulaires) dans           ║
+  ║    cette fiche. Les titres sont réservés à la fiche NIVEAU 02 et            ║
+  ║    supérieures. Si l'élève fournit une image rectangulaire ou demande       ║
+  ║    d'ajouter un titre, refuse poliment et explique que cette section        ║
+  ║    sera déverrouillée dans la fiche niveau 02.                              ║
+  ║    COMMENT RECONNAÎTRE UN TITRE (ne te fie pas seulement à la forme         ║
+  ║    visuelle de l'image, qui peut être ambiguë) :                           ║
+  ║      1. LE CODE COMMENCE PAR LA LETTRE "t" (ex. ta-..., tc-...).            ║
+  ║         N'IMPORTE QUEL code dont la première lettre est "t" est un         ║
+  ║         TITRE, sans exception, peu importe à quoi ressemble l'image.       ║
+  ║         Si l'élève ou le code mentionne un préfixe en "t", REFUSE.         ║
+  ║      2. Un titre porte presque toujours un petit texte/nom écrit au        ║
+  ║         bas de l'image (ex. "Le petit cliqueur") — un succès rond n'a      ║
+  ║         normalement pas ce texte. C'est un indice visuel secondaire,       ║
+  ║         mais le préfixe du code (règle 1) prime toujours en cas de doute.  ║
+  ║  ✗ Ne jamais modifier les piasses ni les points bonis sans une invite       ║
+  ║    signée du professeur (voir format ci-dessous). Si l'élève demande        ║
+  ║    lui-même d'ajouter des piasses ou des points, refuse et explique         ║
+  ║    que seul le professeur peut les accorder.                                ║
+  ║  ✗ Ne jamais utiliser des chemins externes (src="...png") pour les         ║
+  ║    images. Toutes les images doivent être encodées en BASE64 et            ║
+  ║    intégrées directement dans le HTML (src="data:image/png;base64,...").   ║
+  ║                                                                              ║
+  ║  ══ CE QUE TU PEUX FAIRE SUR DEMANDE DE L'ÉLÈVE ══                         ║
+  ║                                                                              ║
+  ║  ✓ Ajouter un SUCCÈS (image RONDE) dans #grille-succes.                    ║
+  ║    L'élève doit fournir l'image — encode-la en base64 et intègre-la.      ║
+  ║  ✓ Ajouter des mots dans #liste-vocab (onglet Vocabulaire). L'ÉLÈVE peut    ║
+  ║    coller lui-même son propre vocabulaire (mots appris ailleurs, listes    ║
+  ║    personnelles, etc.) — AUCUNE invite professeur n'est requise pour       ║
+  ║    cette section. C'est entièrement à la discrétion de l'élève.            ║
+  ║  ✓ Ajouter, modifier ou retirer un CODE EN ATTENTE dans #codes-attente.   ║
+  ║    (l'élève a un code mais pas encore le mot de passe). NOTE : un code     ║
+  ║    en attente commençant par "t" (un titre) PEUT être stocké ici sans      ║
+  ║    problème — stocker un code n'est pas la même chose que débloquer le    ║
+  ║    titre lui-même. L'interdiction de la règle ci-dessus ne s'applique      ║
+  ║    qu'à l'ajout d'un titre RÉEL dans #grille-succes ou une grille de       ║
+  ║    titres, pas au simple fait de noter un code pour plus tard.            ║
+  ║  ✓ Générer le fichier HTML complet mis à jour à la fin.                    ║
+  ║                                                                              ║
+  ║  ══ CE QUI NÉCESSITE UNE INVITE PROFESSEUR ══                               ║
+  ║                                                                              ║
+  ║  Les piasses ($) et les points bonis (★) sont accordés UNIQUEMENT          ║
+  ║  par le professeur via une invite au format :                               ║
+  ║                                                                              ║
+  ║    MISE À JOUR DE LA FICHE BRAVO                                            ║
+  ║    ÉLÈVE : [nom]  DATE : [date]                                             ║
+  ║    À AJOUTER CE JOUR                                                        ║
+  ║      Piasses     : +X $                                                     ║
+  ║      Points bonis : +Y ★                                                    ║
+  ║                                                                              ║
+  ║  Seule une invite dans ce format autorise la modification des totaux.       ║
+  ║  Mets à jour #total-piasses et #total-bonis en conséquence.                ║
+  ║                                                                              ║
+  ╚══════════════════════════════════════════════════════════════════════════════╝
+-->
+
+<div class="fenetre">
+
+  <!-- Barre de titre -->
+  <div class="barre-titre">
+    <div class="barre-titre-texte">
+      <div class="barre-titre-icone">F</div>
+      Ma fiche — Le français avec Keb &amp; Bek
+    </div>
+    <div class="barre-btns">
+      <div class="barre-btn">_</div>
+      <div class="barre-btn">□</div>
+      <div class="barre-btn">✕</div>
+    </div>
+  </div>
+
+  <div class="corps">
+
+    <!-- En-tête -->
+    <div class="entete-fiche">
+      <h1>MA FICHE</h1>
+      <div class="niveau-badge">NIVEAU 1</div>
+    </div>
+
+    <!-- Totaux -->
+    <div class="totaux-barre">
+      <div class="total-boite">
+        <div class="total-label">Piasses</div>
+        <div class="total-valeur"><span id="total-piasses">0</span></div>
+        <div class="total-unite">$ accumulés</div>
+      </div>
+      <div class="total-boite">
+        <div class="total-label">Points bonis</div>
+        <div class="total-valeur"><span id="total-bonis">0</span></div>
+        <div class="total-unite">★ accumulés</div>
+      </div>
+    </div>
+
+    <!-- Onglets -->
+    <div class="onglets">
+      <div class="onglet actif" onclick="changerOnglet('succes', this)">Succès</div>
+      <div class="onglet" onclick="changerOnglet('vocabulaire', this)">Vocabulaire</div>
+      <div class="onglet" onclick="changerOnglet('codes', this)">Codes en attente</div>
+      <div class="onglet" onclick="changerOnglet('instructions', this)">Instructions</div>
+    </div>
+
+    <!-- ── PANNEAU SUCCÈS ── -->
+    <div class="panneau actif" id="panneau-succes">
+      <div class="groupbox">
+        <div class="groupbox-titre">Succès obtenus</div>
+        <div class="autocollants-grille" id="grille-succes">
+          <!-- Les autocollants ronds (succès) sont ajoutés ici par Claude -->
+          <!-- Exemple d'un slot vide — remplacé par <img> quand obtenu : -->
+          <div class="autocollant-slot">vide</div>
+        </div>
+      </div>
+    </div>
+    </div>
+
+    <!-- ── PANNEAU VOCABULAIRE ── -->
+    <div class="panneau" id="panneau-vocabulaire">
+      <div class="groupbox">
+        <div class="groupbox-titre">Mots appris</div>
+        <div class="vocab-liste" id="liste-vocab">
+          <!-- Les mots sont ajoutés ici par Claude -->
+          <!-- Exemple (à remplacer selon les mots réels de l'élève) : -->
+          <div class="vocab-item">
+            <input type="checkbox">
+            <span class="vocab-mot">Salut</span>
+          </div>
+          <div class="vocab-item">
+            <input type="checkbox">
+            <span class="vocab-mot">Bravo</span>
+          </div>
+          <div class="vocab-item">
+            <input type="checkbox">
+            <span class="vocab-mot">Merci</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── PANNEAU CODES EN ATTENTE ── -->
+    <div class="panneau" id="panneau-codes">
+      <div class="groupbox">
+        <div class="groupbox-titre">Codes en attente</div>
+        <p style="font-size:11px; color:#444; margin-bottom:8px; line-height:1.6;">
+          Ces codes t'ont été donnés, mais tu n'as pas encore le mot de passe pour les débloquer.
+          Demande à ton professeur de te fournir le mot de passe lors d'une prochaine session,
+          puis demande à Claude de déplacer le code vers l'onglet <strong>Succès</strong>.
+        </p>
+        <div id="codes-attente">
+          <!-- Les codes en attente sont ajoutés ici par Claude -->
+          <!-- Exemple : -->
+          <!-- <div class="code-attente-item">
+                 <span class="ca-code">sn-ch0kb3k</span>
+                 <span class="ca-note">succès chocolat — mot de passe à obtenir</span>
+               </div> -->
+        </div>
+      </div>
+    </div>
+
+    <!-- ── PANNEAU INSTRUCTIONS ── -->
+    <div class="panneau" id="panneau-instructions">
+
+      <div class="instructions-lang">
+        <button class="lang-btn actif" onclick="changerLang('fr', this)">FR</button>
+        <button class="lang-btn" onclick="changerLang('en', this)">EN</button>
+        <button class="lang-btn" onclick="changerLang('es', this)">ES</button>
+        <button class="lang-btn" onclick="changerLang('pt', this)">PT</button>
+        <button class="lang-btn" onclick="changerLang('zh', this)">中文</button>
+        <button class="lang-btn" onclick="changerLang('de', this)">DE</button>
+        <button class="lang-btn" onclick="changerLang('it', this)">IT</button>
+        <button class="lang-btn" onclick="changerLang('ja', this)">日本語</button>
+        <button class="lang-btn" onclick="changerLang('ko', this)">한국어</button>
+        <button class="lang-btn" onclick="changerLang('ar', this)">العربية</button>
+        <button class="lang-btn" onclick="changerLang('ru', this)">RУ</button>
+      </div>
+
+      <!-- FRANÇAIS -->
+      <div class="lang-contenu actif" id="lang-fr">
+        <div class="instructions-texte">
+          <h3>Comment mettre à jour ta fiche</h3>
+          <ol>
+            <li>Ton professeur te donnera un <strong>bloc de mise à jour</strong> après chaque session.</li>
+            <li>Ouvre <strong>Claude</strong> (claude.ai).</li>
+            <li>Colle le bloc de mise à jour dans la conversation.</li>
+            <li>Joins ce fichier <code>fiche_niveau_01.html</code> à la conversation.</li>
+            <li>Si tu as des autocollants à ajouter, joins aussi leurs images (image <strong>ronde</strong> = un succès → onglet Succès).</li>
+            <li>Claude mettra ta fiche à jour et te donnera un nouveau fichier à télécharger.</li>
+            <li>Remplace l'ancien fichier par le nouveau.</li>
+            <li>Si tu as reçu un <strong>code Bravo</strong> mais pas encore le mot de passe, tu peux demander à Claude de l'enregistrer dans la section <em>Codes en attente</em> pour le retrouver plus tard.</li>
+            <li>Les <strong>piasses</strong> et les <strong>points bonis</strong> sont accordés uniquement par ton professeur — Claude ne peut pas les modifier sans une invite de sa part.</li>
+            <li>Les <strong>titres</strong> (autocollants rectangulaires) ne sont disponibles qu'à partir de la fiche niveau 02.</li>
+            <li>Quand tu fournis une image de succès, joins-la à Claude — il l'intégrera directement dans le fichier.</li>
+            <li>Tu peux aussi coller ton <strong>propre vocabulaire</strong> (des mots que tu as appris ailleurs) dans l'onglet Vocabulaire — pas besoin d'invite de ton professeur pour ça, c'est entièrement à toi de décider.</li>
+          </ol>
+        </div>
+        <div class="invite-bloc">
+          <div class="invite-titre">Invite à copier dans Claude</div>
+          Voici ma fiche et le bloc de mise à jour de mon professeur. Mets ma fiche à jour selon les instructions, joins les images que je t'ai fournies aux bons endroits, et génère le fichier HTML complet mis à jour.
+        </div>
+      </div>
+
+      <!-- ENGLISH -->
+      <div class="lang-contenu" id="lang-en">
+        <div class="instructions-texte">
+          <h3>How to update your card</h3>
+          <ol>
+            <li>Your teacher will give you an <strong>update block</strong> after each session.</li>
+            <li>Open <strong>Claude</strong> (claude.ai).</li>
+            <li>Paste the update block into the conversation.</li>
+            <li>Attach this file <code>fiche_niveau_01.html</code> to the conversation.</li>
+            <li>If you have stickers to add, attach their images too (<strong>round</strong> image = a succès → Succès tab).</li>
+            <li>Claude will update your card and give you a new file to download.</li>
+            <li>Replace the old file with the new one.</li>
+            <li>If you received a <strong>Bravo code</strong> but don't have the password yet, ask Claude to save it in the <em>Codes en attente</em> section for later.</li>
+            <li><strong>Piasses</strong> and <strong>points bonis</strong> are awarded by your teacher only — Claude cannot change them without a teacher prompt.</li>
+            <li><strong>Titles</strong> (rectangular stickers) are only available from profile card level 02 onwards.</li>
+            <li>When you provide a succès image, attach it to Claude — he will embed it directly in the file.</li>
+            <li>You can also paste your <strong>own vocabulary</strong> (words you learned elsewhere) into the Vocabulaire tab — no teacher prompt needed for that, it's entirely up to you.</li>
+          </ol>
+        </div>
+        <div class="invite-bloc">
+          <div class="invite-titre">Prompt to copy into Claude</div>
+          Here is my profile card and the update block from my teacher. Please update my card following the instructions, place the images I've provided in the right sections, and generate the complete updated HTML file.
+        </div>
+      </div>
+
+      <!-- ESPAÑOL -->
+      <div class="lang-contenu" id="lang-es">
+        <div class="instructions-texte">
+          <h3>Cómo actualizar tu ficha</h3>
+          <ol>
+            <li>Tu profesor te dará un <strong>bloque de actualización</strong> después de cada sesión.</li>
+            <li>Abre <strong>Claude</strong> (claude.ai).</li>
+            <li>Pega el bloque de actualización en la conversación.</li>
+            <li>Adjunta este archivo <code>fiche_niveau_01.html</code> a la conversación.</li>
+            <li>Si tienes stickers que añadir, adjunta también sus imágenes (imagen <strong>redonda</strong> = un succès → pestaña Succès).</li>
+            <li>Claude actualizará tu ficha y te dará un nuevo archivo para descargar.</li>
+            <li>Reemplaza el archivo antiguo por el nuevo.</li>
+            <li>Si recibiste un <strong>código Bravo</strong> pero aún no tienes la contraseña, pide a Claude que lo guarde en la sección <em>Codes en attente</em> para más tarde.</li>
+            <li>Las <strong>piasses</strong> y los <strong>points bonis</strong> los otorga únicamente tu profesor — Claude no puede modificarlos sin una instrucción de su parte.</li>
+            <li>Los <strong>títulos</strong> (pegatinas rectangulares) solo están disponibles a partir de la ficha nivel 02.</li>
+            <li>Cuando proporciones una imagen de succès, adjúntala a Claude — él la integrará directamente en el archivo.</li>
+            <li>También puedes pegar tu <strong>propio vocabulario</strong> (palabras que aprendiste en otro lugar) en la pestaña Vocabulaire — no necesitas instrucción de tu profesor para esto, es completamente tu decisión.</li>
+          </ol>
+        </div>
+        <div class="invite-bloc">
+          <div class="invite-titre">Instrucción para copiar en Claude</div>
+          Aquí está mi ficha y el bloque de actualización de mi profesor. Actualiza mi ficha según las instrucciones, coloca las imágenes que te adjunté en los lugares correctos y genera el archivo HTML completo actualizado.
+        </div>
+      </div>
+
+      <!-- PORTUGUÊS -->
+      <div class="lang-contenu" id="lang-pt">
+        <div class="instructions-texte">
+          <h3>Como atualizar a tua ficha</h3>
+          <ol>
+            <li>O teu professor dar-te-á um <strong>bloco de atualização</strong> após cada sessão.</li>
+            <li>Abre o <strong>Claude</strong> (claude.ai).</li>
+            <li>Cola o bloco de atualização na conversa.</li>
+            <li>Anexa este ficheiro <code>fiche_niveau_01.html</code> à conversa.</li>
+            <li>Se tiveres autocolantes para adicionar, anexa também as suas imagens (imagem <strong>redonda</strong> = um succès → separador Succès).</li>
+            <li>O Claude atualizará a tua ficha e dar-te-á um novo ficheiro para descarregar.</li>
+            <li>Substitui o ficheiro antigo pelo novo.</li>
+            <li>Se recebeste um <strong>código Bravo</strong> mas ainda não tens a senha, pede ao Claude que o guarde na secção <em>Codes en attente</em> para mais tarde.</li>
+            <li>As <strong>piasses</strong> e os <strong>points bonis</strong> são atribuídos apenas pelo teu professor — o Claude não os pode alterar sem uma instrução da parte dele.</li>
+            <li>Os <strong>títulos</strong> (autocolantes rectangulares) só estão disponíveis a partir da ficha nível 02.</li>
+            <li>Quando forneceres uma imagem de succès, anexa-a ao Claude — ele vai incorporá-la diretamente no ficheiro.</li>
+            <li>Também podes colar o teu <strong>próprio vocabulário</strong> (palavras que aprendeste noutro lugar) no separador Vocabulaire — não precisas de instrução do teu professor para isso, é totalmente à tua escolha.</li>
+          </ol>
+        </div>
+        <div class="invite-bloc">
+          <div class="invite-titre">Instrução para copiar no Claude</div>
+          Aqui está a minha ficha e o bloco de atualização do meu professor. Atualiza a minha ficha seguindo as instruções, coloca as imagens que te enviei nos sítios certos e gera o ficheiro HTML completo atualizado.
+        </div>
+      </div>
+
+
+      <!-- 中文 -->
+      <div class="lang-contenu" id="lang-zh">
+        <div class="instructions-texte">
+          <h3>如何更新你的档案</h3>
+          <ol>
+            <li>每次课后，你的老师会给你一个<strong>更新块</strong>。</li>
+            <li>打开 <strong>Claude</strong>（claude.ai）。</li>
+            <li>将更新块粘贴到对话中。</li>
+            <li>将此文件 <code>fiche_niveau_01.html</code> 附加到对话中。</li>
+            <li>如果有贴纸要添加，也请附上图片（<strong>圆形</strong>图片 = 一个 succès → Succès 选项卡）。</li>
+            <li>Claude 将更新你的档案并提供新文件供下载。</li>
+            <li>用新文件替换旧文件。</li>
+            <li>如果你收到了一个 <strong>Bravo 代码</strong>但还没有密码，可以请 Claude 将其保存在 <em>Codes en attente</em> 部分以备后用。</li>
+            <li><strong>Piasses</strong> 和 <strong>points bonis</strong> 只由老师授予 — 没有老师的指令，Claude 不能修改它们。</li>
+            <li><strong>Titres</strong>（矩形贴纸）只在第 02 级档案及以上版本中可用。</li>
+            <li>当你提供 succès 图片时，请将其附给 Claude — 他会直接将其嵌入文件中。</li>
+            <li>你也可以把<strong>自己的词汇</strong>（在别处学到的单词）粘贴到 Vocabulaire 选项卡中 — 这不需要老师的指令，完全由你决定。</li>
+          </ol>
+        </div>
+        <div class="invite-bloc">
+          <div class="invite-titre">复制到 Claude 的提示语</div>
+          这是我的档案和老师的更新块。请按照说明更新我的档案，将我提供的图片放在正确的位置，并生成完整的更新后 HTML 文件。
+        </div>
+      </div>
+
+      <!-- DEUTSCH -->
+      <div class="lang-contenu" id="lang-de">
+        <div class="instructions-texte">
+          <h3>Wie du deine Karte aktualisierst</h3>
+          <ol>
+            <li>Dein Lehrer gibt dir nach jeder Sitzung einen <strong>Aktualisierungsblock</strong>.</li>
+            <li>Öffne <strong>Claude</strong> (claude.ai).</li>
+            <li>Füge den Aktualisierungsblock in die Konversation ein.</li>
+            <li>Hänge diese Datei <code>fiche_niveau_01.html</code> an die Konversation an.</li>
+            <li>Wenn du Sticker hinzufügen möchtest, hänge auch deren Bilder an (<strong>rundes</strong> Bild = ein succès → Reiter Succès).</li>
+            <li>Claude aktualisiert deine Karte und gibt dir eine neue Datei zum Herunterladen.</li>
+            <li>Ersetze die alte Datei durch die neue.</li>
+            <li>Wenn du einen <strong>Bravo-Code</strong> erhalten hast, aber noch kein Passwort besitzt, bitte Claude, ihn im Bereich <em>Codes en attente</em> zu speichern.</li>
+            <li><strong>Piasses</strong> und <strong>Points bonis</strong> werden nur vom Lehrer vergeben — Claude darf sie ohne Lehreranweisung nicht ändern.</li>
+            <li><strong>Titel</strong> (rechteckige Sticker) sind erst ab Karte Stufe 02 verfügbar.</li>
+            <li>Wenn du ein Succès-Bild bereitstellst, hänge es an Claude an — er wird es direkt in die Datei einbetten.</li>
+            <li>Du kannst auch dein <strong>eigenes Vokabular</strong> (Wörter, die du anderswo gelernt hast) in den Reiter Vocabulaire einfügen — dafür ist keine Lehreranweisung nötig, das entscheidest du ganz allein.</li>
+          </ol>
+        </div>
+        <div class="invite-bloc">
+          <div class="invite-titre">Eingabe für Claude kopieren</div>
+          Hier ist meine Karte und der Aktualisierungsblock meines Lehrers. Bitte aktualisiere meine Karte gemäß den Anweisungen, platziere die Bilder an den richtigen Stellen und erstelle die vollständige aktualisierte HTML-Datei.
+        </div>
+      </div>
+
+      <!-- ITALIANO -->
+      <div class="lang-contenu" id="lang-it">
+        <div class="instructions-texte">
+          <h3>Come aggiornare la tua scheda</h3>
+          <ol>
+            <li>Il tuo insegnante ti darà un <strong>blocco di aggiornamento</strong> dopo ogni sessione.</li>
+            <li>Apri <strong>Claude</strong> (claude.ai).</li>
+            <li>Incolla il blocco di aggiornamento nella conversazione.</li>
+            <li>Allega questo file <code>fiche_niveau_01.html</code> alla conversazione.</li>
+            <li>Se hai degli adesivi da aggiungere, allega anche le loro immagini (immagine <strong>rotonda</strong> = un succès → scheda Succès).</li>
+            <li>Claude aggiornerà la tua scheda e ti fornirà un nuovo file da scaricare.</li>
+            <li>Sostituisci il vecchio file con quello nuovo.</li>
+            <li>Se hai ricevuto un <strong>codice Bravo</strong> ma non hai ancora la password, chiedi a Claude di salvarlo nella sezione <em>Codes en attente</em> per dopo.</li>
+            <li>Le <strong>piasses</strong> e i <strong>points bonis</strong> sono assegnati solo dal tuo insegnante — Claude non può modificarli senza un'istruzione del professore.</li>
+            <li>I <strong>titoli</strong> (adesivi rettangolari) sono disponibili solo dalla scheda livello 02 in poi.</li>
+            <li>Quando fornisci un'immagine di succès, allegala a Claude — lui la incorporerà direttamente nel file.</li>
+            <li>Puoi anche incollare il tuo <strong>vocabolario personale</strong> (parole imparate altrove) nella scheda Vocabulaire — non serve un'istruzione dell'insegnante per questo, è del tutto a tua discrezione.</li>
+          </ol>
+        </div>
+        <div class="invite-bloc">
+          <div class="invite-titre">Istruzione da copiare in Claude</div>
+          Ecco la mia scheda e il blocco di aggiornamento del mio insegnante. Aggiorna la mia scheda seguendo le istruzioni, posiziona le immagini che ho fornito nei posti giusti e genera il file HTML completo aggiornato.
+        </div>
+      </div>
+
+      <!-- 日本語 -->
+      <div class="lang-contenu" id="lang-ja">
+        <div class="instructions-texte">
+          <h3>カードの更新方法</h3>
+          <ol>
+            <li>毎回のセッションの後、先生が<strong>更新ブロック</strong>を渡してくれます。</li>
+            <li><strong>Claude</strong>（claude.ai）を開きます。</li>
+            <li>更新ブロックを会話に貼り付けます。</li>
+            <li>このファイル <code>fiche_niveau_01.html</code> を会話に添付します。</li>
+            <li>追加するステッカーがある場合は、画像も添付してください（<strong>丸い</strong>画像 = succès → Succès タブ）。</li>
+            <li>Claude がカードを更新し、新しいファイルをダウンロードできるようにします。</li>
+            <li>古いファイルを新しいものに置き換えます。</li>
+            <li><strong>Bravoコード</strong>を受け取ったがパスワードがまだない場合は、Claudeに<em>Codes en attente</em>セクションに保存するよう頼んでください。</li>
+            <li><strong>Piasses</strong>と<strong>Points bonis</strong>は先生だけが付与できます — 先生の指示なしにClaudeが変更することはできません。</li>
+            <li><strong>タイトル</strong>（長方形のステッカー）はレベル02以降のカードでのみ利用可能です。</li>
+            <li>succèsの画像を提供する際は、Claudeに添付してください — 直接ファイルに埋め込みます。</li>
+            <li><strong>自分の単語</strong>（他の場所で学んだ単語）をVocabulaireタブに貼り付けることもできます — これには先生の指示は不要で、完全に自分の判断で決められます。</li>
+          </ol>
+        </div>
+        <div class="invite-bloc">
+          <div class="invite-titre">Claudeにコピーするプロンプト</div>
+          これが私のカードと先生の更新ブロックです。指示に従ってカードを更新し、提供した画像を正しい場所に配置して、完全な更新済みHTMLファイルを生成してください。
+        </div>
+      </div>
+
+      <!-- 한국어 -->
+      <div class="lang-contenu" id="lang-ko">
+        <div class="instructions-texte">
+          <h3>카드 업데이트 방법</h3>
+          <ol>
+            <li>매 수업 후 선생님이 <strong>업데이트 블록</strong>을 드립니다.</li>
+            <li><strong>Claude</strong>(claude.ai)를 엽니다.</li>
+            <li>업데이트 블록을 대화에 붙여넣습니다.</li>
+            <li>이 파일 <code>fiche_niveau_01.html</code>을 대화에 첨부합니다.</li>
+            <li>추가할 스티커가 있다면 이미지도 첨부하세요 (<strong>둥근</strong> 이미지 = succès → Succès 탭).</li>
+            <li>Claude가 카드를 업데이트하고 새 파일을 다운로드할 수 있게 해 드립니다.</li>
+            <li>기존 파일을 새 파일로 교체합니다.</li>
+            <li><strong>Bravo 코드</strong>를 받았지만 아직 비밀번호가 없다면, Claude에게 <em>Codes en attente</em> 섹션에 저장해 달라고 하세요.</li>
+            <li><strong>Piasses</strong>와 <strong>points bonis</strong>는 선생님만 부여할 수 있습니다 — 선생님의 지시 없이 Claude가 변경할 수 없습니다.</li>
+            <li><strong>타이틀</strong>(직사각형 스티커)은 레벨 02 이상의 카드에서만 사용 가능합니다.</li>
+            <li>succès 이미지를 제공할 때 Claude에 첨부하세요 — 파일에 직접 삽입합니다.</li>
+            <li><strong>자신의 단어</strong>(다른 곳에서 배운 단어)를 Vocabulaire 탭에 붙여넣을 수도 있습니다 — 이를 위해 선생님의 지시는 필요하지 않으며, 전적으로 본인이 결정할 수 있습니다.</li>
+          </ol>
+        </div>
+        <div class="invite-bloc">
+          <div class="invite-titre">Claude에 복사할 프롬프트</div>
+          여기 제 카드와 선생님의 업데이트 블록이 있습니다. 지시에 따라 카드를 업데이트하고, 제공한 이미지를 올바른 위치에 배치하고, 완전한 업데이트된 HTML 파일을 생성해 주세요.
+        </div>
+      </div>
+
+      <!-- العربية -->
+      <div class="lang-contenu" id="lang-ar">
+        <div class="instructions-texte" dir="rtl">
+          <h3>كيفية تحديث بطاقتك</h3>
+          <ol>
+            <li>سيعطيك أستاذك <strong>كتلة تحديث</strong> بعد كل جلسة.</li>
+            <li>افتح <strong>Claude</strong> (claude.ai).</li>
+            <li>الصق كتلة التحديث في المحادثة.</li>
+            <li>أرفق هذا الملف <code>fiche_niveau_01.html</code> إلى المحادثة.</li>
+            <li>إذا كان لديك ملصقات لإضافتها، أرفق صورها أيضاً (صورة <strong>دائرية</strong> = succès → تبويب Succès).</li>
+            <li>سيقوم Claude بتحديث بطاقتك وإعطائك ملفاً جديداً للتنزيل.</li>
+            <li>استبدل الملف القديم بالجديد.</li>
+            <li>إذا تلقيت <strong>رمز Bravo</strong> لكن ليس لديك كلمة المرور بعد، اطلب من Claude حفظه في قسم <em>Codes en attente</em> لوقت لاحق.</li>
+            <li>لا يمكن لـ Claude تعديل <strong>الـ piasses</strong> و<strong>points bonis</strong> إلا بموجب تعليمات من الأستاذ.</li>
+            <li>الـ <strong>titres</strong> (الملصقات المستطيلة) متاحة فقط من بطاقة المستوى 02 فما فوق.</li>
+            <li>عند تقديم صورة succès، أرفقها إلى Claude — سيدمجها مباشرة في الملف.</li>
+            <li>يمكنك أيضاً لصق <strong>مفرداتك الخاصة</strong> (كلمات تعلمتها في مكان آخر) في تبويب Vocabulaire — لا تحتاج إلى تعليمات من الأستاذ لهذا، الأمر متروك لك بالكامل.</li>
+          </ol>
+        </div>
+        <div class="invite-bloc" dir="rtl">
+          <div class="invite-titre">النص للنسخ في Claude</div>
+          هذه بطاقتي وكتلة التحديث من أستاذي. يرجى تحديث بطاقتي وفقاً للتعليمات، ووضع الصور التي قدمتها في الأماكن الصحيحة، وإنشاء ملف HTML المحدث الكامل.
+        </div>
+      </div>
+
+      <!-- РУССКИЙ -->
+      <div class="lang-contenu" id="lang-ru">
+        <div class="instructions-texte">
+          <h3>Как обновить карточку</h3>
+          <ol>
+            <li>После каждого занятия учитель даст вам <strong>блок обновления</strong>.</li>
+            <li>Откройте <strong>Claude</strong> (claude.ai).</li>
+            <li>Вставьте блок обновления в разговор.</li>
+            <li>Прикрепите этот файл <code>fiche_niveau_01.html</code> к разговору.</li>
+            <li>Если у вас есть наклейки для добавления, прикрепите также их изображения (<strong>круглое</strong> изображение = succès → вкладка Succès).</li>
+            <li>Claude обновит карточку и предоставит новый файл для загрузки.</li>
+            <li>Замените старый файл новым.</li>
+            <li>Если вы получили <strong>код Bravo</strong>, но у вас ещё нет пароля, попросите Claude сохранить его в разделе <em>Codes en attente</em> на потом.</li>
+            <li><strong>Piasses</strong> и <strong>points bonis</strong> начисляются только учителем — Claude не может их изменять без соответствующей инструкции.</li>
+            <li><strong>Titres</strong> (прямоугольные наклейки) доступны только начиная с карточки уровня 02.</li>
+            <li>Когда вы предоставляете изображение succès, прикрепите его к Claude — он встроит его непосредственно в файл.</li>
+            <li>Вы также можете вставить свой <strong>собственный словарный запас</strong> (слова, выученные где-то ещё) во вкладку Vocabulaire — для этого не нужна инструкция учителя, это решаете только вы.</li>
+          </ol>
+        </div>
+        <div class="invite-bloc">
+          <div class="invite-titre">Текст для копирования в Claude</div>
+          Вот моя карточка и блок обновления от учителя. Пожалуйста, обновите карточку согласно инструкциям, разместите предоставленные изображения в нужных местах и создайте полный обновлённый HTML-файл.
+        </div>
+      </div>
+
+    </div><!-- fin panneau instructions -->
+
+    <!-- Barre de statut -->
+    <div class="barre-statut">
+      <div class="barre-statut-case">Le français avec Keb &amp; Bek</div>
+      <div class="barre-statut-case" id="statut-date"></div>
+    </div>
+
+  </div><!-- fin corps -->
+</div><!-- fin fenetre -->
+
+<script>
+function changerOnglet(id, el) {
+  document.querySelectorAll('.panneau').forEach(function(p) { p.classList.remove('actif'); });
+  document.querySelectorAll('.onglet').forEach(function(o) { o.classList.remove('actif'); });
+  document.getElementById('panneau-' + id).classList.add('actif');
+  el.classList.add('actif');
+}
+
+function changerLang(lang, el) {
+  document.querySelectorAll('.lang-contenu').forEach(function(c) { c.classList.remove('actif'); });
+  document.querySelectorAll('.lang-btn').forEach(function(b) { b.classList.remove('actif'); });
+  document.getElementById('lang-' + lang).classList.add('actif');
+  el.classList.add('actif');
+}
+
+/* Date dans la barre de statut */
+var d = new Date();
+document.getElementById('statut-date').textContent =
+  d.getFullYear() + '-' +
+  String(d.getMonth()+1).padStart(2,'0') + '-' +
+  String(d.getDate()).padStart(2,'0');
+</script>
+
+</body>
+</html>
