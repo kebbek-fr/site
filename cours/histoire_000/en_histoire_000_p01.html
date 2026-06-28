@@ -1331,7 +1331,6 @@ function validerChocolat() {
       feedback.style.display = 'none';
       // Afficher la vue succès dans le modal
       document.getElementById('rcSucces').classList.add('visible');
-      crossfadeBek('images/bek_chocolat.png');
       ajouterCheckbox('mot-chocolat', 'Le chocolat', 'chocolate');
     }, 1800);
   } else {
@@ -1356,6 +1355,8 @@ function apresClicBravoChocolat() {
 }
 
 function fermerChocolatSucces() {
+  // Changer l'image de Bek maintenant que le modal va se fermer
+  crossfadeBek('images/bek_chocolat.png');
   // Fermer le modal et réinitialiser pour usage futur
   var rc = document.getElementById('reponseChocolat');
   rc.classList.remove('visible');
