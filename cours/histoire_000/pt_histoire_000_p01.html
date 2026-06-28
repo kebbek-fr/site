@@ -1046,8 +1046,7 @@ function apresClicBravo() {
 }
 
 function continuerApresSucces() {
-  annulerTimers();
-  var _nuage = document.getElementById('bulleNuage'); if (_nuage) _nuage.classList.remove('visible');
+  cancelarTimers();
   var _nuage = document.getElementById('bulleNuage'); if (_nuage) _nuage.classList.remove('visible');
   document.getElementById('btnContinuer').classList.remove('appel');
   // Faire disparaître la carte succès ET refermer l'espace
@@ -1082,7 +1081,7 @@ function continuerApresSucces() {
 }
 
 function mostrarFicha() {
-  anularTimers();
+  cancelarTimers();
   var bn = document.getElementById('bulleNuage');
   if (bn) bn.classList.remove('visible');
   window.scrollTo({top: 0, behavior: 'smooth'});
