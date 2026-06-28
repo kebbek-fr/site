@@ -670,6 +670,11 @@ var kloeBulles = {
 // ─────────────────────────────────────────────
 //  Cross-fade de l'image de Bek
 // ─────────────────────────────────────────────
+function remplacerBulleBek(html) {
+  var zone = document.getElementById('bulleBek');
+  if (zone) zone.innerHTML = html;
+}
+
 function crossfadeBek(newSrc) {
   var img = document.getElementById('bekImg');
   if (img.getAttribute('src') === newSrc) return;
@@ -915,7 +920,7 @@ function continuerApresSucces() {
 
   // Kloé pointe bas — encourage à copier les mots
   remplacerKloe(
-    '<div class="bulle-kloe avec-pointe">Below, you'll find all the French words from this page. Copy them into a file or add them to your profile card to keep track of your progress!</div><button class="btn-quoi-fiche" onclick="montrerFiche()">✦ What's a profile card?</button>',
+    '<div class="bulle-kloe avec-pointe">Below, you\'ll find all the French words from this page. Copy them into a file or add them to your profile card to keep track of your progress!</div><button class="btn-quoi-fiche" onclick="montrerFiche()">✦ What\'s a profile card?</button>',
     '../images/kloe/kloe_pointe_bas_01.png',
     null
   );
@@ -945,7 +950,7 @@ function montrerFiche() {
   window.scrollTo({top: 0, behavior: 'smooth'});
   setTimeout(function() {
     crossfadeBek('../images/bek_fiche.png');
-    remplacerBulleBek('<div class="bulle-bek">Want to keep all your achievements, vocabulary and rewards in one place? You can download your <strong>Level 1 profile card</strong>!</div>');
+    remplacerBulleBek('<div class="bulle-bek">Want to keep all your achievements, vocabulary and rewards in one place? You can download your <strong>Level 1 profile card<\/strong>!</div>');
   }, 600);
   // Revenir vers le bas + afficher la carte fiche
   setTimeout(function() {
