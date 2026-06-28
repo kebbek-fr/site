@@ -1,0 +1,1086 @@
+<!DOCTYPE html>
+<html lang="fr-CA">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Registre Bravo — Keb & Bek (usage professeur)</title>
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --beige:        #F2EDE3;
+    --beige-clair:  #FDF8F2;
+    --ambre:        #D4A24E;
+    --ambre-clair:  #FAEEDA;
+    --ambre-fonce:  #854F0B;
+    --violet:       #7B5EA8;
+    --violet-clair: #EDE6F5;
+    --violet-fonce: #5A4080;
+    --vert:         #7FA86E;
+    --vert-clair:   #EAF3DE;
+    --vert-fonce:   #4A7A36;
+    --bleu:         #7A9BBF;
+    --bleu-clair:   #EEF4FB;
+    --rouge:        #C0392B;
+    --rouge-clair:  #FDECEA;
+    --texte:        #2A2422;
+    --gris:         #8A8480;
+    --blanc:        #ffffff;
+    --fond-sombre:  #1A1228;
+  }
+  body {
+    font-family: "Segoe UI", system-ui, sans-serif;
+    background: var(--beige);
+    color: var(--texte);
+    min-height: 100vh;
+  }
+
+  /* ══════════════════════════════════════
+     ÉCRAN DE CONNEXION
+  ══════════════════════════════════════ */
+  #ecran-connexion {
+    position: fixed; inset: 0; z-index: 9999;
+    background: var(--fond-sombre);
+    display: flex; align-items: center; justify-content: center;
+    flex-direction: column; gap: 24px;
+  }
+  #ecran-connexion.cache { display: none; }
+
+  .conn-logo {
+    font-size: 13px; font-weight: 800; letter-spacing: 0.18em;
+    text-transform: uppercase; color: var(--ambre); opacity: 0.8;
+  }
+  .conn-titre {
+    font-size: 26px; font-weight: 800; color: var(--blanc);
+    text-align: center; line-height: 1.2;
+  }
+  .conn-sous {
+    font-size: 12px; color: rgba(255,255,255,0.35); text-align: center;
+  }
+  .conn-form {
+    display: flex; flex-direction: column; gap: 12px;
+    width: min(340px, 90vw);
+  }
+  .conn-input {
+    padding: 14px 18px;
+    border: 1.5px solid rgba(212,162,78,0.35);
+    border-radius: 100px;
+    background: rgba(255,255,255,0.07);
+    color: var(--blanc); font-size: 15px;
+    outline: none; text-align: center; letter-spacing: 0.08em;
+    transition: border-color 0.2s;
+  }
+  .conn-input:focus { border-color: var(--ambre); }
+  .conn-input.erreur { border-color: var(--rouge); }
+  .conn-btn {
+    padding: 14px;
+    background: linear-gradient(135deg, var(--ambre), var(--ambre-fonce));
+    color: var(--blanc); font-size: 15px; font-weight: 800;
+    border: none; border-radius: 100px; cursor: pointer;
+    transition: transform 0.15s;
+  }
+  .conn-btn:hover { transform: translateY(-2px); }
+  .conn-erreur {
+    font-size: 12px; color: #E07070; text-align: center;
+    min-height: 16px;
+  }
+  .conn-avert {
+    font-size: 10px; color: rgba(255,255,255,0.2);
+    text-align: center; max-width: 300px;
+  }
+
+  /* ══════════════════════════════════════
+     EN-TÊTE
+  ══════════════════════════════════════ */
+  #entete {
+    background: #1E1430;
+    color: var(--blanc);
+    padding: 10px 20px;
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    flex-wrap: wrap;
+  }
+  .entete-titre { font-size: 14px; font-weight: 800; color: var(--ambre-clair); }
+  .entete-avert {
+    font-size: 10px; color: #ff9b8a;
+    background: rgba(192,57,43,0.18); border: 1px solid rgba(192,57,43,0.35);
+    border-radius: 6px; padding: 3px 10px;
+  }
+  .btn-deconnexion {
+    font-size: 11px; padding: 5px 12px;
+    background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 6px; color: rgba(255,255,255,0.5); cursor: pointer;
+    transition: background 0.15s;
+  }
+  .btn-deconnexion:hover { background: rgba(255,255,255,0.15); color: var(--blanc); }
+
+  /* ══════════════════════════════════════
+     BANDEAU INVITE (sticky)
+  ══════════════════════════════════════ */
+  #bandeau {
+    position: sticky; top: 0; z-index: 100;
+    background: #16210f;
+    color: #E8F5E2;
+    padding: 10px 20px;
+    display: flex; align-items: flex-start; gap: 14px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.3);
+    min-height: 48px;
+  }
+  #bandeau-label {
+    font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em;
+    color: var(--vert); font-weight: 800; white-space: nowrap;
+    margin-top: 3px; flex-shrink: 0;
+  }
+  #compilation {
+    flex: 1; font-size: 12px; line-height: 1.7;
+    color: #E8F5E2; font-family: "Courier New", monospace;
+    white-space: pre-wrap; word-break: break-word;
+    max-height: 120px; overflow-y: auto;
+  }
+  #compilation:empty::before {
+    content: "Aucun élément coché pour l'instant — coche des titres, succès ou fiches ci-dessous.";
+    color: #556B4A; font-style: italic; font-family: "Segoe UI", sans-serif;
+  }
+  .btn-copier {
+    flex-shrink: 0; background: var(--vert-fonce); color: var(--blanc);
+    border: none; border-radius: 8px; padding: 8px 14px;
+    font-size: 12px; font-weight: 700; cursor: pointer;
+    transition: background 0.15s; white-space: nowrap;
+  }
+  .btn-copier:hover { background: #3d6a28; }
+  .btn-copier.copie { background: var(--bleu); }
+
+  /* ══════════════════════════════════════
+     BARRE SESSION
+  ══════════════════════════════════════ */
+  #barre-session {
+    background: var(--beige-clair);
+    border-bottom: 1.5px solid rgba(184,201,224,0.5);
+    padding: 12px 20px;
+    display: flex; gap: 12px; flex-wrap: wrap; align-items: flex-end;
+  }
+  .champ-mini { display: flex; flex-direction: column; gap: 4px; }
+  .champ-mini label {
+    font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--gris);
+  }
+  .champ-mini input, .champ-mini select {
+    padding: 7px 10px; border: 1.5px solid rgba(184,201,224,0.6);
+    border-radius: 8px; background: var(--blanc);
+    font-size: 13px; color: var(--texte); outline: none;
+  }
+  .champ-mini input:focus, .champ-mini select:focus { border-color: var(--bleu); }
+  #nom-eleve { width: 160px; }
+
+  .champ-mini.total-avant input {
+    width: 80px;
+    background: var(--ambre-clair);
+    border-color: rgba(212,162,78,0.5);
+  }
+  .total-avant-groupe {
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .total-avant-groupe label {
+    font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ambre-fonce);
+  }
+  .total-avant-champs {
+    display: flex; gap: 6px; align-items: center;
+  }
+  .total-avant-champs input {
+    width: 72px; padding: 7px 10px;
+    border: 1.5px solid rgba(212,162,78,0.5);
+    border-radius: 8px; background: var(--ambre-clair);
+    font-size: 13px; color: var(--texte); outline: none;
+  }
+  .total-avant-champs input:focus { border-color: var(--ambre-fonce); }
+  .total-avant-sep { font-size: 11px; color: var(--gris); }
+
+  /* ══════════════════════════════════════
+     BARRE DE RECHERCHE
+  ══════════════════════════════════════ */
+  #barre-recherche {
+    background: var(--blanc);
+    border-bottom: 1.5px solid rgba(184,201,224,0.4);
+    padding: 10px 20px;
+    display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
+  }
+  #champ-recherche {
+    flex: 1; min-width: 180px; max-width: 340px;
+    padding: 8px 14px; border: 1.5px solid rgba(184,201,224,0.6);
+    border-radius: 100px; font-size: 13px; color: var(--texte); outline: none;
+    background: var(--beige-clair);
+    transition: border-color 0.2s;
+  }
+  #champ-recherche:focus { border-color: var(--violet); }
+  .filtre-btn {
+    padding: 7px 14px; border-radius: 100px;
+    border: 1.5px solid rgba(184,201,224,0.5);
+    background: transparent; color: var(--gris);
+    font-size: 12px; font-weight: 700; cursor: pointer;
+    transition: all 0.15s;
+  }
+  .filtre-btn:hover { border-color: var(--violet); color: var(--violet); }
+  .filtre-btn.actif { background: var(--violet); border-color: var(--violet); color: var(--blanc); }
+  #compteur-resultats {
+    margin-left: auto; font-size: 11px; color: var(--gris); white-space: nowrap;
+  }
+
+  /* ── INVITE PROFESSEUR ── */
+  #bandeau-prof {
+    background: #1A1A2E;
+    color: #C8C0F0;
+    padding: 8px 20px;
+    display: flex; align-items: flex-start; gap: 14px;
+    border-top: 1px solid rgba(123,94,168,0.3);
+    min-height: 42px;
+  }
+  #bandeau-prof-label {
+    font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em;
+    color: var(--violet); font-weight: 800; white-space: nowrap;
+    margin-top: 3px; flex-shrink: 0;
+  }
+  #compilation-prof {
+    flex: 1; font-size: 11px; line-height: 1.6;
+    color: #C8C0F0; font-family: "Courier New", monospace;
+    white-space: pre-wrap; word-break: break-word;
+    max-height: 100px; overflow-y: auto;
+  }
+  #compilation-prof:empty::before {
+    content: "L'invite professeur apparaîtra ici une fois des éléments cochés.";
+    color: #4A4060; font-style: italic; font-family: "Segoe UI", sans-serif;
+  }
+  .btn-copier-prof {
+    flex-shrink: 0; background: var(--violet-fonce); color: var(--blanc);
+    border: none; border-radius: 8px; padding: 7px 12px;
+    font-size: 11px; font-weight: 700; cursor: pointer;
+    transition: background 0.15s; white-space: nowrap;
+  }
+  .btn-copier-prof:hover { background: var(--violet); }
+  .btn-copier-prof.copie { background: var(--bleu); }
+  .btn-registre-eleves {
+    flex-shrink: 0; background: rgba(123,94,168,0.18);
+    border: 1px solid rgba(123,94,168,0.4);
+    border-radius: 8px; padding: 7px 12px;
+    font-size: 11px; font-weight: 700; color: #C8C0F0;
+    cursor: pointer; text-decoration: none; white-space: nowrap;
+    transition: background 0.15s;
+  }
+  .btn-registre-eleves:hover { background: rgba(123,94,168,0.35); }
+
+  /* ══════════════════════════════════════
+     ZONE PRINCIPALE
+  ══════════════════════════════════════ */
+  #zone-principale {
+    max-width: 960px; margin: 0 auto;
+    padding: 24px 20px 80px;
+    display: flex; flex-direction: column; gap: 12px;
+  }
+
+  /* ── CARTE D'ÉLÉMENT ── */
+  .element-carte {
+    background: var(--blanc);
+    border: 2px solid rgba(184,201,224,0.4);
+    border-radius: 16px;
+    overflow: hidden;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .element-carte.coche {
+    border-color: var(--vert);
+    box-shadow: 0 4px 16px rgba(127,168,110,0.2);
+  }
+  .element-carte.masque { display: none; }
+
+  .carte-entete {
+    display: flex; align-items: center; gap: 14px;
+    padding: 14px 18px;
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.15s;
+  }
+  .carte-entete:hover { background: var(--beige-clair); }
+
+  /* Checkbox stylisée */
+  .carte-check {
+    width: 26px; height: 26px; flex-shrink: 0;
+    border: 2px solid rgba(184,201,224,0.7);
+    border-radius: 8px; display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s; background: var(--beige-clair);
+  }
+  .element-carte.coche .carte-check {
+    background: var(--vert-fonce); border-color: var(--vert-fonce);
+  }
+  .carte-check svg { display: none; }
+  .element-carte.coche .carte-check svg { display: block; }
+
+  /* Badge type */
+  .badge-type {
+    font-size: 10px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase;
+    padding: 3px 10px; border-radius: 100px; white-space: nowrap;
+  }
+  .badge-titre   { background: var(--ambre-clair); color: var(--ambre-fonce); border: 1px solid rgba(212,162,78,0.3); }
+  .badge-succes  { background: var(--violet-clair); color: var(--violet-fonce); border: 1px solid rgba(123,94,168,0.3); }
+  .badge-fiche   { background: var(--bleu-clair); color: var(--bleu); border: 1px solid rgba(122,155,191,0.3); }
+
+  /* Badge niveau */
+  .badge-niveau {
+    font-size: 10px; font-weight: 700; padding: 3px 8px;
+    background: var(--beige); color: var(--gris);
+    border-radius: 100px; border: 1px solid rgba(138,132,128,0.25);
+    white-space: nowrap;
+  }
+
+  /* Badge emplacement */
+  .badge-emplacement {
+    font-size: 10px; font-weight: 700; padding: 3px 9px;
+    background: var(--ambre-clair); color: var(--ambre-fonce);
+    border-radius: 100px; border: 1px solid rgba(212,162,78,0.35);
+    white-space: nowrap; display: flex; align-items: center; gap: 4px;
+    flex-shrink: 0;
+  }
+
+  /* Select filtre emplacement */
+  #filtre-emplacement {
+    padding: 6px 10px; border-radius: 100px;
+    border: 1.5px solid rgba(184,201,224,0.5);
+    background: transparent; color: var(--gris);
+    font-size: 12px; font-weight: 700; cursor: pointer;
+    outline: none; transition: border-color 0.15s, color 0.15s;
+    appearance: none; -webkit-appearance: none;
+    padding-right: 26px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%238A8480' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+  }
+  #filtre-emplacement:focus, #filtre-emplacement:hover {
+    border-color: var(--ambre); color: var(--ambre-fonce);
+  }
+  #filtre-emplacement.actif {
+    border-color: var(--ambre); color: var(--ambre-fonce);
+    background-color: var(--ambre-clair);
+  }
+
+  .carte-nom {
+    font-size: 15px; font-weight: 800; color: var(--texte); flex: 1;
+  }
+  .carte-recomp {
+    display: flex; gap: 8px; align-items: center;
+    font-size: 12px; font-weight: 700; flex-shrink: 0;
+  }
+  .recomp-piasses { color: var(--ambre-fonce); }
+  .recomp-bonis { color: var(--violet); }
+
+  /* Chevron expand */
+  .carte-chevron {
+    color: var(--gris); font-size: 12px; flex-shrink: 0;
+    transition: transform 0.25s ease;
+  }
+  .element-carte.ouvert .carte-chevron { transform: rotate(180deg); }
+
+  /* Détail expandable */
+  .carte-detail {
+    display: none;
+    padding: 0 18px 18px;
+    border-top: 1.5px solid rgba(184,201,224,0.25);
+  }
+  .element-carte.ouvert .carte-detail { display: block; }
+
+  .detail-grille {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 10px;
+    margin-top: 14px;
+  }
+  .detail-champ {
+    background: var(--beige-clair);
+    border: 1px solid rgba(184,201,224,0.35);
+    border-radius: 10px; padding: 10px 12px;
+  }
+  .detail-champ-label {
+    font-size: 10px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.08em; color: var(--gris); margin-bottom: 4px;
+  }
+  .detail-champ-valeur {
+    font-size: 13px; font-weight: 700; color: var(--texte);
+    font-family: "Courier New", monospace; word-break: break-all;
+  }
+  .detail-champ.confidentiel .detail-champ-valeur {
+    color: var(--rouge);
+  }
+  .detail-champ.confidentiel {
+    background: var(--rouge-clair); border-color: rgba(192,57,43,0.2);
+  }
+
+  .detail-section-titre {
+    font-size: 11px; font-weight: 800; text-transform: uppercase;
+    letter-spacing: 0.1em; color: var(--gris);
+    margin: 14px 0 8px;
+  }
+  .detail-condition {
+    background: rgba(212,162,78,0.08);
+    border-left: 3px solid var(--ambre);
+    border-radius: 0 10px 10px 0;
+    padding: 10px 14px;
+    font-size: 13px; color: var(--texte); line-height: 1.65;
+  }
+  .detail-verification {
+    background: rgba(127,168,110,0.08);
+    border-left: 3px solid var(--vert);
+    border-radius: 0 10px 10px 0;
+    padding: 10px 14px;
+    font-size: 13px; color: var(--texte); line-height: 1.65;
+  }
+  .detail-teaser {
+    background: var(--violet-clair);
+    border-left: 3px solid var(--violet);
+    border-radius: 0 10px 10px 0;
+    padding: 10px 14px;
+    font-size: 13px; color: var(--violet-fonce); line-height: 1.65; font-style: italic;
+  }
+
+  /* ── INVITE GÉNÉRÉE ── */
+  .invite-zone {
+    margin-top: 16px;
+    background: #16210f;
+    border-radius: 10px; padding: 14px;
+    display: none;
+  }
+  .element-carte.coche .invite-zone { display: block; }
+  .invite-label {
+    font-size: 10px; font-weight: 800; text-transform: uppercase;
+    letter-spacing: 0.1em; color: var(--vert); margin-bottom: 8px;
+  }
+  .invite-texte {
+    font-family: "Courier New", monospace; font-size: 12px;
+    color: #E8F5E2; white-space: pre-wrap; line-height: 1.65;
+  }
+  .btn-copier-carte {
+    margin-top: 10px; padding: 7px 16px;
+    background: var(--vert-fonce); color: var(--blanc);
+    border: none; border-radius: 8px; font-size: 12px; font-weight: 700;
+    cursor: pointer; transition: background 0.15s;
+  }
+  .btn-copier-carte:hover { background: #3d6a28; }
+  .btn-copier-carte.copie { background: var(--bleu); }
+
+  /* ── ÉTAT VIDE ── */
+  #etat-vide {
+    text-align: center; padding: 48px 20px;
+    color: var(--gris); font-size: 14px; display: none;
+  }
+  #etat-vide svg { display: block; margin: 0 auto 12px; opacity: 0.3; }
+
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════
+     ÉCRAN DE CONNEXION
+══════════════════════════════════════ -->
+<div id="ecran-connexion">
+  <div class="conn-logo">Keb &amp; Bek · Usage exclusif du professeur</div>
+  <div class="conn-titre">Registre Bravo</div>
+  <div class="conn-sous">Titres · Succès · Fiches · Codes &amp; mots de passe</div>
+  <div class="conn-form">
+    <input class="conn-input" id="mdp-maitre" type="password"
+           placeholder="Mot de passe maître"
+           autocomplete="off"
+           onkeydown="if(event.key==='Enter') verifierMaitre()">
+    <button class="conn-btn" onclick="verifierMaitre()">Accéder au registre</button>
+    <div class="conn-erreur" id="conn-erreur"></div>
+  </div>
+  <div class="conn-avert">Ce fichier ne doit pas être partagé ni hébergé en ligne.</div>
+</div>
+
+<!-- ══════════════════════════════════════
+     EN-TÊTE
+══════════════════════════════════════ -->
+<div id="entete">
+  <div class="entete-titre">Registre Bravo — Keb &amp; Bek</div>
+  <div class="entete-avert">Usage exclusif du professeur — ne pas partager</div>
+  <button class="btn-deconnexion" onclick="deconnecter()">Verrouiller</button>
+</div>
+
+<!-- ══════════════════════════════════════
+     BANDEAU INVITE (sticky)
+══════════════════════════════════════ -->
+<div id="bandeau">
+  <div id="bandeau-label">Invite élève</div>
+  <div id="compilation"></div>
+  <button class="btn-copier" id="btn-copier-bandeau" onclick="copierBandeau()">Copier l'invite</button>
+</div>
+
+<!-- ══════════════════════════════════════
+     BARRE SESSION
+══════════════════════════════════════ -->
+<div id="barre-session">
+  <div class="champ-mini">
+    <label>Nom de l'élève</label>
+    <input type="text" id="nom-eleve" placeholder="Prénom" oninput="mettreAJourTout()">
+  </div>
+  <div class="champ-mini">
+    <label>Date</label>
+    <input type="date" id="date-session" oninput="mettreAJourTout()">
+  </div>
+  <div class="champ-mini">
+    <label>Langue de l'élève</label>
+    <select id="langue-eleve" onchange="mettreAJourTout()">
+      <option value="fr">Français</option>
+      <option value="en">English</option>
+      <option value="es">Español</option>
+      <option value="pt">Português</option>
+      <option value="it">Italiano</option>
+      <option value="zh">中文</option>
+    </select>
+  </div>
+
+  <div class="total-avant-groupe">
+    <label>Total avant ajout (optionnel)</label>
+    <div class="total-avant-champs">
+      <input type="number" id="total-avant-piasses" min="0" placeholder="0" title="Piasses accumulées avant cette session" oninput="mettreAJourTout()">
+      <span class="total-avant-sep">$ piasses</span>
+      <input type="number" id="total-avant-bonis" min="0" placeholder="0" title="Points bonis accumulés avant cette session" oninput="mettreAJourTout()">
+      <span class="total-avant-sep">★ bonis</span>
+    </div>
+  </div>
+
+  <button style="margin-left:auto; padding:7px 14px; border-radius:8px; border:1.5px solid rgba(192,57,43,0.35); background:var(--rouge-clair); color:var(--rouge); font-size:12px; font-weight:700; cursor:pointer;" onclick="toutDecocher()">
+    Tout décocher
+  </button>
+</div>
+
+<!-- ══════════════════════════════════════
+     BANDEAU INVITE PROFESSEUR
+══════════════════════════════════════ -->
+<div id="bandeau-prof">
+  <div id="bandeau-prof-label">Invite prof</div>
+  <div id="compilation-prof"></div>
+  <button class="btn-copier-prof" id="btn-copier-prof" onclick="copierProf()">Copier</button>
+  <a class="btn-registre-eleves" href="registre-eleves.html" target="_blank">Registre élèves →</a>
+</div>
+<!-- ══════════════════════════════════════
+     BARRE DE RECHERCHE
+══════════════════════════════════════ -->
+<div id="barre-recherche">
+  <input type="text" id="champ-recherche" placeholder="Rechercher par nom, code, catégorie…"
+         oninput="filtrer()">
+  <button class="filtre-btn actif" data-filtre="tous" onclick="setFiltre('tous', this)">Tous</button>
+  <button class="filtre-btn" data-filtre="titre" onclick="setFiltre('titre', this)">Titres</button>
+  <button class="filtre-btn" data-filtre="succes" onclick="setFiltre('succes', this)">Succès</button>
+  <button class="filtre-btn" data-filtre="fiche" onclick="setFiltre('fiche', this)">Fiches</button>
+  <select id="filtre-emplacement" onchange="setFiltreEmplacement(this)" title="Filtrer par emplacement">
+    <option value="">Tous les emplacements</option>
+  </select>
+  <span id="compteur-resultats"></span>
+</div>
+
+<!-- ══════════════════════════════════════
+     ZONE PRINCIPALE
+══════════════════════════════════════ -->
+<div id="zone-principale">
+  <!-- Les cartes sont injectées ici par JS -->
+</div>
+<div id="etat-vide">
+  <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+    <circle cx="20" cy="20" r="18" stroke="currentColor" stroke-width="2" stroke-dasharray="4 4"/>
+    <text x="20" y="26" text-anchor="middle" font-size="16" fill="currentColor" font-family="sans-serif">?</text>
+  </svg>
+  Aucun résultat pour cette recherche.
+</div>
+
+<script>
+/* ══════════════════════════════════════════════
+   MOT DE PASSE MAÎTRE
+══════════════════════════════════════════════ */
+var MDP_MAITRE = "Valeuraph8?9!";
+
+/* ══════════════════════════════════════════════
+   BASE DE DONNÉES DES ÉLÉMENTS BRAVO
+   Structure de chaque entrée :
+   {
+     id        : identifiant unique (= nom de fichier sans .html)
+     type      : "titre" | "succes" | "fiche"
+     nom       : nom affiché
+     code      : code saisi dans le charriot
+     mdp       : mot de passe pour déverrouiller
+     niveau    : libellé du niveau (ex. "Niveau 1 — Découverte")
+     piasses  : nombre de piasses accordées
+     bonis     : nombre de points bonis accordés
+     condition : description exacte de la condition d'obtention (usage interne prof)
+     teaser    : indice public affiché dans bravo/titres.html
+     verification : comment vérifier la validité quand l'élève présente son autocollant
+     versions  : [] liste des variantes téléchargeables (ex. garçon / fille)
+     notes     : notes internes supplémentaires (optionnel)
+   }
+══════════════════════════════════════════════ */
+var BRAVO_DATA = [
+
+  {
+    id:           "ta-kl1k3ur",
+    type:         "titre",
+    nom:          "Le petit cliqueur / La petite cliqueuse",
+    code:         "ta-kl1k3ur",
+    mdp:          "abc123",
+    niveau:       "Niveau 1 — Découverte",
+    piasses:     5,
+    bonis:        1,
+    condition:    "L'élève a cliqué sur l'autocollant de couverture de la page d'accueil du cours (index-principal.html). Ce clic révèle une page secrète menant à ce titre.",
+    teaser:       "Il faut cliquer sur un gros truc rectangulaire avec deux bonhommes dessus.",
+    verification: "L'élève présente l'autocollant téléchargé (ta-kl1k3ur_garcon.png ou ta-kl1k3ur_fille.png). Vérifier que l'image correspond bien à l'autocollant officiel du titre. Le fond est violet pâle (#E8E0F0), liseré blanc niveau 1. Aucune condition supplémentaire à vérifier.",
+    versions:     ["Le petit cliqueur (garçon)", "La petite cliqueuse (fille)"],
+    emplacement:  "Page principale",
+    notes:        "Premier titre du site — obtenu en découvrant la page secrète via l'autocollant de couverture. Titre de type Découverte (🔍), garanti sans risque d'échec (🎁)."
+  },
+
+  {
+    id:           "ta-d3p3ch3",
+    type:         "titre",
+    nom:          "Le petit pressé / La petite pressée",
+    code:         "ta-d3p3ch3",
+    mdp:          "RendezVous9",
+    niveau:       "Niveau 2 — Bronze",
+    piasses:     20,
+    bonis:        4,
+    condition:    "L'élève a cliqué sur le bouton « Commençons » dans les 5 premières secondes après l'ouverture de la page cours/index.html. Ce clic dans la fenêtre de 5s révèle l'image avec casquette et donne accès au code de ce titre.",
+    teaser:       "Tu n'as pas le temps d'attendre, tu dois cliquer tout de suite !",
+    verification: "L'élève présente l'autocollant téléchargé (ta-d3p3ch3_garcon.png ou ta-d3p3ch3_fille.png). Vérifier que l'image correspond au lapin pressé officiel (version garçon : nœud papillon, version fille : ruban sur l'oreille + sacoche). Liseré bronze niveau 2, léger halo doré.",
+    versions:     ["Le petit pressé (garçon)", "La petite pressée (fille)"],
+    emplacement:  "Page du choix de langue",
+    notes:        "Titre de type Action — fenêtre de 5 secondes au chargement de cours/index.html. Mot de passe JAMAIS public — remis uniquement par Raphaël après un vrai cours payant. Les élèves en parcours gratuit peuvent collecter le code mais ne peuvent pas débloquer sans cours."
+  },
+
+  {
+    id:           "sv-sa111uut",
+    type:         "succes",
+    nom:          "C'est parti !",
+    code:         "sv-sa111uut",
+    mdp:          "mon1ersalut",
+    niveau:       "Niveau 1",
+    piasses:      2,
+    bonis:        1,
+    condition:    "L'élève a tapé « salut » dans la zone de réponse de histoire_000_p01 (versions EN, ES ou PT). Le code et le mot de passe sont révélés automatiquement dans la page, via la carte ticket de l'étape 3.",
+    teaser:       "Le premier mot. Le premier pas. Tout commence quelque part.",
+    verification: "L'élève présente l'autocollant sv-sa111uut.png (Keb avec bandeau hachimaki, texte « C'est parti », autocollant circulaire avec parties saillantes). Liseré blanc mat — niveau 1, sans éclat ni contour coloré. Code et mot de passe correspondent à la carte ticket de histoire_000.",
+    versions:     ["sv-sa111uut (version unique — pas de variante garçon/fille)"],
+    emplacement:  "Histoire 000 — p01",
+    notes:        "Premier succès de type vocabulaire (préfixe sv-). Débloqué automatiquement lors de la séquence histoire_000_p01 — aucune action secrète requise. Mot de passe public, intégré directement dans la page de cours."
+  }
+
+  /* ── Ajouter les prochains éléments ici, séparés par des virgules ── */
+
+  ,{
+    id:           "sn-ch0kb3k",
+    type:         "succes",
+    nom:          "L'obsession de Bek",
+    code:         "sn-ch0kb3k",
+    mdp:          "d8l1ci8useOBseS1ion",
+    niveau:       "Niveau 4",
+    piasses:      350,
+    bonis:        20,
+    emplacement:  "Histoire 000 — p01 (modal chocolat secret)",
+    condition:    "L'élève a répondu correctement en français à la question « À quoi est-ce que Bek pense très souvent ? » dans le modal chocolat de histoire_000_p01. Réponses acceptées : « au gâteau au chocolat », « le gâteau au chocolat », « gâteau au chocolat » (et variantes proches). La question est toujours en français, peu importe la langue d'interface de l'élève (EN/ES/PT).",
+    verification: "Succès déclenché automatiquement par la page — l'élève reçoit le code sn-ch0kb3k et le mot de passe d8l1ci8useOBseS1ion directement dans le modal. Vérifier que le code correspond. Autocollant circulaire à créer (image sn-ch0kb3k.png — pas encore générée). Mot de passe sensible à la casse.",
+    versions:     ["sn-ch0kb3k (version unique)"],
+    notes:        "Succès narratif de type 🔍. Difficulté 4/5 — nécessite d'avoir retenu que Bek pense souvent au gâteau au chocolat de sa mère (info récurrente dans l'univers), de comprendre la question en français, et de formuler une réponse correcte. L'indice crucial (« Bek pense très souvent au gâteau au chocolat ») ne sera lancé explicitement qu'une fois dans les dialogues entre personnages. Image autocollant à générer."
+  }
+
+];
+
+/* ══════════════════════════════════════════════
+   TRADUCTIONS DE L'INVITE ÉLÈVE
+══════════════════════════════════════════════ */
+var TRADUCTIONS = {
+  entete: {
+    fr: "MISE À JOUR DE LA FICHE BRAVO",
+    en: "BRAVO PROFILE UPDATE",
+    es: "ACTUALIZACIÓN DE LA FICHA BRAVO",
+    pt: "ATUALIZAÇÃO DA FICHA BRAVO",
+    it: "AGGIORNAMENTO DELLA SCHEDA BRAVO",
+    zh: "更新 BRAVO 档案"
+  },
+  instructions: {
+    fr: "\nINSTRUCTIONS POUR CLAUDE\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nRaphaël va te joindre le fichier registre-eleves.html.\nCe fichier contient les données de tous les élèves (totaux, historique).\n\n1. Trouve l'élève dont le prénom correspond à celui indiqué ci-dessus.\n2. Ajoute une nouvelle entrée dans son historique avec :\n   — la date de la session\n   — chaque élément débloqué (nom + code + piasses + points bonis)\n3. Mets à jour ses totaux cumulés (piasses et points bonis).\n4. Si l'élève n'existe pas encore dans le fichier, crée sa fiche à partir du modèle prévu à cet effet.\n5. Génère le fichier registre-eleves.html complet et mis à jour, prêt à remplacer l'ancien.",
+    en: "\nINSTRUCTIONS FOR CLAUDE\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nRaphaël will attach the file registre-eleves.html.\nThis file contains all student data (totals, history).\n\n1. Find the student whose first name matches the one above.\n2. Add a new entry to their history with:\n   — the session date\n   — each unlocked item (name + code + piasses + bonus points)\n3. Update their cumulative totals (piasses and bonus points).\n4. If the student doesn't exist yet, create their record using the template in the file.\n5. Generate the complete updated registre-eleves.html file, ready to replace the old one.",
+    es: "\nINSTRUCCIONES PARA CLAUDE\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nRaphaël adjuntará el archivo registre-eleves.html.\nEste archivo contiene los datos de todos los estudiantes (totales, historial).\n\n1. Encuentra al estudiante cuyo nombre coincide con el indicado arriba.\n2. Añade una nueva entrada en su historial con:\n   — la fecha de la sesión\n   — cada elemento desbloqueado (nombre + código + piasses + puntos bono)\n3. Actualiza sus totales acumulados (piasses y puntos bono).\n4. Si el estudiante no existe aún, crea su ficha usando la plantilla del archivo.\n5. Genera el archivo registre-eleves.html completo y actualizado, listo para reemplazar el antiguo.",
+    pt: "\nINSTRUÇÕES PARA O CLAUDE\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nRaphaël irá anexar o arquivo registre-eleves.html.\nEste arquivo contém os dados de todos os alunos (totais, histórico).\n\n1. Encontre o aluno cujo nome corresponde ao indicado acima.\n2. Adicione uma nova entrada no histórico com:\n   — a data da sessão\n   — cada item desbloqueado (nome + código + piasses + pontos bónus)\n3. Atualize os totais acumulados (piasses e pontos bónus).\n4. Se o aluno ainda não existir, crie a sua ficha usando o modelo previsto no arquivo.\n5. Gere o arquivo registre-eleves.html completo e atualizado, pronto para substituir o antigo.",
+    it: "\nISTRUZIONI PER CLAUDE\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nRaphaël allegherà il file registre-eleves.html.\nQuesto file contiene i dati di tutti gli studenti (totali, cronologia).\n\n1. Trova lo studente il cui nome corrisponde a quello indicato sopra.\n2. Aggiungi una nuova voce nella cronologia con:\n   — la data della sessione\n   — ogni elemento sbloccato (nome + codice + piasses + punti bonus)\n3. Aggiorna i totali cumulativi (piasses e punti bonus).\n4. Se lo studente non esiste ancora, crea la sua scheda usando il modello nel file.\n5. Genera il file registre-eleves.html completo e aggiornato, pronto per sostituire il vecchio.",
+    zh: "\nCLAUDE 的操作指示\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nRaphaël 将附上 registre-eleves.html 文件。\n该文件包含所有学生的数据（累计总额、历史记录）。\n\n1. 找到与上方姓名对应的学生。\n2. 在其历史记录中添加新条目，包含：\n   — 本次课程日期\n   — 每个已解锁项目（名称 + 代码 + 皮阿斯特 + 奖励积分）\n3. 更新其累计总额（皮阿斯特和奖励积分）。\n4. 如果该学生尚不存在，请使用文件中的模板创建其档案。\n5. 生成完整且已更新的 registre-eleves.html 文件，可直接替换旧文件。"
+  }
+};
+
+/* ══════════════════════════════════════════════
+   ÉTAT
+══════════════════════════════════════════════ */
+var filtreActif = "tous";
+var coches = {};   /* id → true */
+var ouverts = {};  /* id → true */
+
+/* ══════════════════════════════════════════════
+   CONNEXION / DÉCONNEXION
+══════════════════════════════════════════════ */
+function verifierMaitre() {
+  var input = document.getElementById("mdp-maitre");
+  var val = input.value.trim();
+  if (val === MDP_MAITRE) {
+    document.getElementById("ecran-connexion").classList.add("cache");
+    construireCartes();
+    mettreAJourTout();
+    // Pré-remplir la date d'aujourd'hui
+    var auj = new Date();
+    var iso = auj.toISOString().split("T")[0];
+    document.getElementById("date-session").value = iso;
+  } else {
+    input.classList.add("erreur");
+    document.getElementById("conn-erreur").textContent = "Mot de passe incorrect.";
+    setTimeout(function() {
+      input.classList.remove("erreur");
+      document.getElementById("conn-erreur").textContent = "";
+      input.value = "";
+      input.focus();
+    }, 1800);
+  }
+}
+
+function deconnecter() {
+  document.getElementById("ecran-connexion").classList.remove("cache");
+  document.getElementById("mdp-maitre").value = "";
+  toutDecocher();
+}
+
+/* ══════════════════════════════════════════════
+   CONSTRUCTION DES CARTES
+══════════════════════════════════════════════ */
+function construireCartes() {
+  var zone = document.getElementById("zone-principale");
+  zone.innerHTML = "";
+
+  BRAVO_DATA.forEach(function(el) {
+    var carte = document.createElement("div");
+    carte.className = "element-carte";
+    carte.id = "carte-" + el.id;
+    carte.dataset.type = el.type;
+    carte.dataset.nom = el.nom.toLowerCase();
+    carte.dataset.code = el.code.toLowerCase();
+    carte.dataset.emplacement = (el.emplacement || '').toLowerCase();
+
+    var badgeClass = "badge-" + el.type;
+    var badgeLabel = el.type === "titre" ? "Titre" : el.type === "succes" ? "Succès" : "Fiche";
+
+    var versionsHtml = el.versions.map(function(v) {
+      return '<div style="font-size:12px; color:var(--gris); padding: 2px 0;">· ' + v + '</div>';
+    }).join("");
+
+    carte.innerHTML =
+      '<div class="carte-entete" onclick="toggleCarte(\'' + el.id + '\')">' +
+        '<div class="carte-check">' +
+          '<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7 L5.5 10.5 L12 3.5" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
+        '</div>' +
+        '<span class="badge-type ' + badgeClass + '">' + badgeLabel + '</span>' +
+        '<span class="badge-niveau">' + el.niveau + '</span>' +
+        (el.emplacement ? '<span class="badge-emplacement">' +
+          '<svg width="9" height="10" viewBox="0 0 10 13" fill="none" style="flex-shrink:0;">'+
+          '<path d="M5 0.5C2.5 0.5 0.5 2.5 0.5 5C0.5 8.5 5 12.5 5 12.5C5 12.5 9.5 8.5 9.5 5C9.5 2.5 7.5 0.5 5 0.5Z" fill="var(--ambre-fonce)" opacity="0.7"/>'+
+          '<circle cx="5" cy="5" r="1.8" fill="var(--ambre-clair)"/>'+
+          '</svg>' + el.emplacement + '</span>' : '') +
+        '<span class="carte-nom">' + el.nom + '</span>' +
+        '<span class="carte-recomp">' +
+          '<span class="recomp-piasses">+' + el.piasses + ' $</span>' +
+          '<span class="recomp-bonis">+' + el.bonis + ' ★</span>' +
+        '</span>' +
+        '<span class="carte-chevron">▼</span>' +
+      '</div>' +
+
+      '<div class="carte-detail">' +
+        '<div class="detail-grille">' +
+          '<div class="detail-champ">' +
+            '<div class="detail-champ-label">Code Bravo</div>' +
+            '<div class="detail-champ-valeur">' + el.code + '</div>' +
+          '</div>' +
+          '<div class="detail-champ confidentiel">' +
+            '<div class="detail-champ-label">Mot de passe</div>' +
+            '<div class="detail-champ-valeur">' + el.mdp + '</div>' +
+          '</div>' +
+          '<div class="detail-champ">' +
+            '<div class="detail-champ-label">Piasses accordées</div>' +
+            '<div class="detail-champ-valeur">' + el.piasses + ' $</div>' +
+          '</div>' +
+          '<div class="detail-champ">' +
+            '<div class="detail-champ-label">Points bonis accordés</div>' +
+            '<div class="detail-champ-valeur">' + el.bonis + ' ★</div>' +
+          '</div>' +
+        '</div>' +
+
+        '<div class="detail-section-titre">Condition d\'obtention (usage interne)</div>' +
+        '<div class="detail-condition">' + el.condition + '</div>' +
+
+        '<div class="detail-section-titre">Comment vérifier quand l\'élève présente son autocollant</div>' +
+        '<div class="detail-verification">' + el.verification + '</div>' +
+
+        '<div class="detail-section-titre">Teaser public (affiché dans bravo/titres.html)</div>' +
+        '<div class="detail-teaser">' + el.teaser + '</div>' +
+
+        (el.versions.length > 0 ?
+          '<div class="detail-section-titre">Versions téléchargeables</div>' +
+          '<div style="padding: 8px 0;">' + versionsHtml + '</div>' : '') +
+
+        (el.notes ?
+          '<div class="detail-section-titre">Notes internes</div>' +
+          '<div style="font-size:12px; color:var(--gris); line-height:1.65; padding:2px 0;">' + el.notes + '</div>' : '') +
+
+        '<div class="invite-zone" id="invite-' + el.id + '">' +
+          '<div class="invite-label">Invite élève générée</div>' +
+          '<div class="invite-texte" id="invite-texte-' + el.id + '"></div>' +
+          '<button class="btn-copier-carte" onclick="copierCarte(\'' + el.id + '\', this)">Copier cette invite</button>' +
+        '</div>' +
+      '</div>';
+
+    zone.appendChild(carte);
+  });
+
+  peuplerSelectEmplacement();
+  filtrer();
+}
+
+/* ══════════════════════════════════════════════
+   TOGGLE CARTE (expand + cocher)
+══════════════════════════════════════════════ */
+function toggleCarte(id) {
+  var carte = document.getElementById("carte-" + id);
+  var etaitOuvert = ouverts[id];
+
+  // Basculer ouverture
+  ouverts[id] = !etaitOuvert;
+  carte.classList.toggle("ouvert", ouverts[id]);
+
+  // Cocher / décocher si on clique sur l'en-tête
+  coches[id] = !coches[id];
+  carte.classList.toggle("coche", coches[id]);
+
+  mettreAJourTout();
+}
+
+function toutDecocher() {
+  coches = {};
+  ouverts = {};
+  document.querySelectorAll(".element-carte").forEach(function(c) {
+    c.classList.remove("coche", "ouvert");
+  });
+  mettreAJourTout();
+}
+
+/* ══════════════════════════════════════════════
+   FILTRER / RECHERCHER
+══════════════════════════════════════════════ */
+function setFiltre(f, btn) {
+  filtreActif = f;
+  document.querySelectorAll(".filtre-btn").forEach(function(b) { b.classList.remove("actif"); });
+  btn.classList.add("actif");
+  filtrer();
+}
+
+function setFiltreEmplacement(sel) {
+  sel.classList.toggle("actif", sel.value !== "");
+  filtrer();
+}
+
+function peuplerSelectEmplacement() {
+  var sel = document.getElementById("filtre-emplacement");
+  var emplacements = {};
+  BRAVO_DATA.forEach(function(el) {
+    if (el.emplacement) emplacements[el.emplacement] = true;
+  });
+  Object.keys(emplacements).sort().forEach(function(e) {
+    var opt = document.createElement("option");
+    opt.value = e.toLowerCase();
+    opt.textContent = e;
+    sel.appendChild(opt);
+  });
+}
+
+function filtrer() {
+  var terme = (document.getElementById("champ-recherche").value || "").toLowerCase().trim();
+  var cartes = document.querySelectorAll(".element-carte");
+  var visibles = 0;
+
+  cartes.forEach(function(c) {
+    if (!c.dataset.type) return; // état vide
+    var matchType = filtreActif === "tous" || c.dataset.type === filtreActif;
+    var emplacementFiltre = (document.getElementById("filtre-emplacement").value || "").toLowerCase();
+    var matchTerme = !terme ||
+      c.dataset.nom.includes(terme) ||
+      c.dataset.code.includes(terme) ||
+      c.dataset.type.includes(terme) ||
+      (c.dataset.emplacement || "").includes(terme);
+    var matchEmplacement = !emplacementFiltre || (c.dataset.emplacement || "") === emplacementFiltre;
+
+    if (matchType && matchTerme && matchEmplacement) {
+      c.classList.remove("masque");
+      visibles++;
+    } else {
+      c.classList.add("masque");
+    }
+  });
+
+  document.getElementById("etat-vide").style.display = visibles === 0 ? "block" : "none";
+  document.getElementById("compteur-resultats").textContent =
+    visibles + " résultat" + (visibles !== 1 ? "s" : "");
+}
+
+/* ══════════════════════════════════════════════
+   GÉNÉRATION DE L'INVITE
+══════════════════════════════════════════════ */
+function genererInvite(ids) {
+  var nom = document.getElementById("nom-eleve").value.trim() || "[Nom de l'élève]";
+  var date = document.getElementById("date-session").value || "[date]";
+  var langue = document.getElementById("langue-eleve").value;
+
+  var avantPiasses = parseInt(document.getElementById("total-avant-piasses").value) || null;
+  var avantBonis    = parseInt(document.getElementById("total-avant-bonis").value)    || null;
+
+  var ajoutPiasses = 0;
+  var ajoutBonis    = 0;
+  ids.forEach(function(id) {
+    var el = trouverElement(id);
+    if (el) { ajoutPiasses += el.piasses; ajoutBonis += el.bonis; }
+  });
+
+  var texte = (TRADUCTIONS.entete[langue] || TRADUCTIONS.entete.fr) + "\n";
+  texte += "\u2501".repeat(50) + "\n\n";
+  texte += "ÉLÈVE : " + nom + "\n";
+  texte += "DATE  : " + date + "\n\n";
+
+  texte += "ÉLÉMENTS DÉBLOQUÉS\n";
+  texte += "\u2500".repeat(30) + "\n";
+
+  ids.forEach(function(id) {
+    var el = trouverElement(id);
+    if (!el) return;
+    var typeLabel = el.type === "titre" ? "Titre" : el.type === "succes" ? "Succès" : "Fiche";
+    texte += "\n  [" + typeLabel + "] " + el.nom + "\n";
+    texte += "  Code Bravo    : " + el.code + "\n";
+    texte += "  Piasses      : +" + el.piasses + " $\n";
+    texte += "  Points bonis  : +" + el.bonis + " \u2605\n";
+    texte += "  Image à joindre : télécharge depuis bravo/ et joins l'autocollant ici\n";
+  });
+
+  texte += "\n" + "\u2500".repeat(30) + "\n";
+  texte += "À AJOUTER CE JOUR\n";
+  texte += "  Piasses     : +" + ajoutPiasses + " $\n";
+  texte += "  Points bonis : +" + ajoutBonis + " \u2605\n";
+
+  if (avantPiasses !== null || avantBonis !== null) {
+    texte += "\n";
+    texte += "TOTAL AVANT CET AJOUT (fourni par le professeur)\n";
+    if (avantPiasses !== null) texte += "  Piasses     : " + avantPiasses + " $\n";
+    if (avantBonis    !== null) texte += "  Points bonis : " + avantBonis    + " \u2605\n";
+    var nouveauPiasses = (avantPiasses || 0) + ajoutPiasses;
+    var nouveauBonis    = (avantBonis    || 0) + ajoutBonis;
+    texte += "\nNOUVEAU TOTAL APRÈS AJOUT\n";
+    texte += "  Piasses     : " + nouveauPiasses + " $\n";
+    texte += "  Points bonis : " + nouveauBonis    + " \u2605\n";
+  }
+
+  texte += (TRADUCTIONS.instructions[langue] || TRADUCTIONS.instructions.fr);
+  return texte;
+}
+
+function genererInviteProf(ids) {
+  if (ids.length === 0) return "";
+  var nom  = document.getElementById("nom-eleve").value.trim() || "[Nom de l'élève]";
+  var date = document.getElementById("date-session").value || "[date]";
+
+  var ajoutPiasses = 0;
+  var ajoutBonis    = 0;
+  var lignes = [];
+  ids.forEach(function(id) {
+    var el = trouverElement(id);
+    if (!el) return;
+    ajoutPiasses += el.piasses;
+    ajoutBonis    += el.bonis;
+    lignes.push("[" + el.code + "] " + el.nom + " (+$" + el.piasses + " / +★" + el.bonis + ")" + (el.emplacement ? " [" + el.emplacement + "]" : ""));
+  });
+
+  var texte = "MISE À JOUR REGISTRE ÉLÈVES — " + date + "\n";
+  texte += "\u2501".repeat(40) + "\n";
+  texte += "Élève  : " + nom + "\n";
+  texte += "Éléments validés ce jour :\n";
+  lignes.forEach(function(l) { texte += "  • " + l + "\n"; });
+  texte += "\nÀ ajouter : +" + ajoutPiasses + " $ / +" + ajoutBonis + " ★\n";
+
+  var avantPiasses = parseInt(document.getElementById("total-avant-piasses").value) || null;
+  var avantBonis    = parseInt(document.getElementById("total-avant-bonis").value)    || null;
+  if (avantPiasses !== null || avantBonis !== null) {
+    texte += "Nouveau total : " +
+      ((avantPiasses || 0) + ajoutPiasses) + " $ / " +
+      ((avantBonis    || 0) + ajoutBonis)    + " ★\n";
+  }
+  texte += "\u2500".repeat(40) + "\n";
+  texte += "→ Mettre à jour la fiche de " + nom + " dans registre-eleves.html";
+  return texte;
+}
+
+function trouverElement(id) {
+  return BRAVO_DATA.find(function(el) { return el.id === id; });
+}
+
+/* ══════════════════════════════════════════════
+   MISE À JOUR GÉNÉRALE
+══════════════════════════════════════════════ */
+function mettreAJourTout() {
+  var cochesActifs = Object.keys(coches).filter(function(id) { return coches[id]; });
+
+  // Bandeau invite élève
+  if (cochesActifs.length === 0) {
+    document.getElementById("compilation").textContent = "";
+    document.getElementById("compilation-prof").textContent = "";
+  } else {
+    document.getElementById("compilation").textContent = genererInvite(cochesActifs);
+    document.getElementById("compilation-prof").textContent = genererInviteProf(cochesActifs);
+  }
+
+  // Invites individuelles
+  BRAVO_DATA.forEach(function(el) {
+    var zone = document.getElementById("invite-texte-" + el.id);
+    if (zone) {
+      zone.textContent = genererInvite([el.id]);
+    }
+  });
+}
+
+/* ══════════════════════════════════════════════
+   COPIER
+══════════════════════════════════════════════ */
+function copierBandeau() {
+  var texte = document.getElementById("compilation").textContent;
+  if (!texte) return;
+  copier(texte, document.getElementById("btn-copier-bandeau"));
+}
+
+function copierProf() {
+  var texte = document.getElementById("compilation-prof").textContent;
+  if (!texte) return;
+  copier(texte, document.getElementById("btn-copier-prof"));
+}
+
+function copierCarte(id, btn) {
+  var texte = document.getElementById("invite-texte-" + id).textContent;
+  copier(texte, btn);
+}
+
+function copier(texte, btn) {
+  navigator.clipboard.writeText(texte).then(function() {
+    var label = btn.textContent;
+    btn.textContent = "\u2713 Copié !";
+    btn.classList.add("copie");
+    setTimeout(function() {
+      btn.textContent = label;
+      btn.classList.remove("copie");
+    }, 2000);
+  });
+}
+
+/* ══════════════════════════════════════════════
+   INIT
+══════════════════════════════════════════════ */
+document.getElementById("mdp-maitre").addEventListener("keydown", function(e) {
+  if (e.key === "Enter") verifierMaitre();
+});
+</script>
+</body>
+</html>
