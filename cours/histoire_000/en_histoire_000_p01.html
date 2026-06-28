@@ -128,6 +128,14 @@
   }
   .bulle-bek::after{content:"";position:absolute;bottom:-13px;left:50%;margin-left:-10px;border-width:13px 10px 0 10px;border-style:solid;border-color:var(--vert-fonce) transparent transparent transparent;}
   .bulle-bek::before{content:"";position:absolute;bottom:-9px;left:50%;margin-left:-8px;border-width:10px 8px 0 8px;border-style:solid;border-color:var(--blanc) transparent transparent transparent;z-index:1;}
+  /* Modificateur pour texte long dans la bulle de Bek */
+  .bulle-bek.longue{white-space:normal;border-radius:22px;font-size:20px;line-height:1.4;max-width:240px;text-align:center;padding:14px 20px;}
+
+  /* Zone fiche (affiché à la place du succès quand on clique "What's a profile card?") */
+  .fiche-zone{opacity:0;visibility:hidden;max-height:0;overflow:hidden;margin-top:0;
+    transition:opacity 0.5s ease,visibility 0.5s ease,max-height 0.6s cubic-bezier(0.22,1,0.36,1),margin-top 0.6s cubic-bezier(0.22,1,0.36,1);}
+  .fiche-zone.visible{opacity:1;visibility:visible;max-height:600px;margin-top:14px;}
+  .fiche-img-apercu{width:100%;border-radius:14px;box-shadow:0 6px 20px var(--ombre);display:block;}
 
   /* Flèche retour d'étape (à gauche de Bek, dans .bek-zone) */
   #flecheRetour{
@@ -500,6 +508,12 @@
           <span>sv-sa111uut.png</span>
         </div>
       </div>
+
+      <!-- Zone fiche (remplace le succès quand on clique "What's a profile card?") -->
+      <div class="fiche-zone" id="ficheZone">
+        <img src="images/bek_fiche.png" alt="Ta fiche personnelle — Niveau 1" class="fiche-img-apercu"
+          onerror="this.style.display='none';">
+      </div>
     </div>
   </div>
 
@@ -671,9 +685,11 @@ var kloeBulles = {
 // ─────────────────────────────────────────────
 //  Cross-fade de l'image de Bek
 // ─────────────────────────────────────────────
-function remplacerBulleBek(html) {
+function remplacerBulleBek(html, classeExtra) {
   var zone = document.getElementById('bulleBek');
-  if (zone) zone.innerHTML = html;
+  if (!zone) return;
+  zone.innerHTML = html;
+  zone.className = 'bulle-bek' + (classeExtra ? ' ' + classeExtra : '');
 }
 
 function crossfadeBek(newSrc) {
@@ -957,20 +973,31 @@ function continuerApresSucces() {
 }
 
 function montrerFiche() {
-  // Scroll vers le haut — Bek présente la fiche
+  // Remonter vers Bek
   window.scrollTo({top: 0, behavior: 'smooth'});
+
   setTimeout(function() {
-    crossfadeBek('../images/bek_fiche.png');
-    remplacerBulleBek('<div class="bulle-bek">Want to keep all your achievements, vocabulary and rewards in one place? You can download your <strong>Level 1 profile card<\/strong>!</div>');
+    // Fermer le succès, ouvrir la fiche à sa place
+    document.getElementById('succesZone').classList.remove('visible');
+    crossfadeBek('images/bek_fiche.png');
+    remplacerBulleBek('Want to keep all your achievements, vocabulary and rewards in one place? You can download your <strong>Level&nbsp;1 profile card</strong>!', 'longue');
   }, 600);
-  // Revenir vers le bas + afficher la carte fiche
+
+  setTimeout(function() {
+    // Bek dit "Tadam !" et montre la fiche
+    remplacerBulleBek('Tadam !');
+    document.getElementById('ficheZone').classList.add('visible');
+    ajouterCheckbox('mot-tadam', 'Tadam', 'ta-dah! / voilà!');
+  }, 3000);
+
+  // 5 secondes pour regarder avant de descendre vers la carte fiche
   setTimeout(function() {
     var carteFiche = document.getElementById('carteFiche');
     if (carteFiche) {
       carteFiche.classList.add('visible');
       carteFiche.scrollIntoView({behavior:'smooth', block:'start'});
     }
-  }, 2200);
+  }, 6400);
 }
 
 function copierCF(valeur, btn) {
