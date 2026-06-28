@@ -380,7 +380,7 @@
   /* ── Bulle de réflexion (nuage BD) ── */
   .bulle-nuage-wrap {
     position: absolute;
-    top: -72px; left: 50%; transform: translateX(-50%);
+    top: -72px; left: 62%; transform: translateX(-50%);
     cursor: pointer; z-index: 10;
     display: none;
     filter: drop-shadow(0 4px 10px rgba(90,64,128,0.18));
@@ -1065,7 +1065,7 @@ function continuerApresSucces() {
   if (carteCode) carteCode.classList.remove('visible');
   document.getElementById('succesZone').classList.remove('visible');
   // Bek en mode attente — bulle retirée
-  crossfadeBek('images/bek_attend.png');
+  crossfadeBek('images/bek_chocolat.png');
   document.getElementById('bulleBek').style.display = 'none';
   creerTimer(function() {
     document.getElementById('bulleNuage').classList.add('visible');
@@ -1096,7 +1096,7 @@ function mostrarFicha() {
   var bn = document.getElementById('bulleNuage');
   if (bn) bn.classList.remove('visible');
   window.scrollTo({top: 0, behavior: 'smooth'});
-  crossfadeBek('images/bek_attend.png');
+  crossfadeBek('images/bek_chocolat.png');
   var bulleBek = document.getElementById('bulleBek');
   bulleBek.style.opacity = '0';
   creerTimer(function() {
