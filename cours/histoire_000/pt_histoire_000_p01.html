@@ -1100,6 +1100,9 @@ function continuerApresSucces() {
   document.getElementById('succesZone').classList.remove('visible');
   crossfadeBek('images/bek_chocolat.png');
   document.getElementById('bulleBek').style.display = 'none';
+  creerTimer(function() {
+    document.getElementById('bulleNuage').classList.add('visible');
+  }, 800);
   remplacerKloe(
     '<div class=\"bulle-kloe\">Lá em baixo encontras a <strong>secção de vocabulário</strong> — marca as caixas ao lado das palavras que queres recordar. Aparecerão na <strong>lista de palavras</strong> no canto superior direito, onde podes copiá-las e colá-las na tua ficha pessoal!</div><div class=\"bulle-kloe avec-pointe\">Entendido? — <button class=\"btn-oui\" onclick=\"surConfirmationVocab()\">Sim, entendido!</button></div>',
     '../images/kloe/kloe_pointe_bas_01.png',
