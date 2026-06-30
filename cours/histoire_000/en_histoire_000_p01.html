@@ -1151,6 +1151,9 @@ function continuerApresSucces() {
   document.getElementById('succesZone').classList.remove('visible');
   crossfadeBek('images/bek_chocolat.png');
   document.getElementById('bulleBek').style.display = 'none';
+  creerTimer(function() {
+    document.getElementById('bulleNuage').classList.add('visible');
+  }, 800);
   remplacerKloe(
     '<div class=\"bulle-kloe\">Below, you\'ll find the <strong>vocabulary section</strong> — check the boxes next to the words you want to remember. They\'ll appear in the <strong>word list</strong> at the top right, where you can copy and paste them into your profile card!</div><div class=\"bulle-kloe avec-pointe\">Got it? — <button class=\"btn-oui\" onclick=\"surConfirmationVocab()\">Yes, got it!</button></div>',
     '../images/kloe/kloe_pointe_bas_01.png',
