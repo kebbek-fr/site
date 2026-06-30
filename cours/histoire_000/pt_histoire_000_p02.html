@@ -1,13 +1,13 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Story 1 — Le français avec Keb &amp; Bek</title>
-<link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,400i&display=swap" rel="stylesheet">
-<style>
-  *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
-  :root{
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>História 0 — Le français avec Keb &amp; Bek</title>
+  <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    :root{
     --beige:#F2EDE3; --beige-clair:#FDF8F2; --bleu-poudre:#B8C9E0; --bleu-fonce:#7A9BBF;
     --vert:#7FA86E; --vert-clair:#EAF3DE; --vert-fonce:#4A7A36; --texte:#2A2422;
     --gris:#8A8480; --blanc:#ffffff; --ombre:rgba(42,36,34,0.14);
@@ -16,385 +16,200 @@
     --ambre:#D4A24E; --ambre-clair:#FAEEDA; --ambre-fonce:#854F0B;
     --violet:#7B5EA8; --violet-fonce:#5A4080; --gris-clair:#C9C2BC;
   }
-  html{scroll-behavior:smooth;}
-  body{background:var(--beige);font-family:"Nunito",sans-serif;color:var(--texte);}
+    html { scroll-behavior:smooth; }
+    body { min-height:100vh; background:var(--beige); font-family:"Nunito",sans-serif; color:var(--texte); display:flex; flex-direction:column; }
 
-  #btn-retour{
-    position:fixed;top:18px;left:18px;z-index:200;
-    display:flex;align-items:center;gap:7px;
-    font-family:"Patrick Hand",cursive;font-size:15px;
-    color:var(--violet-fonce);text-decoration:none;
-    background:var(--beige-clair);border:1.5px solid var(--violet);
-    border-radius:100px;padding:7px 16px 7px 11px;
-    box-shadow:0 3px 10px rgba(90,64,128,0.15);
-    transition:transform 0.18s ease,box-shadow 0.18s ease;
-  }
-  #btn-retour:hover{transform:translateX(-3px);box-shadow:0 5px 16px rgba(90,64,128,0.25);}
+    /* ── Bouton retour ── */
+    .btn-retour {
+      position:fixed; top:16px; left:16px; z-index:200;
+      display:inline-flex; align-items:center; gap:6px;
+      padding:7px 14px 7px 10px;
+      background:var(--beige-clair); border:1.5px solid var(--violet);
+      border-radius:100px; font-size:13px; font-weight:700;
+      color:var(--violet-fonce); text-decoration:none;
+      transition:background 0.15s, box-shadow 0.15s;
+      box-shadow:0 2px 8px rgba(123,94,168,0.12);
+    }
+    .btn-retour:hover { background:var(--violet-clair); }
 
-  /* ── Bulle flottante ── */
-  #bulle-flottante{
-    position:fixed;top:16px;right:16px;z-index:200;width:240px;
-    background:var(--beige-clair);border:1.5px solid var(--bleu-poudre);border-radius:16px;
-    box-shadow:0 6px 20px var(--ombre);overflow:hidden;
-    transition:width 0.25s ease,opacity 0.25s ease;
-  }
-  #bulle-flottante.minimisee{width:46px;border-radius:50%;}
-  #bulle-flottante.minimisee .bf-corps,
-  #bulle-flottante.minimisee .bf-footer,
-  #bulle-flottante.minimisee .bf-titre-texte,
-  #bulle-flottante.minimisee .bf-compteur,
-  #bulle-flottante.minimisee .bf-chevron{display:none;}
-  #bulle-flottante.minimisee .bf-header{padding:0;width:46px;height:46px;justify-content:center;border-radius:50%;}
-  #bulle-flottante.minimisee .bf-icone-seule{display:flex;}
-  .bf-icone-seule{display:none;width:100%;height:100%;align-items:center;justify-content:center;position:relative;}
-  .bf-icone-seule .bf-mini-compteur{
-    position:absolute;top:-2px;right:-2px;background:var(--vert-fonce);color:#fff;
-    border-radius:50%;width:16px;height:16px;font-size:9px;display:flex;align-items:center;justify-content:center;font-weight:800;
-  }
-  .bf-header{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 14px;background:var(--vert-clair);cursor:pointer;user-select:none;}
-  .bf-titre{font-size:12.5px;font-weight:800;color:var(--vert-fonce);text-transform:uppercase;letter-spacing:0.04em;display:flex;align-items:center;gap:6px;}
-  .bf-icone-svg{flex-shrink:0;}
-  .bf-compteur{background:var(--vert-fonce);color:#fff;border-radius:100px;font-size:11px;padding:1px 7px;font-weight:700;}
-  .bf-actions-header{display:flex;align-items:center;gap:6px;}
-  .bf-btn-min{background:none;border:none;cursor:pointer;font-size:13px;color:var(--vert-fonce);width:20px;height:20px;display:flex;align-items:center;justify-content:center;border-radius:50%;transition:background 0.15s;flex-shrink:0;}
-  .bf-btn-min:hover{background:rgba(74,122,54,0.15);}
-  .bf-chevron{font-size:11px;color:var(--vert-fonce);transition:transform 0.25s;}
-  #bulle-flottante.repliee .bf-chevron{transform:rotate(-90deg);}
-  .bf-corps{max-height:220px;overflow-y:auto;padding:10px 14px;}
-  #bulle-flottante.repliee .bf-corps{display:none;}
-  #bulle-flottante.repliee .bf-footer{display:none;}
-  .bf-item{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:13px;padding:5px 0;border-bottom:1px dotted rgba(138,128,115,0.3);}
-  .bf-item:last-child{border-bottom:none;}
-  .bf-vide{font-size:12px;color:var(--gris);font-style:italic;text-align:center;padding:8px 0;}
-  .bf-footer{padding:8px 14px;border-top:1px solid rgba(184,201,224,0.4);display:flex;gap:6px;}
-  .bf-btn-footer{flex:1;background:none;border:1.5px solid var(--bleu-fonce);color:var(--bleu-fonce);border-radius:8px;padding:6px;font-size:11.5px;font-weight:700;cursor:pointer;transition:background 0.15s;display:flex;align-items:center;justify-content:center;gap:5px;}
-  .bf-btn-footer:hover{background:#EEF4FB;}
-  .bf-btn-footer.copie{background:var(--vert-fonce);border-color:var(--vert-fonce);color:#fff;}
-  .bf-purger{flex:1;background:none;border:1.5px solid var(--rouge);color:var(--rouge);border-radius:8px;padding:6px;font-size:11.5px;font-weight:700;cursor:pointer;transition:background 0.15s;display:flex;align-items:center;justify-content:center;gap:5px;}
-  .bf-purger:hover{background:var(--rouge-clair);}
+    /* ── Écran principal : Kloé + fiche côte à côte ── */
+    .ecran-principal {
+      flex:1; min-height:100vh;
+      display:flex; align-items:center; justify-content:center;
+      padding:clamp(80px,10vw,110px) clamp(20px,5vw,60px) 50px;
+    }
+    .contenu-duo {
+      display:flex; align-items:flex-start; justify-content:center;
+      gap:clamp(28px,5vw,60px); max-width:1000px; width:100%; flex-wrap:wrap;
+    }
 
-  /* ── Confirmation purge ── */
-  #confirm-overlay{position:fixed;inset:0;background:rgba(42,36,34,0.4);z-index:300;display:none;align-items:center;justify-content:center;}
-  #confirm-overlay.actif{display:flex;}
-  .confirm-boite{background:var(--blanc);border-radius:16px;padding:24px;max-width:300px;text-align:center;box-shadow:0 12px 36px rgba(0,0,0,0.25);}
-  .confirm-boite p{font-size:14px;margin-bottom:16px;line-height:1.5;}
-  .confirm-btns{display:flex;gap:10px;justify-content:center;}
-  .confirm-btns button{padding:8px 16px;border-radius:8px;border:none;font-size:13px;font-weight:700;cursor:pointer;}
-  .btn-annuler{background:var(--beige);color:var(--texte);}
-  .btn-confirmer{background:var(--rouge);color:#fff;}
+    .kloe-colonne {
+      display:flex; flex-direction:column; align-items:center; gap:14px;
+      max-width:340px; flex-shrink:0; padding-top:10px;
+    }
+    .kloe-img-grande { width:clamp(110px,15vw,160px); object-fit:contain; transition:opacity 0.4s ease; }
+    .kloe-bulles { display:flex; flex-direction:column; gap:10px; width:100%; min-height:1px; }
+    .bulle-kloe {
+      background:white; border:2px solid var(--corail);
+      border-radius:18px 18px 18px 4px;
+      padding:14px 18px; font-size:clamp(14px,1.7vw,16px);
+      line-height:1.6; color:var(--texte); text-align:left;
+      opacity:0; display:none;
+    }
+    .bulle-kloe.visible { display:block; }
+    @keyframes apparaitre { from{opacity:0;transform:translateY(12px);} to{opacity:1;transform:translateY(0);} }
+    .btn-suite {
+      align-self:flex-end; margin-top:2px;
+      display:inline-flex; align-items:center; gap:5px;
+      padding:7px 16px; border-radius:100px;
+      background:var(--corail); color:#fff; border:none;
+      font-size:13px; font-weight:700; cursor:pointer;
+      box-shadow:0 3px 10px rgba(224,89,60,0.3);
+      transition:background 0.15s, transform 0.15s;
+      opacity:0; display:none;
+    }
+    .btn-suite.visible { display:inline-flex; animation:apparaitre 0.4s ease forwards; }
+    .btn-suite:hover { background:#c8482e; transform:translateY(-1px); }
+    .choix-zone {
+      display:none; gap:10px; flex-wrap:wrap; justify-content:center; margin-top:6px;
+    }
+    .btn-histoire {
+      padding:10px 20px; border-radius:100px;
+      background:var(--vert-fonce); color:#fff; border:none;
+      font-size:14px; font-weight:700; cursor:pointer;
+      text-decoration:none; display:inline-flex; align-items:center; gap:5px;
+      box-shadow:0 4px 14px rgba(74,122,54,0.3);
+      transition:background 0.15s, transform 0.15s;
+    }
+    .btn-histoire:hover { background:#3d6a28; transform:translateY(-2px); }
+    .btn-menu {
+      padding:10px 18px; border-radius:100px;
+      background:transparent; color:var(--violet-fonce);
+      border:1.5px solid var(--violet); font-size:14px; font-weight:700;
+      cursor:pointer; text-decoration:none;
+      display:inline-flex; align-items:center; gap:5px;
+      transition:background 0.15s, transform 0.15s;
+    }
+    .btn-menu:hover { background:var(--violet-clair); transform:translateY(-2px); }
 
-  /* ── Écran 1 — Bek bravo ── */
-  .ecran-1{
-    position:relative;min-height:100vh;max-width:900px;margin:0 auto;padding:80px 20px 40px;
-    display:flex;flex-direction:column;align-items:center;
-  }
-  .bek-ligne{display:flex;align-items:flex-start;justify-content:center;gap:30px;flex-wrap:wrap;width:100%;}
-  .bek-zone{
-    position:relative;width:260px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;
-    opacity:0;animation:apparaitre 0.6s ease 0.2s forwards;
-  }
-  .bek-zone img{width:100%;display:block;}
-  .bek-zone::after{
-    content:"";display:block;width:170px;height:14px;margin:-6px auto 0;
-    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 170 14'%3E%3Cpath d='M6 8 C 30 3, 55 11, 85 7 C 115 3, 140 10, 164 6' fill='none' stroke='%237A9BBF' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E");
-    background-repeat:no-repeat;background-position:center;background-size:contain;opacity:0.55;
-  }
-  .bulle-bek{
-    position:relative;background:var(--blanc);border:2.5px solid var(--vert-fonce);border-radius:100px;
-    padding:14px 34px;font-family:"Patrick Hand",cursive;font-size:38px;color:var(--vert-fonce);
-    box-shadow:0 4px 14px var(--ombre);margin-bottom:16px;white-space:nowrap;transform:rotate(-1.5deg);
-  }
-  .bulle-bek::after{content:"";position:absolute;bottom:-13px;left:50%;margin-left:-10px;border-width:13px 10px 0 10px;border-style:solid;border-color:var(--vert-fonce) transparent transparent transparent;}
-  .bulle-bek::before{content:"";position:absolute;bottom:-9px;left:50%;margin-left:-8px;border-width:10px 8px 0 8px;border-style:solid;border-color:var(--blanc) transparent transparent transparent;z-index:1;}
+    .fiche-colonne { display:flex; justify-content:center; flex:1; min-width:280px; }
+    .fiche-img-grande {
+      max-width:min(560px,90vw); width:100%;
+      border-radius:18px;
+      box-shadow:0 10px 36px rgba(42,36,34,0.2);
+      border:2px solid var(--bleu-poudre);
+      animation:apparaitre 0.7s ease 0.15s both;
+    }
 
-  /* Navigation pages */
-  .nav-pages{
-    margin-top:32px;padding-top:24px;display:flex;justify-content:space-between;align-items:center;width:100%;max-width:600px;
-  }
-  .btn-nav{
-    display:flex;align-items:center;gap:7px;
-    font-family:"Patrick Hand",cursive;font-size:16px;
-    padding:10px 22px;border-radius:100px;border:none;cursor:pointer;
-    transition:transform 0.18s cubic-bezier(0.34,1.56,0.64,1),box-shadow 0.18s;
-    text-decoration:none;
-  }
-  .btn-precedent{background:var(--beige-clair);color:var(--bleu-fonce);border:1.5px solid var(--bleu-poudre);}
-  .btn-precedent:hover{transform:translateX(-3px);box-shadow:0 4px 12px var(--ombre);}
-  .btn-suivant{background:var(--vert-fonce);color:#fff;box-shadow:0 4px 14px rgba(74,122,54,0.35);}
-  .btn-suivant:hover{transform:translateY(-2px) scale(1.03);box-shadow:0 7px 20px rgba(74,122,54,0.45);}
+    @media(max-width:760px) {
+      .contenu-duo { flex-direction:column; align-items:center; }
+      .kloe-colonne { max-width:480px; }
+    }
 
-  /* ── Écran 2 — Kloé explique ── */
-  .ecran-2{position:relative;min-height:100vh;max-width:900px;margin:0 auto;padding:0 20px 60px;}
-
-  .kloe-ligne{display:flex;align-items:flex-start;justify-content:flex-end;gap:0;flex-wrap:wrap;position:relative;}
-  .bulles-kloe{display:flex;flex-direction:column;gap:14px;max-width:380px;margin-right:22px;margin-top:30px;flex:1;}
-
-  .bulle-kloe{
-    position:relative;background:var(--corail-clair);border:2px solid var(--corail);border-radius:18px;
-    padding:14px 20px;font-size:15px;line-height:1.6;color:#8a3624;
-    box-shadow:0 4px 14px var(--ombre);transform:rotate(0.5deg);
-    opacity:0;
-  }
-  .bulle-kloe:first-child{transform:rotate(0.8deg);}
-  /* Pointe sur la dernière bulle uniquement */
-  .bulle-kloe.avec-pointe::after{content:"";position:absolute;right:-14px;bottom:38px;border-width:8px 0 8px 14px;border-style:solid;border-color:transparent transparent transparent var(--corail);}
-  .bulle-kloe.avec-pointe::before{content:"";position:absolute;right:-10px;bottom:40.5px;border-width:5.5px 0 5.5px 9.5px;border-style:solid;border-color:transparent transparent transparent var(--corail-clair);z-index:1;}
-
-  .mot-fr{font-family:"Patrick Hand",cursive;font-size:18px;color:var(--vert-fonce);font-weight:700;}
-  .mot-trad{font-style:italic;color:#6a2a18;}
-
-  .kloe-zone{position:relative;width:170px;flex-shrink:0;opacity:0;}
-  .kloe-zone img{width:100%;display:block;}
-
-  @media(max-width:560px){
-    .kloe-ligne{flex-direction:column;align-items:flex-end;}
-    .bulles-kloe{margin-right:0;margin-top:60px;margin-bottom:8px;max-width:90vw;}
-    .bulle-kloe.avec-pointe::after,.bulle-kloe.avec-pointe::before{right:30px;bottom:-13px;left:auto;border-width:14px 10px 0 10px;border-color:var(--corail) transparent transparent transparent;}
-    .bulle-kloe.avec-pointe::before{bottom:-9px;border-width:10px 8px 0 8px;border-color:var(--corail-clair) transparent transparent transparent;}
-  }
-
-  /* ── Zone de réponse (à côté de Bek, comme p01) ── */
-  .reponse-zone{
-    width:240px;margin-top:120px;flex-shrink:0;
-    opacity:0;visibility:hidden;transition:opacity 0.6s ease;
-  }
-  .reponse-zone.visible{opacity:1;visibility:visible;}
-  .reponse-carte{
-    background:var(--beige-clair);border:1.5px dashed var(--bleu-fonce);border-radius:14px;
-    padding:12px 16px;box-shadow:0 3px 10px var(--ombre);
-  }
-  .reponse-label{font-size:12px;color:var(--bleu-fonce);font-weight:700;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px;}
-  .reponse-contexte{font-size:12px;color:var(--gris);margin-bottom:8px;line-height:1.4;font-style:italic;}
-  .reponse-input{width:100%;padding:8px 12px;border:1.5px solid var(--bleu-poudre);border-radius:8px;font-size:16px;font-family:"Nunito",sans-serif;outline:none;}
-  .reponse-input:focus{border-color:var(--vert-fonce);}
-  .reponse-valider{margin-top:8px;width:100%;background:var(--vert-fonce);color:#fff;border:none;border-radius:8px;padding:8px;font-size:13px;font-weight:700;cursor:pointer;transition:background 0.15s;}
-  .reponse-valider:hover{background:#3d6a28;}
-  .reponse-aide{font-size:11px;color:var(--gris);margin-top:6px;text-align:center;}
-  .reponse-feedback{margin-top:8px;font-size:13px;font-weight:700;text-align:center;border-radius:8px;padding:6px;display:none;}
-  .reponse-feedback.ok{display:block;background:var(--vert-clair);color:var(--vert-fonce);}
-  .reponse-feedback.non{display:block;background:var(--corail-clair);color:#8a3624;}
-
-  /* ── Section cocher ── */
-  .section-cocher{
-    margin-top:32px;max-width:520px;margin-left:auto;margin-right:auto;
-    background:var(--beige-clair);border:1.5px solid rgba(184,201,224,0.5);
-    border-radius:18px;padding:20px 24px;box-shadow:0 4px 16px var(--ombre);
-  }
-  .sc-titre{font-family:"Patrick Hand",cursive;font-size:20px;color:var(--vert-fonce);margin-bottom:12px;}
-  .sc-item{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:10px;transition:background 0.15s;cursor:pointer;}
-  .sc-item:hover{background:var(--vert-clair);}
-  .sc-item input{width:18px;height:18px;accent-color:var(--vert-fonce);cursor:pointer;}
-  .sc-item label{font-size:14px;cursor:pointer;flex:1;}
-  .sc-item .sc-trad{color:var(--gris);font-size:12.5px;}
-
-  @keyframes apparaitre{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
-</style>
+    /* ── Nav pages ── */
+    .nav-pages {
+      display:flex; justify-content:space-between; align-items:center;
+      padding:14px 24px;
+      background:var(--beige-clair);
+      border-top:1.5px solid rgba(184,201,224,0.4);
+    }
+    .btn-nav {
+      display:inline-flex; align-items:center; gap:5px;
+      padding:8px 16px; border-radius:100px;
+      font-size:13px; font-weight:700; text-decoration:none;
+      transition:background 0.15s, transform 0.15s;
+    }
+    .btn-precedent { background:var(--beige); color:var(--gris); border:1.5px solid rgba(138,132,128,0.3); }
+    .btn-precedent:hover { background:var(--beige-clair); }
+    .btn-suivant { background:var(--vert-fonce); color:#fff; box-shadow:0 4px 14px rgba(74,122,54,0.3); }
+    .btn-suivant:hover { background:#3d6a28; transform:translateY(-1px); }
+    .btn-nav.indisponible { opacity:0.4; pointer-events:none; border:1.5px dashed rgba(138,132,128,0.4); background:transparent; color:var(--gris); box-shadow:none; }
+  </style>
 </head>
 <body>
 
-<a href="../menus/pt.html" id="btn-retour">
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-    <path d="M19 12H5M5 12L11 6M5 12L11 18" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-  </svg>
+<a href="../menus/pt.html" class="btn-retour">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M5 12L11 6M5 12L11 18"/></svg>
   Voltar
 </a>
 
-<!-- Bulle flottante -->
-<div id="bulle-flottante">
-  <div class="bf-header" onclick="toggleBulle(event)">
-    <span class="bf-titre">
-      <svg class="bf-icone-svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-        <path d="M7 3.5 C6 3.5 5.5 4 5.5 5 V20 C5.5 21 6 21.5 7 21.5 H17 C18 21.5 18.5 21 18.5 20 V8 L14 3.5 Z"/>
-        <path d="M14 3.5 V8 H18.5"/><path d="M8.5 12.5 H15.5"/><path d="M8.5 15.5 H15.5"/><path d="M8.5 18 H13"/>
-      </svg>
-      <span class="bf-titre-texte">Minhas palavras</span> <span class="bf-compteur">0</span>
-    </span>
-    <div class="bf-actions-header">
-      <button class="bf-btn-min" onclick="toggleMinimise(event)" title="Minimizar">—</button>
-      <span class="bf-chevron">▼</span>
-    </div>
-    <span class="bf-icone-seule">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-        <path d="M7 3.5 C6 3.5 5.5 4 5.5 5 V20 C5.5 21 6 21.5 7 21.5 H17 C18 21.5 18.5 21 18.5 20 V8 L14 3.5 Z"/>
-        <path d="M14 3.5 V8 H18.5"/><path d="M8.5 12.5 H15.5"/><path d="M8.5 15.5 H15.5"/><path d="M8.5 18 H13"/>
-      </svg>
-      <span class="bf-mini-compteur">0</span>
-    </span>
-  </div>
-  <div class="bf-corps" id="bfCorps">
-    <div class="bf-vide">Marque as palavras abaixo para adicioná-las aqui.</div>
-  </div>
-  <div class="bf-footer">
-    <button class="bf-btn-footer" id="bfCopier" onclick="copierListe()">
-      <svg class="bf-icone-svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-        <rect x="8.5" y="7" width="11.5" height="14" rx="1.6"/>
-        <path d="M5.5 16.5 H4.5 C3.9 16.5 3.5 16 3.5 15.5 V4.5 C3.5 3.9 3.9 3.5 4.5 3.5 H14.5 C15 3.5 15.5 3.9 15.5 4.5 V5.5"/>
-      </svg>
-      <span class="bf-btn-footer-texte" id="bfCopierTexte">Copiar</span>
-    </button>
-    <button class="bf-purger" onclick="demanderPurge()">
-      <svg class="bf-icone-svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-        <path d="M5 7 H19"/><path d="M9 7 V4.8 C9 4.4 9.4 4 9.8 4 H14.2 C14.6 4 15 4.4 15 4.8 V7"/>
-        <path d="M7 7 L7.8 20 C7.85 20.6 8.35 21 8.9 21 H15.1 C15.65 21 16.15 20.6 16.2 20 L17 7"/>
-        <path d="M10.3 11 V17"/><path d="M13.7 11 V17"/>
-      </svg>
-      <span class="bf-btn-footer-texte">Limpar</span>
-    </button>
-  </div>
-</div>
+<!-- ── Kloé présente la fiche en grand ── -->
+<section class="ecran-principal">
+  <div class="contenu-duo">
 
-<div id="confirm-overlay">
-  <div class="confirm-boite">
-    <p>Tem certeza de que quer apagar toda a sua lista de palavras? Esta ação não pode ser desfeita.</p>
-    <div class="confirm-btns">
-      <button class="btn-annuler" onclick="annulerPurge()">Cancelar</button>
-      <button class="btn-confirmer" onclick="confirmerPurge()">Limpar</button>
-    </div>
-  </div>
-</div>
-
-<!-- ═══════════════ ÉCRAN 1 — BEK BRAVO ═══════════════ -->
-<div class="ecran-1" id="ecran1">
-  <div class="bek-ligne">
-    <div class="bek-zone">
-      <div class="bulle-bek">Bravo !</div>
-      <img src="images/bek_bravo.png" alt="Bek">
-    </div>
-    <div class="reponse-zone" id="reponseZone">
-      <div class="reponse-carte">
-        <div class="reponse-label">Sua vez!</div>
-        <div class="reponse-contexte">Bek acabou de dizer "Bravo !" — como você responde?</div>
-        <input type="text" class="reponse-input" placeholder="Digite sua resposta aqui..." id="reponseInput" onkeydown="if(event.key==='Enter')validerReponse();">
-        <button class="reponse-valider" onclick="validerReponse()">Verificar</button>
-        <div class="reponse-aide">No computador: aperte Enter ↵</div>
-        <div class="reponse-feedback" id="reponseFeedback"></div>
+    <div class="kloe-colonne">
+      <img class="kloe-img-grande" id="kloeImgP02" src="../images/kloe/kloe_pointe_droite_01.png" alt="Kloé" onerror="this.style.display='none';">
+      <div class="kloe-bulles" id="kloeBullesP02">
+        <div class="bulle-kloe" id="bulleP02a"></div>
+        <button class="btn-suite" id="btnSuiteP02" onclick="passerEtape2()">Continuar &#9656;</button>
+        <div class="bulle-kloe" id="bulleP02b"></div>
+      </div>
+      <div class="choix-zone" id="choixZoneP02">
+        <a href="../histoire_001/pt_histoire_001_p01.html" class="btn-histoire">&#9656; História 1</a>
+        <a href="../menus/pt.html" class="btn-menu">← Menu principal</a>
       </div>
     </div>
-  </div>
 
-  <nav class="nav-pages">
-    <a class="btn-nav btn-precedent" href="pt_histoire_000_p01.html">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M15 19l-7-7 7-7"/></svg>
-      Anterior
-    </a>
-    <a class="btn-nav btn-suivant" href="pt_histoire_000_p03.html">
-      Próxima
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M9 5l7 7-7 7"/></svg>
-    </a>
-  </nav>
-</div>
+    <div class="fiche-colonne">
+      <img
+        class="fiche-img-grande"
+        id="ficheImgP02"
+        src="../../bravo/images/fiches/fiche-image-niveau_01.png"
+        alt="A tua ficha pessoal"
+        onerror="this.style.opacity='0.25';">
+    </div>
 
-<!-- ═══════════════ ÉCRAN 2 — KLOÉ EXPLIQUE ═══════════════ -->
-<div class="ecran-2" id="ecran2">
-  <div class="kloe-ligne">
-    <div class="bulles-kloe">
-      <div class="bulle-kloe">
-        Bek disse <span class="mot-fr">« Bravo ! »</span> — e você provavelmente já sabe o que isso significa! "Bravo" é a mesma palavra em francês, em inglês e em português. Fácil, né?
-      </div>
-      <div class="bulle-kloe avec-pointe">
-        Agora, quando alguém disser <span class="mot-fr">« Bravo ! »</span> para você, uma ótima forma de responder é <span class="mot-fr">« Merci ! »</span> — que significa <span class="mot-trad">"obrigado/a"</span>. É sempre bem recebido!
-      </div>
-    </div>
-    <div class="kloe-zone" id="kloeZone">
-      <img src="../images/kloe/kloe_explique_01.png" alt="Kloé">
-    </div>
   </div>
+</section>
 
-  <!-- Vocabulaire -->
-  <div class="section-cocher">
-    <div class="sc-titre">Vocabulário novo nesta página</div>
-    <div class="sc-item">
-      <input type="checkbox" id="mot-bravo" onchange="toggleMot(this, 'Bravo', 'parabéns / muito bem')">
-      <label for="mot-bravo">Bravo <span class="sc-trad">— parabéns / muito bem</span></label>
-    </div>
-    <div class="sc-item">
-      <input type="checkbox" id="mot-merci" onchange="toggleMot(this, 'Merci', 'obrigado/a')">
-      <label for="mot-merci">Merci <span class="sc-trad">— obrigado/a</span></label>
-    </div>
-  </div>
-</div>
+<!-- ── Navigation ── -->
+<nav class="nav-pages">
+  <a href="pt_histoire_000_p01.html" class="btn-nav btn-precedent">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg>
+    Anterior
+  </a>
+  <a href="pt_histoire_000_p03.html" class="btn-nav btn-suivant indisponible">
+    Próxima
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg>
+  </a>
+</nav>
 
 <script>
-  function toggleBulle(e){
-    if(e.target.closest('.bf-btn-min')) return;
-    document.getElementById('bulle-flottante').classList.toggle('repliee');
-  }
-  function toggleMinimise(e){
-    e.stopPropagation();
-    document.getElementById('bulle-flottante').classList.toggle('minimisee');
-  }
-  function chargerListe(){var data=localStorage.getItem('keb_bek_vocab');return data?JSON.parse(data):[];}
-  function sauvegarderListe(liste){localStorage.setItem('keb_bek_vocab',JSON.stringify(liste));}
-  function rafraichirAffichage(){
-    var liste=chargerListe();
-    var corps=document.getElementById('bfCorps');
-    document.querySelectorAll('.bf-compteur,.bf-mini-compteur').forEach(function(el){el.textContent=liste.length;});
-    if(liste.length===0){corps.innerHTML='<div class="bf-vide">Marque as palavras abaixo para adicioná-las aqui.</div>';return;}
-    corps.innerHTML=liste.map(function(item){return '<div class="bf-item"><span>'+item.mot+'</span><span style="color:var(--gris);font-size:11.5px;">'+item.trad+'</span></div>';}).join('');
-    // Restaurer l'état des cases
-    liste.forEach(function(item){
-      var id='mot-'+item.mot.toLowerCase();
-      var cb=document.getElementById(id);
-      if(cb) cb.checked=true;
-    });
-  }
-  function toggleMot(checkbox,mot,trad){
-    var liste=chargerListe();
-    if(checkbox.checked){if(!liste.find(function(i){return i.mot===mot;}))liste.push({mot:mot,trad:trad});}
-    else{liste=liste.filter(function(i){return i.mot!==mot;});}
-    sauvegarderListe(liste);rafraichirAffichage();
-  }
-  function copierListe(){
-    var liste=chargerListe();
-    if(liste.length===0)return;
-    var texte=liste.map(function(i){return i.mot+' — '+i.trad;}).join('\n');
-    navigator.clipboard.writeText(texte).then(function(){
-      var btn=document.getElementById('bfCopier');
-      var texteEl=document.getElementById('bfCopierTexte');
-      var original=texteEl.textContent;
-      texteEl.textContent='Copiado!';btn.classList.add('copie');
-      setTimeout(function(){texteEl.textContent=original;btn.classList.remove('copie');},1800);
-    });
-  }
-  function demanderPurge(){document.getElementById('confirm-overlay').classList.add('actif');}
-  function annulerPurge(){document.getElementById('confirm-overlay').classList.remove('actif');}
-  function confirmerPurge(){
-    localStorage.removeItem('keb_bek_vocab');rafraichirAffichage();
-    document.querySelectorAll('.sc-item input[type=checkbox]').forEach(function(cb){cb.checked=false;});
-    document.getElementById('confirm-overlay').classList.remove('actif');
-  }
+function passerEtape2() {
+  var btn = document.getElementById('btnSuiteP02');
+  btn.classList.remove('visible');
 
-  function validerReponse(){
-    var input=document.getElementById('reponseInput');
-    var feedback=document.getElementById('reponseFeedback');
-    var val=input.value.trim().toLowerCase().replace(/[.!?,;]/g,'');
-    feedback.classList.remove('ok','non');
-    if(val===''){return;}
-    if(val==='merci'){
-      feedback.textContent='Muito bem!';
-      feedback.classList.add('ok');
-    } else {
-      feedback.textContent='Tente de novo! Dica: começa com "m"…';
-      feedback.classList.add('non');
-    }
-  }
+  var b1 = document.getElementById('bulleP02a');
+  b1.classList.remove('visible');
 
-  // Défilement vers Kloé après 5s
-  setTimeout(function(){
-    document.getElementById('ecran2').scrollIntoView({behavior:'smooth'});
-    document.getElementById('kloeZone').style.animation='apparaitre 0.6s ease forwards';
-    document.querySelectorAll('.bulle-kloe').forEach(function(b, i){
-      b.style.animation = 'apparaitre 0.6s ease ' + (i * 0.15) + 's forwards';
-    });
-  },5000);
+  var img = document.getElementById('kloeImgP02');
+  img.style.opacity = '0';
+  setTimeout(function() {
+    img.src = '../images/kloe/kloe_explique_02.png';
+    void img.offsetWidth;
+    img.style.opacity = '1';
 
-  // Retour vers Bek + zone réponse après 20s
-  setTimeout(function(){
-    document.getElementById('ecran1').scrollIntoView({behavior:'smooth'});
-    document.getElementById('reponseZone').classList.add('visible');
-  },20000);
+    var b2 = document.getElementById('bulleP02b');
+    b2.innerHTML = "Ah! Mas onde est\u00e3o as piastras e os pontos b\u00f3nus? Ah, \u00e9 verdade! Tens de pedir ao teu professor ou professora para os adicionar com a instru\u00e7\u00e3o m\u00e1gica dele/dela. Mas n\u00e3o te preocupes se n\u00e3o tiveres professor \u2014 as piastras e os pontos b\u00f3nus servem s\u00f3 para tornar a aprendizagem mais divertida. E sabes que mais? Tamb\u00e9m n\u00e3o precisas da ficha se n\u00e3o te interessar. \u00c9 s\u00f3 muito mais divertido com ela&hellip; eu usaria se fosse a ti!";
+    b2.classList.add('visible');
+    b2.style.animation = 'apparaitre 0.45s ease forwards';
 
-  rafraichirAffichage();
+    document.getElementById('choixZoneP02').style.display = 'flex';
+    document.getElementById('choixZoneP02').style.animation = 'apparaitre 0.5s ease 0.3s forwards';
+  }, 350);
+}
+
+(function() {
+  var b1 = document.getElementById('bulleP02a');
+  b1.innerHTML = "\u00c9 assim que fica a tua ficha pessoal, toda atualizada! No topo, o teu nome e o teu n\u00edvel. Depois as tuas ins\u00edgnias de conquistas, e um separador de Vocabul\u00e1rio onde podes marcar cada palavra que aprendeste.";
+  b1.classList.add('visible');
+  b1.style.animation = 'apparaitre 0.5s ease 0.4s forwards';
+
+  setTimeout(function() {
+    document.getElementById('btnSuiteP02').classList.add('visible');
+  }, 1400);
+})();
 </script>
+
 </body>
 </html>
