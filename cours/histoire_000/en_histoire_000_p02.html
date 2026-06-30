@@ -138,11 +138,13 @@
   <div class="contenu-duo">
 
     <div class="kloe-colonne">
-      <img class="kloe-img-grande" id="kloeImgP02" src="../images/kloe/kloe_pointe_droite_01.png" alt="Kloé" onerror="this.style.display='none';">
+      <img class="kloe-img-grande" id="kloeImgP02" src="../images/kloe/kloe_presente_droite_01.png" alt="Kloé" onerror="this.style.display='none';">
       <div class="kloe-bulles" id="kloeBullesP02">
         <div class="bulle-kloe" id="bulleP02a"></div>
-        <button class="btn-suite" id="btnSuiteP02" onclick="passerEtape2()">Go on &#9656;</button>
+        <button class="btn-suite" id="btnSuiteP02a" onclick="passerEtape2()">Go on &#9656;</button>
         <div class="bulle-kloe" id="bulleP02b"></div>
+        <button class="btn-suite" id="btnSuiteP02b" onclick="passerEtape3()">Go on &#9656;</button>
+        <div class="bulle-kloe" id="bulleP02c"></div>
       </div>
       <div class="choix-zone" id="choixZoneP02">
         <a href="../histoire_001/en_histoire_001_p01.html" class="btn-histoire">&#9656; Histoire 1</a>
@@ -154,7 +156,7 @@
       <img
         class="fiche-img-grande"
         id="ficheImgP02"
-        src="../../bravo/images/fiches/fiche-image-niveau_01.png"
+        src="../../bravo/images/fiches/fiche-image-niveau_01_avec-succes_01.png"
         alt="Your personal profile card"
         onerror="this.style.opacity='0.25';">
     </div>
@@ -176,7 +178,7 @@
 
 <script>
 function passerEtape2() {
-  var btn = document.getElementById('btnSuiteP02');
+  var btn = document.getElementById('btnSuiteP02a');
   btn.classList.remove('visible');
 
   var b1 = document.getElementById('bulleP02a');
@@ -185,14 +187,39 @@ function passerEtape2() {
   var img = document.getElementById('kloeImgP02');
   img.style.opacity = '0';
   setTimeout(function() {
-    img.src = '../images/kloe/kloe_explique_02.png';
+    img.src = '../images/kloe/kloe_perplexe_01.png';
     void img.offsetWidth;
     img.style.opacity = '1';
 
     var b2 = document.getElementById('bulleP02b');
-    b2.innerHTML = "Oh! But where are the piasses and the points bonis? Ah, that's right \u2014 you need to ask your teacher to add them with their magic prompt! But don't worry if you don't have a teacher \u2014 piasses and points bonis are just there to make learning more fun. And you know, you don't even need the card if it's not your thing! It's just way more fun with it&hellip; I'd use it if I were you!";
+    b2.innerHTML = "Oh! But where are the <strong>PIASSES</strong> and <strong>POINTS BONIS</strong>?";
     b2.classList.add('visible');
     b2.style.animation = 'apparaitre 0.45s ease forwards';
+
+    setTimeout(function() {
+      document.getElementById('btnSuiteP02b').classList.add('visible');
+    }, 1100);
+  }, 350);
+}
+
+function passerEtape3() {
+  var btn = document.getElementById('btnSuiteP02b');
+  btn.classList.remove('visible');
+
+  var b2 = document.getElementById('bulleP02b');
+  b2.classList.remove('visible');
+
+  var img = document.getElementById('kloeImgP02');
+  img.style.opacity = '0';
+  setTimeout(function() {
+    img.src = '../images/kloe/kloe_comprehensive_01.png';
+    void img.offsetWidth;
+    img.style.opacity = '1';
+
+    var b3 = document.getElementById('bulleP02c');
+    b3.innerHTML = "Ah, that's right \u2014 you need to ask your teacher to add them with their magic prompt! But don't worry if you don't have a teacher \u2014 piasses and points bonis are just there to make learning more fun. And you know, you don't even need the card if it's not your thing! It's just way more fun with it&hellip; I'd use it if I were you!";
+    b3.classList.add('visible');
+    b3.style.animation = 'apparaitre 0.45s ease forwards';
 
     document.getElementById('choixZoneP02').style.display = 'flex';
     document.getElementById('choixZoneP02').style.animation = 'apparaitre 0.5s ease 0.3s forwards';
@@ -206,7 +233,7 @@ function passerEtape2() {
   b1.style.animation = 'apparaitre 0.5s ease 0.4s forwards';
 
   setTimeout(function() {
-    document.getElementById('btnSuiteP02').classList.add('visible');
+    document.getElementById('btnSuiteP02a').classList.add('visible');
   }, 1400);
 })();
 </script>
