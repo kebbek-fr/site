@@ -1,0 +1,1531 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>故事 0 — Le français avec Keb &amp; Bek</title>
+<link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,400i&display=swap" rel="stylesheet">
+<style>
+  *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+  :root{
+    --beige:#F2EDE3; --beige-clair:#FDF8F2; --bleu-poudre:#B8C9E0; --bleu-fonce:#7A9BBF;
+    --vert:#7FA86E; --vert-clair:#EAF3DE; --vert-fonce:#4A7A36; --texte:#2A2422;
+    --gris:#8A8480; --blanc:#ffffff; --ombre:rgba(42,36,34,0.14);
+    --corail:#E0593C; --corail-clair:#FBEAE6;
+    --rouge:#C0392B; --rouge-clair:#FDECEA;
+    --ambre:#D4A24E; --ambre-clair:#FAEEDA; --ambre-fonce:#854F0B;
+    --violet:#7B5EA8; --violet-fonce:#5A4080; --gris-clair:#C9C2BC;
+  }
+  html{scroll-behavior:smooth;}
+  body{background:var(--beige);font-family:"Nunito",sans-serif;color:var(--texte);}
+
+  /* ── Bouton retour menu ── */
+  #btn-retour{
+    position:fixed;top:18px;left:18px;z-index:200;
+    display:flex;align-items:center;gap:7px;
+    font-family:"Patrick Hand",cursive;font-size:15px;
+    color:var(--violet-fonce);text-decoration:none;
+    background:var(--beige-clair);border:1.5px solid var(--violet);
+    border-radius:100px;padding:7px 16px 7px 11px;
+    box-shadow:0 3px 10px rgba(90,64,128,0.15);
+    transition:transform 0.18s ease,box-shadow 0.18s ease;
+  }
+  #btn-retour:hover{transform:translateX(-3px);box-shadow:0 5px 16px rgba(90,64,128,0.25);}
+
+  /* ── Navigation entre pages ── */
+  .nav-pages{
+    margin-top:32px;padding-top:24px;display:flex;justify-content:space-between;
+    align-items:center;width:100%;max-width:600px;
+  }
+  .btn-nav{
+    display:flex;align-items:center;gap:7px;font-family:"Patrick Hand",cursive;font-size:16px;
+    padding:10px 22px;border-radius:100px;border:none;cursor:pointer;
+    transition:transform 0.18s cubic-bezier(0.34,1.56,0.64,1),box-shadow 0.18s;text-decoration:none;
+  }
+  .btn-precedent{background:var(--beige-clair);color:var(--bleu-fonce);border:1.5px solid var(--bleu-poudre);}
+  .btn-precedent:hover{transform:translateX(-3px);box-shadow:0 4px 12px var(--ombre);}
+  .btn-suivant{background:var(--vert-fonce);color:#fff;box-shadow:0 4px 14px rgba(74,122,54,0.35);}
+  .btn-suivant:hover{transform:translateY(-2px) scale(1.03);box-shadow:0 7px 20px rgba(74,122,54,0.45);}
+  .btn-nav.indisponible{
+    background:var(--beige-clair);color:var(--gris);border:1.5px dashed var(--gris-clair);
+    opacity:0.55;cursor:default;pointer-events:none;box-shadow:none;
+  }
+
+  /* ── Bulle flottante "Mes mots" ── */
+  #bulle-flottante{
+    position:fixed;top:16px;right:16px;z-index:200;width:240px;
+    background:var(--beige-clair);border:1.5px solid var(--bleu-poudre);border-radius:16px;
+    box-shadow:0 6px 20px var(--ombre);overflow:hidden;
+    transition:width 0.25s ease,opacity 0.25s ease;
+  }
+  #bulle-flottante.minimisee{width:46px;border-radius:50%;}
+  #bulle-flottante.minimisee .bf-corps,
+  #bulle-flottante.minimisee .bf-footer,
+  #bulle-flottante.minimisee .bf-titre-texte,
+  #bulle-flottante.minimisee .bf-compteur,
+  #bulle-flottante.minimisee .bf-chevron{display:none;}
+  #bulle-flottante.minimisee .bf-header{padding:0;width:46px;height:46px;justify-content:center;border-radius:50%;}
+  #bulle-flottante.minimisee .bf-icone-seule{display:flex;}
+  .bf-icone-seule{display:none;width:100%;height:100%;align-items:center;justify-content:center;position:relative;}
+  .bf-icone-seule .bf-mini-compteur{
+    position:absolute;top:-2px;right:-2px;background:var(--vert-fonce);color:#fff;
+    border-radius:50%;width:16px;height:16px;font-size:9px;display:flex;align-items:center;justify-content:center;font-weight:800;
+  }
+  .bf-header{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 14px;background:var(--vert-clair);cursor:pointer;user-select:none;}
+  .bf-titre{font-size:12.5px;font-weight:800;color:var(--vert-fonce);text-transform:uppercase;letter-spacing:0.04em;display:flex;align-items:center;gap:6px;}
+  .bf-icone-svg{flex-shrink:0;}
+  .bf-compteur{background:var(--vert-fonce);color:#fff;border-radius:100px;font-size:11px;padding:1px 7px;font-weight:700;}
+  .bf-actions-header{display:flex;align-items:center;gap:6px;}
+  .bf-btn-min{background:none;border:none;cursor:pointer;color:var(--vert-fonce);width:20px;height:20px;display:flex;align-items:center;justify-content:center;border-radius:50%;transition:background 0.15s;flex-shrink:0;}
+  .bf-btn-min:hover{background:rgba(74,122,54,0.15);}
+  .bf-chevron{font-size:11px;color:var(--vert-fonce);transition:transform 0.25s;}
+  #bulle-flottante.repliee .bf-chevron{transform:rotate(-90deg);}
+  .bf-corps{max-height:220px;overflow-y:auto;padding:10px 14px;}
+  #bulle-flottante.repliee .bf-corps,#bulle-flottante.repliee .bf-footer{display:none;}
+  .bf-item{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:13px;padding:5px 0;border-bottom:1px dotted rgba(138,128,115,0.3);}
+  .bf-item:last-child{border-bottom:none;}
+  .bf-vide{font-size:12px;color:var(--gris);font-style:italic;text-align:center;padding:8px 0;}
+  .bf-footer{padding:8px 14px;border-top:1px solid rgba(184,201,224,0.4);display:flex;gap:6px;}
+  .bf-btn-footer{flex:1;background:none;border:1.5px solid var(--bleu-fonce);color:var(--bleu-fonce);border-radius:8px;padding:6px;font-size:11.5px;font-weight:700;cursor:pointer;transition:background 0.15s;display:flex;align-items:center;justify-content:center;gap:5px;}
+  .bf-btn-footer:hover{background:#EEF4FB;}
+  .bf-btn-footer.copie{background:var(--vert-fonce);border-color:var(--vert-fonce);color:#fff;}
+  .bf-purger{flex:1;background:none;border:1.5px solid var(--rouge);color:var(--rouge);border-radius:8px;padding:6px;font-size:11.5px;font-weight:700;cursor:pointer;transition:background 0.15s;display:flex;align-items:center;justify-content:center;gap:5px;}
+  .bf-purger:hover{background:var(--rouge-clair);}
+
+  /* ── Modale de confirmation ── */
+  #confirm-overlay{position:fixed;inset:0;background:rgba(42,36,34,0.4);z-index:300;display:none;align-items:center;justify-content:center;}
+  #confirm-overlay.actif{display:flex;}
+  .confirm-boite{background:var(--blanc);border-radius:16px;padding:24px;max-width:300px;text-align:center;box-shadow:0 12px 36px rgba(0,0,0,0.25);}
+  .confirm-boite p{font-size:14px;margin-bottom:16px;line-height:1.5;}
+  .confirm-btns{display:flex;gap:10px;justify-content:center;}
+  .confirm-btns button{padding:8px 16px;border-radius:8px;border:none;font-size:13px;font-weight:700;cursor:pointer;}
+  .btn-annuler{background:var(--beige);color:var(--texte);}
+  .btn-confirmer{background:var(--rouge);color:#fff;}
+
+  /* ── Écran 1 — Bek ── */
+  .ecran-1{
+    position:relative;min-height:100vh;max-width:900px;margin:0 auto;padding:80px 20px 40px;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+  }
+  .bek-ligne{display:flex;align-items:flex-start;justify-content:center;gap:30px;flex-wrap:wrap;width:100%;}
+
+  .bek-zone{
+    position:relative;width:260px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;
+    opacity:0;animation:apparaitre 0.6s ease 0.2s forwards;
+  }
+  .bek-zone::after{
+    content:"";display:block;width:170px;height:14px;margin:-6px auto 0;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 170 14'%3E%3Cpath d='M6 8 C 30 3, 55 11, 85 7 C 115 3, 140 10, 164 6' fill='none' stroke='%237A9BBF' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat:no-repeat;background-position:center;background-size:contain;opacity:0.55;
+  }
+  #bekImg{width:100%;display:block;transition:opacity 0.5s ease;}
+
+  .bulle-bek{
+    position:relative;background:var(--blanc);border:2.5px solid var(--vert-fonce);border-radius:100px;
+    padding:14px 34px;font-family:"Patrick Hand",cursive;font-size:38px;color:var(--vert-fonce);
+    box-shadow:0 4px 14px var(--ombre);margin-bottom:16px;white-space:nowrap;transform:rotate(-1.5deg);
+    transition:opacity 0.4s ease;
+  }
+  .bulle-bek::after{content:"";position:absolute;bottom:-13px;left:50%;margin-left:-10px;border-width:13px 10px 0 10px;border-style:solid;border-color:var(--vert-fonce) transparent transparent transparent;}
+  .bulle-bek::before{content:"";position:absolute;bottom:-9px;left:50%;margin-left:-8px;border-width:10px 8px 0 8px;border-style:solid;border-color:var(--blanc) transparent transparent transparent;z-index:1;}
+  /* Modificateur pour texte long dans la bulle de Bek */
+  .bulle-bek.longue{white-space:normal;border-radius:22px;font-size:20px;line-height:1.4;max-width:240px;text-align:center;padding:14px 20px;}
+
+  /* Zone fiche (affiché à la place du succès quand on clique "What's a profile card?") */
+  .fiche-zone{opacity:0;visibility:hidden;max-height:0;overflow:hidden;margin-top:0;
+    transition:opacity 0.5s ease,visibility 0.5s ease,max-height 0.6s cubic-bezier(0.22,1,0.36,1),margin-top 0.6s cubic-bezier(0.22,1,0.36,1);}
+  .fiche-zone.visible{opacity:1;visibility:visible;max-height:600px;margin-top:14px;}
+  .fiche-img-apercu{width:100%;border-radius:14px;box-shadow:0 6px 20px var(--ombre);display:block;}
+
+  /* Flèche retour d'étape (à gauche de Bek, dans .bek-zone) */
+  #flecheRetour{
+    position:absolute;left:-50px;top:58%;transform:translateY(-50%);
+    width:36px;height:36px;border-radius:50%;
+    border:1.5px solid var(--violet);background:var(--beige-clair);
+    color:var(--violet-fonce);cursor:pointer;
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:0 2px 8px rgba(90,64,128,0.15);
+    transition:transform 0.18s ease,box-shadow 0.18s ease,opacity 0.3s ease,visibility 0.3s ease;
+    visibility:hidden;opacity:0;
+  }
+  #flecheRetour.visible{visibility:visible;opacity:1;}
+  #flecheRetour:hover{transform:translateY(-50%) translateX(-2px);box-shadow:0 4px 12px rgba(90,64,128,0.25);}
+
+  /* Zone droite de Bek : réponse (étapes 1-2) ou succès (étape 3) */
+  .zone-droite{width:240px;margin-top:130px;flex-shrink:0;display:flex;flex-direction:column;}
+
+  .reponse-zone{opacity:0;visibility:hidden;max-height:0;overflow:hidden;transition:opacity 0.5s ease,visibility 0.5s ease,max-height 0.6s cubic-bezier(0.22,1,0.36,1);}
+  .reponse-zone.visible{opacity:1;visibility:visible;max-height:600px;}
+  .reponse-carte{
+    background:var(--beige-clair);border:1.5px dashed var(--bleu-fonce);border-radius:14px;
+    padding:12px 16px;box-shadow:0 3px 10px var(--ombre);
+  }
+  .reponse-label{font-size:12px;color:var(--bleu-fonce);font-weight:700;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px;}
+  .reponse-contexte{font-size:12px;color:var(--gris);margin-bottom:8px;line-height:1.4;font-style:italic;}
+  .reponse-input{width:100%;padding:8px 12px;border:1.5px solid var(--bleu-poudre);border-radius:8px;font-size:16px;font-family:"Nunito",sans-serif;outline:none;}
+  .reponse-input:focus{border-color:var(--vert-fonce);}
+  .reponse-valider{margin-top:8px;width:100%;background:var(--vert-fonce);color:#fff;border:none;border-radius:8px;padding:8px;font-size:13px;font-weight:700;cursor:pointer;transition:background 0.15s;}
+  .reponse-valider:hover{background:#3d6a28;}
+  .reponse-aide{font-size:11px;color:var(--gris);margin-top:6px;text-align:center;}
+  .reponse-feedback{margin-top:8px;font-size:13px;font-weight:700;text-align:center;border-radius:8px;padding:6px;display:none;}
+  .reponse-feedback.ok{display:block;background:var(--vert-clair);color:var(--vert-fonce);}
+  .reponse-feedback.non{display:block;background:var(--corail-clair);color:#8a3624;}
+
+
+  /* ── Titre "UN SUCCÈS" avec étoiles ── */
+  .succes-header{
+    text-align:center;margin-bottom:10px;
+    position:relative;padding:10px 0 4px;
+  }
+  .succes-cri{
+    font-family:"Patrick Hand",cursive;
+    font-size:21px;color:var(--violet-fonce);
+    letter-spacing:0.07em;display:inline-block;
+    transform:rotate(-1.2deg);
+    text-shadow:0 1px 8px rgba(90,64,128,0.18);
+  }
+  .succes-etoile{
+    position:absolute;pointer-events:none;
+    animation:etoile-flotte var(--dur,2.6s) ease-in-out infinite;
+    animation-delay:var(--del,0s);
+  }
+  @keyframes etoile-flotte{
+    0%,100%{transform:translateY(0) rotate(0deg) scale(1);opacity:0.65;}
+    50%{transform:translateY(-9px) rotate(22deg) scale(1.15);opacity:1;}
+  }
+  .succes-chute{
+    position:absolute;pointer-events:none;
+    animation:chute var(--dur,3s) ease-in-out infinite;
+    animation-delay:var(--del,0s);
+    opacity:0;
+  }
+  @keyframes chute{
+    0%{transform:translateY(0) rotate(0deg);opacity:0;}
+    15%{opacity:0.9;}
+    85%{opacity:0.7;}
+    100%{transform:translateY(38px) rotate(30deg);opacity:0;}
+  }
+
+  /* Zone succès (étape 3 uniquement) */
+  .succes-zone{opacity:0;visibility:hidden;max-height:0;overflow:hidden;transition:opacity 0.5s ease,visibility 0.5s ease,max-height 0.6s cubic-bezier(0.22,1,0.36,1);}
+  .succes-zone.visible{opacity:1;visibility:visible;max-height:600px;}
+  .succes-img{width:100%;border-radius:16px;box-shadow:0 6px 20px var(--ombre);}
+  .succes-placeholder{
+    display:none;flex-direction:column;align-items:center;justify-content:center;gap:10px;
+    width:100%;aspect-ratio:1/1;border:2px dashed var(--ambre);border-radius:16px;
+    background:var(--ambre-clair);color:var(--ambre-fonce);
+    font-family:"Patrick Hand",cursive;font-size:13px;text-align:center;padding:20px;
+  }
+
+  /* Indice de défilement */
+  .indice-bas{
+    margin-top:46px;font-family:"Patrick Hand",cursive;font-size:15px;color:var(--gris);
+    display:flex;align-items:center;gap:8px;
+    opacity:0;animation:apparaitre 0.6s ease 4.6s forwards;
+    transition:opacity 0.4s ease;
+  }
+  .indice-bas svg{animation:rebond 1.4s ease-in-out infinite;}
+  @keyframes rebond{0%,100%{transform:translateY(0);}50%{transform:translateY(5px);}}
+
+  /* ── Écran 2 — Kloé ── */
+  .ecran-2{position:relative;min-height:100vh;max-width:900px;margin:0 auto;padding:60px 20px 60px;}
+  .kloe-ligne{display:flex;align-items:flex-start;justify-content:flex-end;flex-wrap:wrap;position:relative;}
+
+  /* Conteneur des bulles — fade lors des transitions */
+  .kloe-contenu{flex:1;max-width:400px;margin-right:22px;transition:opacity 0.4s ease;}
+  .bulle-kloe{
+    position:relative;background:var(--corail-clair);border:2px solid var(--corail);border-radius:18px;
+    padding:14px 20px;font-size:15px;line-height:1.6;color:#8a3624;
+    box-shadow:0 4px 14px var(--ombre);margin-top:30px;transform:rotate(0.5deg);opacity:0;
+  }
+  .bulle-kloe:first-child{transform:rotate(0.8deg);}
+  .bulle-kloe.avec-pointe::after{content:"";position:absolute;right:-14px;bottom:38px;border-width:8px 0 8px 14px;border-style:solid;border-color:transparent transparent transparent var(--corail);}
+  .bulle-kloe.avec-pointe::before{content:"";position:absolute;right:-10px;bottom:40.5px;border-width:5.5px 0 5.5px 9.5px;border-style:solid;border-color:transparent transparent transparent var(--corail-clair);z-index:1;}
+
+  .mot-fr{font-family:"Patrick Hand",cursive;font-size:18px;color:var(--vert-fonce);font-weight:700;}
+
+  .kloe-zone{position:relative;width:170px;flex-shrink:0;opacity:0;transition:opacity 0.5s ease;}
+  .kloe-zone img{width:100%;display:block;}
+
+  @media(max-width:560px){
+    .kloe-ligne{flex-direction:column;align-items:flex-end;}
+    .kloe-contenu{margin-right:0;max-width:90vw;}
+    .bulle-kloe.avec-pointe::after,.bulle-kloe.avec-pointe::before{
+      right:30px;bottom:-13px;left:auto;border-width:14px 10px 0 10px;border-color:var(--corail) transparent transparent transparent;
+    }
+    .bulle-kloe.avec-pointe::before{bottom:-9px;border-width:10px 8px 0 8px;border-color:var(--corail-clair) transparent transparent transparent;}
+  }
+
+  /* ── Carte ticket (étape 3) ── */
+  .carte-code{
+    position:relative;margin:0 auto 0;max-width:360px;
+    background:var(--blanc);border:2px solid var(--ambre);border-radius:18px;
+    box-shadow:0 6px 20px var(--ombre);transform:rotate(-1.2deg);
+    opacity:0;visibility:hidden;max-height:0;overflow:hidden;
+    transition:opacity 0.5s ease,visibility 0.5s ease,max-height 0.7s cubic-bezier(0.22,1,0.36,1),margin-top 0.7s cubic-bezier(0.22,1,0.36,1);
+  }
+  .carte-code.visible{opacity:1;visibility:visible;max-height:520px;margin-top:48px;}
+  .cc-entete{
+    display:flex;align-items:center;gap:9px;background:var(--ambre-clair);color:var(--ambre-fonce);
+    font-family:"Patrick Hand",cursive;font-size:19px;
+    padding:12px 20px;border-radius:16px 16px 0 0;border-bottom:2px dashed var(--ambre);
+  }
+  .carte-code::before,.carte-code::after{
+    content:"";position:absolute;width:16px;height:16px;background:var(--beige);
+    border:2px solid var(--ambre);border-radius:50%;top:46px;margin-top:-8px;
+  }
+  .carte-code::before{left:-9px;}
+  .carte-code::after{right:-9px;}
+  .cc-corps{padding:18px 20px 16px;}
+  .cc-ligne{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px;}
+  .cc-ligne:last-of-type{margin-bottom:0;}
+  .cc-info{display:flex;flex-direction:column;gap:3px;min-width:0;}
+  .cc-label{font-size:11px;color:var(--gris);text-transform:uppercase;letter-spacing:0.05em;font-weight:700;}
+  .cc-valeur{font-family:"Courier New",monospace;font-size:17px;font-weight:700;color:var(--texte);letter-spacing:0.02em;word-break:break-all;}
+  .cc-copier-btn{
+    background:none;border:1.5px solid var(--ambre);color:var(--ambre-fonce);border-radius:8px;padding:6px 10px;
+    font-size:11px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:4px;transition:background 0.15s;flex-shrink:0;
+  }
+  .cc-copier-btn:hover{background:var(--ambre-clair);}
+  .cc-copier-btn.copie{background:var(--vert-fonce);border-color:var(--vert-fonce);color:#fff;}
+  .cc-note{margin-top:14px;padding-top:14px;border-top:1px dotted rgba(138,128,115,0.3);font-size:12.5px;color:var(--gris);line-height:1.55;text-align:center;}
+  .cc-note strong{color:var(--ambre-fonce);}
+  .cc-lien-bravo{
+    display:flex;align-items:center;justify-content:center;gap:7px;margin-top:14px;
+    background:var(--ambre);color:#fff;text-decoration:none;
+    font-family:"Patrick Hand",cursive;font-size:16px;padding:9px 18px;border-radius:100px;
+    box-shadow:0 3px 10px rgba(133,79,11,0.3);transition:transform 0.15s,box-shadow 0.15s;
+  }
+  .cc-lien-bravo:hover{transform:translateY(-2px);box-shadow:0 5px 14px rgba(133,79,11,0.4);}
+  .cc-btn-continuer{
+    display:flex;align-items:center;justify-content:center;gap:7px;margin-top:10px;width:100%;
+    background:var(--vert-fonce);color:#fff;text-decoration:none;
+    font-family:"Patrick Hand",cursive;font-size:16px;padding:9px 18px;border-radius:100px;border:none;cursor:pointer;
+    box-shadow:0 3px 10px rgba(74,122,54,0.35);transition:transform 0.15s,box-shadow 0.15s;
+  }
+  .cc-btn-continuer:hover{transform:translateY(-2px);box-shadow:0 5px 14px rgba(74,122,54,0.45);}
+  .cc-btn-continuer.appel{
+    animation:appel-attention 1.8s ease-in-out infinite;
+  }
+  @keyframes appel-attention{
+    0%,100%{transform:scale(1);box-shadow:0 3px 10px rgba(74,122,54,0.35);}
+    30%{transform:scale(1.07) translateY(-2px);box-shadow:0 6px 22px rgba(74,122,54,0.55);}
+    40%{transform:scale(1.05) translateY(-1px) rotate(-1.5deg);}
+    50%{transform:scale(1.07) translateY(-2px) rotate(1.5deg);}
+    60%{transform:scale(1.05) translateY(-1px) rotate(-1deg);}
+    70%{transform:scale(1.07) translateY(-2px);box-shadow:0 6px 22px rgba(74,122,54,0.55);}
+    85%{transform:scale(1.02);}
+  }
+
+  /* ── Carte fiche ── */
+  .carte-fiche{
+    max-height:0;overflow:hidden;opacity:0;visibility:hidden;
+    margin-top:0;
+    background:var(--beige-clair);border:1.5px dashed var(--violet);border-radius:14px;
+    padding:0 20px;box-shadow:0 3px 10px var(--ombre);
+    transition:max-height 0.6s cubic-bezier(0.22,1,0.36,1),
+               opacity 0.4s ease 0.15s,
+               visibility 0.4s ease 0.15s,
+               margin-top 0.4s ease,
+               padding 0.4s ease;
+  }
+  .carte-fiche.visible{
+    max-height:600px;opacity:1;visibility:visible;
+    margin-top:20px;padding:18px 20px;
+  }
+  .cf-titre{font-family:"Patrick Hand",cursive;font-size:17px;color:var(--violet-fonce);margin-bottom:12px;}
+  .cf-ligne{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px;}
+  .cf-info{display:flex;flex-direction:column;gap:3px;min-width:0;}
+  .cf-label{font-size:11px;color:var(--gris);text-transform:uppercase;letter-spacing:0.05em;font-weight:700;}
+  .cf-valeur{font-family:"Courier New",monospace;font-size:17px;font-weight:700;color:var(--texte);letter-spacing:0.02em;word-break:break-all;}
+  .cf-copier-btn{
+    padding:5px 10px;border-radius:6px;border:1.5px solid var(--violet);
+    background:var(--violet-clair);color:var(--violet-fonce);font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;
+    transition:background 0.15s;
+  }
+  .cf-copier-btn:hover{background:var(--ambre-clair);}
+  .cf-copier-btn.copie{background:var(--vert-fonce);border-color:var(--vert-fonce);color:#fff;}
+  .cf-note{margin-top:12px;padding-top:12px;border-top:1px dotted rgba(138,128,115,0.3);font-size:12.5px;color:var(--gris);line-height:1.55;text-align:center;}
+  .cf-lien-bravo{
+    display:flex;align-items:center;justify-content:center;gap:7px;margin-top:10px;width:100%;
+    background:linear-gradient(135deg,var(--ambre),var(--ambre-fonce));color:#fff;text-decoration:none;
+    font-family:"Patrick Hand",cursive;font-size:16px;padding:9px 18px;border-radius:100px;
+    box-shadow:0 3px 10px rgba(133,79,11,0.35);transition:transform 0.15s,box-shadow 0.15s;
+  }
+  .cf-lien-bravo:hover{transform:translateY(-2px);box-shadow:0 5px 14px rgba(133,79,11,0.45);}
+  /* Zone prompt Claude.ai */
+  .cf-prompt-zone{margin-top:14px;background:var(--violet-clair);border:1.5px solid var(--violet);border-radius:12px;padding:12px 14px;display:none;}
+  .cf-prompt-zone.visible{display:block;}
+  .cf-prompt-label{font-size:11px;font-weight:800;color:var(--violet-fonce);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px;}
+  .cf-prompt-texte{font-size:12.5px;color:var(--texte);line-height:1.6;white-space:pre-wrap;user-select:text;}
+  .cf-prompt-copier{margin-top:8px;width:100%;background:var(--violet-fonce);color:#fff;border:none;border-radius:8px;padding:7px;font-size:12px;font-weight:700;cursor:pointer;transition:background 0.15s;display:flex;align-items:center;justify-content:center;gap:6px;}
+  .cf-prompt-copier:hover{background:var(--violet);}
+  .cf-prompt-copier.copie{background:var(--vert-fonce);}
+  .cf-btn-fait{margin-top:10px;width:100%;background:var(--vert-fonce);color:#fff;border:none;border-radius:100px;padding:9px;font-family:"Patrick Hand",cursive;font-size:15px;cursor:pointer;display:none;align-items:center;justify-content:center;gap:7px;box-shadow:0 3px 10px rgba(74,122,54,0.3);transition:transform 0.15s,box-shadow 0.15s;}
+  .cf-btn-fait.visible{display:flex;}
+  .cf-btn-fait:hover{transform:translateY(-2px);box-shadow:0 5px 14px rgba(74,122,54,0.45);}
+  /* Aperçu fiche dans p01 */
+  .cf-apercu-img{width:100%;border-radius:10px;box-shadow:0 6px 20px var(--ombre);}
+  /* Bouton "Qu'est-ce qu'une fiche ?" */
+  .btn-quoi-fiche{
+    display:flex;align-items:center;justify-content:center;gap:7px;margin-top:12px;width:100%;
+    background:var(--violet-clair);color:var(--violet-fonce);border:1.5px solid var(--violet);
+    font-family:"Patrick Hand",cursive;font-size:15px;padding:8px 16px;border-radius:100px;cursor:pointer;
+    transition:background 0.15s,transform 0.15s;
+  }
+  .btn-quoi-fiche:hover{background:var(--violet);color:#fff;transform:translateY(-1px);}
+
+  /* ── Section vocabulaire ── */
+  .section-cocher{
+    display:none;margin-top:36px;
+    background:var(--beige-clair);border:1.5px solid rgba(184,201,224,0.5);
+    border-radius:18px;padding:20px 24px;box-shadow:0 4px 16px var(--ombre);
+  }
+  .sc-titre{font-family:"Patrick Hand",cursive;font-size:20px;color:var(--vert-fonce);margin-bottom:12px;}
+  .sc-item{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:10px;transition:background 0.15s;cursor:pointer;}
+  .sc-item:hover{background:var(--vert-clair);}
+  .sc-item input{width:18px;height:18px;accent-color:var(--vert-fonce);cursor:pointer;}
+  .sc-item label{font-size:14px;cursor:pointer;flex:1;}
+  .sc-item .sc-trad{color:var(--gris);font-size:12.5px;}
+
+  /* Apparition d'un nouveau mot dans la liste */
+  .sc-item-nouveau{animation:apparaitre 0.5s ease forwards;}
+
+  
+  /* ── Bulle de réflexion (nuage BD) ── */
+  .bulle-nuage-wrap {
+    position: absolute;
+    top: -72px; left: 62%; transform: translateX(-50%);
+    cursor: pointer; z-index: 10;
+    display: none;
+    filter: drop-shadow(0 4px 10px rgba(90,64,128,0.18));
+    animation: flotter-nuage 3.4s ease-in-out infinite;
+    transition: filter 0.2s ease;
+  }
+  .bulle-nuage-wrap.visible { display: block; }
+  .bulle-nuage-wrap:hover {
+    filter: drop-shadow(0 6px 16px rgba(90,64,128,0.35));
+    animation-play-state: paused;
+  }
+  @keyframes flotter-nuage {
+    0%, 100% { transform: translateX(-50%) translateY(0) rotate(-0.5deg); }
+    50%       { transform: translateX(-50%) translateY(-8px) rotate(0.5deg); }
+  }
+
+  /* Zone réponse chocolat — modal plein écran */
+  .reponse-chocolat {
+    display: none;
+    position: fixed; inset: 0; z-index: 350;
+    background: rgba(30,22,42,0.72);
+    backdrop-filter: blur(3px);
+    align-items: center; justify-content: center;
+    animation: apparaitre 0.3s ease forwards;
+  }
+  .reponse-chocolat.visible { display: flex; }
+  .rc-boite {
+    background: var(--beige-clair);
+    border: 2px solid var(--vert-fonce);
+    border-radius: 20px;
+    padding: 28px 28px 22px;
+    max-width: 340px; width: 90%;
+    box-shadow: 0 16px 48px rgba(0,0,0,0.35);
+    position: relative;
+    animation: apparaitre 0.35s cubic-bezier(0.34,1.56,0.64,1) forwards;
+  }
+  .rc-fermer {
+    position: absolute; top: 12px; right: 14px;
+    background: none; border: none; cursor: pointer;
+    font-size: 18px; color: var(--gris); line-height: 1;
+    transition: color 0.15s;
+  }
+  .rc-fermer:hover { color: var(--texte); }
+  .rc-label { font-size: 12px; font-weight: 800; color: var(--vert-fonce);
+    text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 10px; }
+  .rc-question { font-family: "Patrick Hand", cursive; font-size: 20px;
+    color: var(--texte); margin-bottom: 14px; line-height: 1.4; }
+  .rc-input { width: 100%; padding: 9px 13px; border: 1.5px solid var(--bleu-poudre);
+    border-radius: 9px; font-size: 16px; font-family: "Nunito", sans-serif; outline: none; }
+  .rc-input:focus { border-color: var(--vert-fonce); }
+  .rc-btn { margin-top: 9px; width: 100%; background: var(--vert-fonce); color: #fff;
+    border: none; border-radius: 9px; padding: 9px; font-size: 14px; font-weight: 700;
+    cursor: pointer; transition: background 0.15s; }
+  .rc-btn:hover { background: #3d6a28; }
+  .rc-aide { font-size: 11px; color: var(--gris); margin-top: 6px; text-align: center; }
+  .rc-feedback { margin-top: 9px; font-size: 13px; font-weight: 700; text-align: center;
+    border-radius: 8px; padding: 7px; display: none; }
+  .rc-feedback.ok { display: block; background: var(--vert-clair); color: var(--vert-fonce); }
+  .rc-feedback.non { display: block; background: var(--corail-clair); color: #8a3624; }
+  /* Vue succès dans le modal chocolat */
+  .rc-succes { display:none; flex-direction:column; gap:10px; width:100%; }
+  .rc-succes.visible { display:flex; }
+  .rc-succes-titre { font-family:"Patrick Hand",cursive; font-size:17px; color:var(--ambre-fonce); text-align:center; margin-bottom:2px; }
+  .rc-succes-ligne { display:flex; align-items:center; justify-content:space-between; gap:8px; }
+  .rc-succes-info { display:flex; flex-direction:column; gap:2px; }
+  .rc-succes-label { font-size:10px; color:var(--gris); text-transform:uppercase; letter-spacing:0.05em; font-weight:700; }
+  .rc-succes-valeur { font-family:"Courier New",monospace; font-size:15px; font-weight:700; color:var(--texte); }
+  .rc-succes-copier { background:none; border:1.5px solid var(--ambre); color:var(--ambre-fonce); border-radius:7px; padding:5px 10px; font-size:11px; font-weight:700; cursor:pointer; transition:background 0.15s; white-space:nowrap; }
+  .rc-succes-copier:hover { background:var(--ambre-clair); }
+  .rc-succes-copier.copie { background:var(--vert-fonce); border-color:var(--vert-fonce); color:#fff; }
+  .rc-succes-note { font-size:12px; color:var(--gris); text-align:center; line-height:1.5; border-top:1px dotted rgba(138,128,115,0.3); padding-top:10px; }
+  .rc-succes-note strong { color:var(--ambre-fonce); }
+  .rc-succes-bravo { display:flex; align-items:center; justify-content:center; gap:7px; background:var(--ambre); color:#fff; text-decoration:none; font-family:"Patrick Hand",cursive; font-size:15px; padding:8px 16px; border-radius:100px; box-shadow:0 3px 10px rgba(133,79,11,0.3); transition:transform 0.15s,box-shadow 0.15s; }
+  .rc-succes-bravo:hover { transform:translateY(-2px); box-shadow:0 5px 14px rgba(133,79,11,0.4); }
+  .rc-succes-continuer { display:none; align-items:center; justify-content:center; gap:7px; width:100%; background:var(--vert-fonce); color:#fff; font-family:"Patrick Hand",cursive; font-size:15px; padding:8px 16px; border-radius:100px; border:none; cursor:pointer; box-shadow:0 3px 10px rgba(74,122,54,0.3); transition:transform 0.15s,box-shadow 0.15s; }
+  .rc-succes-continuer.visible { display:flex; }
+  .rc-succes-continuer:hover { transform:translateY(-2px); }
+  
+  .btn-oui {
+    display: inline-block; margin-top: 8px;
+    background: var(--vert-fonce); color: #fff;
+    border: none; border-radius: 100px;
+    padding: 7px 18px; font-size: 14px; font-weight: 700;
+    font-family: "Patrick Hand", cursive; cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s;
+    box-shadow: 0 3px 10px rgba(74,122,54,0.3);
+  }
+  .btn-oui:hover { transform: translateY(-2px); box-shadow: 0 5px 14px rgba(74,122,54,0.4); }
+  @keyframes apparaitre{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
+  .cf-btn-continuer{
+    display:flex;align-items:center;justify-content:center;gap:7px;margin-top:14px;width:100%;
+    background:var(--vert-fonce);color:#fff;text-decoration:none;
+    font-family:"Patrick Hand",cursive;font-size:16px;padding:9px 18px;border-radius:100px;border:none;cursor:pointer;
+    box-shadow:0 3px 10px rgba(74,122,54,0.35);transition:transform 0.15s,box-shadow 0.15s;
+    opacity:0;pointer-events:none;
+  }
+  .cf-btn-continuer.visible{opacity:1;pointer-events:auto;}
+  .cf-btn-continuer:hover{transform:translateY(-2px);box-shadow:0 5px 14px rgba(74,122,54,0.45);}
+</style>
+</head>
+<body>
+
+<!-- ── Bouton retour menu ── -->
+<a href="../menus/zh.html" id="btn-retour">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+    <path d="M19 12H5M5 12L11 6M5 12L11 18" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
+  返回
+</a>
+
+<!-- ── Bulle flottante vocabulaire ── -->
+<div id="bulle-flottante">
+  <div class="bf-header" onclick="toggleBulle(event)">
+    <span class="bf-titre">
+      <svg class="bf-icone-svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M7 3.5C6 3.5 5.5 4 5.5 5V20C5.5 21 6 21.5 7 21.5H17C18 21.5 18.5 21 18.5 20V8L14 3.5Z"/>
+        <path d="M14 3.5V8H18.5"/><path d="M8.5 12.5H15.5"/><path d="M8.5 15.5H15.5"/><path d="M8.5 18H13"/>
+      </svg>
+      <span class="bf-titre-texte">我的单词</span>
+      <span class="bf-compteur" id="bfCompteur">0</span>
+    </span>
+    <div class="bf-actions-header">
+      <button class="bf-btn-min" onclick="toggleMinimise(event)" title="最小化">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14"/></svg>
+      </button>
+      <span class="bf-chevron">&#9660;</span>
+    </div>
+    <span class="bf-icone-seule">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M7 3.5C6 3.5 5.5 4 5.5 5V20C5.5 21 6 21.5 7 21.5H17C18 21.5 18.5 21 18.5 20V8L14 3.5Z"/>
+        <path d="M14 3.5V8H18.5"/>
+      </svg>
+      <span class="bf-mini-compteur" id="bfMiniCompteur">0</span>
+    </span>
+  </div>
+  <div class="bf-corps" id="bfCorps">
+    <div class="bf-vide">勾选下面的单词，加到这里。</div>
+  </div>
+  <div class="bf-footer">
+    <button class="bf-btn-footer" id="bfCopier" onclick="copierListe()">
+      <svg class="bf-icone-svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <rect x="8.5" y="7" width="11.5" height="14" rx="1.6"/>
+        <path d="M5.5 16.5H4.5C3.9 16.5 3.5 16 3.5 15.5V4.5C3.5 3.9 3.9 3.5 4.5 3.5H14.5C15 3.5 15.5 3.9 15.5 4.5V5.5"/>
+      </svg>
+      <span id="bfCopierTexte">复制</span>
+    </button>
+    <button class="bf-purger" onclick="demanderPurge()">
+      <svg class="bf-icone-svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M5 7H19"/><path d="M9 7V4.8C9 4.4 9.4 4 9.8 4H14.2C14.6 4 15 4.4 15 4.8V7"/>
+        <path d="M7 7L7.8 20C7.85 20.6 8.35 21 8.9 21H15.1C15.65 21 16.15 20.6 16.2 20L17 7"/>
+        <path d="M10.3 11V17"/><path d="M13.7 11V17"/>
+      </svg>
+      清空
+    </button>
+  </div>
+</div>
+
+<!-- ── Modale confirmation purge ── -->
+<div id="confirm-overlay">
+  <div class="confirm-boite">
+    <p>确定要清空你的整个单词列表吗？此操作无法撤销。</p>
+    <div class="confirm-btns">
+      <button class="btn-annuler" onclick="annulerPurge()">取消</button>
+      <button class="btn-confirmer" onclick="confirmerPurge()">清空</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     ÉCRAN 1 — BEK
+══════════════════════════════════════════ -->
+<div class="ecran-1" id="ecran1">
+  <div class="bek-ligne">
+    <div class="bek-zone">
+
+      <!-- Flèche retour étape précédente -->
+      <button id="flecheRetour" onclick="revenirEtape()" title="上一步" aria-label="返回上一步">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M19 12H5M5 12L11 6M5 12L11 18"/>
+        </svg>
+      </button>
+
+      <div class="bulle-bek" id="bulleBek">Salut !</div>
+      <img id="bekImg" src="images/bek_salue.png" alt="Bek">
+      <!-- Bulle de réflexion (nuage BD) — apparaît après continuerApresSucces() -->
+      <div class="bulle-nuage-wrap" id="bulleNuage" onclick="montrerReponseChocolat()" role="button" aria-label="Bek pense à quelque chose…">
+        <svg width="110" height="76" viewBox="0 0 110 76" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Corps principal -->
+          <ellipse cx="54" cy="36" rx="38" ry="24" fill="white" stroke="#C8C0E0" stroke-width="1.8"/>
+          <!-- Bosses supérieures -->
+          <ellipse cx="30" cy="24" rx="16" ry="13" fill="white" stroke="#C8C0E0" stroke-width="1.6"/>
+          <ellipse cx="54" cy="17" rx="18" ry="13" fill="white" stroke="#C8C0E0" stroke-width="1.6"/>
+          <ellipse cx="76" cy="23" rx="15" ry="12" fill="white" stroke="#C8C0E0" stroke-width="1.6"/>
+          <!-- Fond blanc pour couvrir les jointures -->
+          <ellipse cx="54" cy="34" rx="36" ry="20" fill="white"/>
+          <!-- Icône nourriture -->
+          <text x="54" y="44" text-anchor="middle" font-size="18">🍕</text>
+          <!-- Queue pointillée (bas gauche) -->
+          <circle cx="26" cy="57" r="5.5" fill="white" stroke="#C8C0E0" stroke-width="1.5"/>
+          <circle cx="16" cy="66" r="3.8" fill="white" stroke="#C8C0E0" stroke-width="1.3"/>
+          <circle cx="9"  cy="73" r="2.4" fill="white" stroke="#C8C0E0" stroke-width="1.1"/>
+        </svg>
+      </div>    </div>
+
+    <!-- Zone droite : réponse ou image succès -->
+    <div class="zone-droite">
+      <div class="reponse-zone" id="reponseZone">
+        <div class="reponse-carte">
+          <div class="reponse-label">轮到你了</div>
+          <div class="reponse-contexte" id="reponseContexte">Bek 刚说了 «&nbsp;Salut&nbsp;!&nbsp;»——你也说一遍。</div>
+          <input type="text" class="reponse-input" id="reponseInput" placeholder="在这里输入…" autocomplete="off"
+            onkeydown="if(event.key==='Enter')validerReponse();">
+          <button class="reponse-valider" onclick="validerReponse()">检查</button>
+          <div class="reponse-aide">电脑用户：按 Enter&nbsp;&#8629;</div>
+          <div class="reponse-feedback" id="reponseFeedback"></div>
+        </div>
+      </div>
+
+      <div class="succes-zone" id="succesZone">
+        <div class="succes-header">
+          <!-- étoiles flottantes autour du titre -->
+          <svg class="succes-etoile" style="--dur:2.4s;--del:0s;top:2px;left:18px;width:13px;height:13px;" viewBox="0 0 24 24" fill="none">
+            <path d="M12 2 L13.5 9.5 L22 12 L13.5 14.5 L12 22 L10.5 14.5 L2 12 L10.5 9.5 Z" fill="var(--violet)"/>
+          </svg>
+          <svg class="succes-etoile" style="--dur:3.1s;--del:0.8s;top:0px;right:14px;width:10px;height:10px;" viewBox="0 0 24 24" fill="none">
+            <path d="M12 2 L13.5 9.5 L22 12 L13.5 14.5 L12 22 L10.5 14.5 L2 12 L10.5 9.5 Z" fill="var(--ambre)"/>
+          </svg>
+          <svg class="succes-etoile" style="--dur:2.8s;--del:1.5s;top:12px;right:32px;width:8px;height:8px;" viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="5" fill="var(--violet-fonce)"/>
+          </svg>
+          <svg class="succes-etoile" style="--dur:3.4s;--del:0.4s;top:14px;left:36px;width:8px;height:8px;" viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="5" fill="var(--ambre)"/>
+          </svg>
+          <!-- étoiles en chute -->
+          <svg class="succes-chute" style="--dur:2.2s;--del:0.3s;top:28px;left:28px;width:9px;height:9px;" viewBox="0 0 24 24" fill="none">
+            <path d="M12 2 L13.5 9.5 L22 12 L13.5 14.5 L12 22 L10.5 14.5 L2 12 L10.5 9.5 Z" fill="var(--ambre-fonce)"/>
+          </svg>
+          <svg class="succes-chute" style="--dur:2.9s;--del:1.1s;top:28px;right:24px;width:7px;height:7px;" viewBox="0 0 24 24" fill="none">
+            <path d="M12 2 L13.5 9.5 L22 12 L13.5 14.5 L12 22 L10.5 14.5 L2 12 L10.5 9.5 Z" fill="var(--violet)"/>
+          </svg>
+          <span class="succes-cri">✦ UN SUCCÈS ✦</span>
+        </div>
+        <img src="../../bravo/images/succes/sv-sa111uut.png" alt="Succès — Mon premier mot"
+          class="succes-img"
+          onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+        <div class="succes-placeholder">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="18" height="18" rx="3"/>
+            <path d="M3 9h18M9 21V9"/>
+          </svg>
+          <span>sv-sa111uut.png</span>
+        </div>
+      </div>
+
+      <!-- Zone fiche (remplace le succès quand on clique "What's a profile card?") -->
+      <div class="fiche-zone" id="ficheZone"><img src="../../bravo/images/fiches/fiche-image-niveau_01.png" alt="Fiche Niveau 1" class="fiche-img-apercu" onerror="this.style.display='none';"></div>
+    </div>
+  </div>
+
+  <!-- Indice de défilement -->
+  <div class="indice-bas" id="indiceBas">
+    <span>向下滚动</span>
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M6 9l6 6 6-6"/>
+    </svg>
+  </div>
+
+  <!-- Navigation entre pages -->
+  <nav class="nav-pages">
+    <span class="btn-nav btn-precedent indisponible">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M15 19l-7-7 7-7"/></svg>
+      上一页
+    </span>
+    <span class="btn-nav btn-suivant indisponible" id="btnSuivant">
+      下一页
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M9 5l7 7-7 7"/></svg>
+    </span>
+  </nav>
+</div>
+
+<!-- ══════════════════════════════════════════
+     ÉCRAN 2 — KLOÉ
+══════════════════════════════════════════ -->
+<div class="ecran-2" id="ecran2">
+  <div class="kloe-ligne">
+    <!-- Contenu des bulles — remplacé à chaque étape -->
+    <div class="kloe-contenu" id="kloeContenu"></div>
+    <div class="kloe-zone" id="kloeZone">
+      <img src="../images/iris/iris_salue.png" id="kloeImg" alt="Iris">
+    </div>
+  </div>
+
+  <!-- Carte ticket (étape 3 uniquement) -->
+  
+  <!-- Zone réponse chocolat -->
+  <div class="reponse-chocolat" id="reponseChocolat" onclick="fermerChocolat(event)">
+    <div class="rc-boite" onclick="event.stopPropagation()">
+      <button class="rc-fermer" onclick="fermerChocolat()" title="Fermer">✕</button>
+      <div class="rc-label">Bek réfléchit…</div>
+      <div class="rc-question">À quoi Bek pense-t-elle ?</div>
+      <input type="text" class="rc-input" id="inputChocolat" placeholder="..." autocomplete="off" spellcheck="false"
+        onkeydown="if(event.key==='Enter') validerChocolat();">
+      <button class="rc-btn" onclick="validerChocolat()">Vérifier</button>
+      <div class="rc-aide">Sur ordinateur : appuie sur Entrée ↵</div>
+      <div class="rc-feedback" id="feedbackChocolat"></div>
+      <!-- Vue succès dévoilée après bonne réponse -->
+      <div class="rc-succes" id="rcSucces">
+        <div class="rc-succes-titre">🍫 Secret de Bek</div>
+        <div class="rc-succes-ligne">
+          <div class="rc-succes-info">
+            <span class="rc-succes-label">Code</span>
+            <span class="rc-succes-valeur" id="rcCode">sn-ch0kb3k</span>
+          </div>
+          <button class="rc-succes-copier" onclick="copierRcSucces('rcCode',this)">Copier</button>
+        </div>
+        <div class="rc-succes-ligne">
+          <div class="rc-succes-info">
+            <span class="rc-succes-label">Mot de passe</span>
+            <span style="font-size:12px; font-style:italic; color:var(--gris);">Demande à ton professeur</span>
+          </div>
+        </div>
+        <div class="rc-succes-note">Utilise ces données dans <strong>Le charriot</strong> sur la page <strong>Bravo</strong>.</div>
+        <a class="rc-succes-bravo" href="../../bravo/index.html" target="_blank" rel="noopener" onclick="apresClicBravoChocolat()">
+          Aller sur Bravo
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M9 5l7 7-7 7"/></svg>
+        </a>
+        <button class="rc-succes-continuer" id="rcContinuer" onclick="fermerChocolatSucces()">
+          Continuer
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M9 5l7 7-7 7"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="carte-code" id="carteCode">
+    <div class="cc-entete">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M4 9.5C4 8 5 7 6.5 7H17.5C19 7 20 8 20 9.5C18.7 9.5 18.7 11.5 20 11.5C20 16 19 17 17.5 17H6.5C5 17 4 16 4 11.5C5.3 11.5 5.3 9.5 4 9.5Z"/>
+        <path d="M9.5 7V17" stroke-dasharray="2.2 2.2"/>
+      </svg>
+      你的第一个成就
+    </div>
+    <div class="cc-corps">
+      <div class="cc-ligne">
+        <div class="cc-info">
+          <span class="cc-label">代码</span>
+          <span class="cc-valeur" id="ccCode">sv-sa111uut</span>
+        </div>
+        <button class="cc-copier-btn" onclick="copierChamp('ccCode',this)">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="8.5" y="7" width="11.5" height="14" rx="1.6"/>
+            <path d="M5.5 16.5H4.5C3.9 16.5 3.5 16 3.5 15.5V4.5C3.5 3.9 3.9 3.5 4.5 3.5H14.5C15 3.5 15.5 3.9 15.5 4.5V5.5"/>
+          </svg>
+          <span class="cc-copier-texte">复制</span>
+        </button>
+      </div>
+      <div class="cc-ligne">
+        <div class="cc-info">
+          <span class="cc-label">密码</span>
+          <span class="cc-valeur" id="ccMdp">mon1ersalut</span>
+        </div>
+        <button class="cc-copier-btn" onclick="copierChamp('ccMdp',this)">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="8.5" y="7" width="11.5" height="14" rx="1.6"/>
+            <path d="M5.5 16.5H4.5C3.9 16.5 3.5 16 3.5 15.5V4.5C3.5 3.9 3.9 3.5 4.5 3.5H14.5C15 3.5 15.5 3.9 15.5 4.5V5.5"/>
+          </svg>
+          <span class="cc-copier-texte">复制</span>
+        </button>
+      </div>
+      <div class="cc-note">在 <strong>Bravo</strong> 页面的 <strong>Le charriot</strong> 里使用这些信息，解锁你的成就。</div>
+            <a class="cc-lien-bravo" id="lienBravo" href="../../bravo/index.html" target="_blank" rel="noopener" onclick="apresClicBravo()">
+        前往 Bravo
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg>
+      </a>
+      <button class="cc-btn-continuer" id="btnContinuer" onclick="continuerApresSucces()" style="display:none;">
+        继续
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Vocabulaire (rempli dynamiquement) -->
+  <div class="section-cocher" id="sectionCocher">
+    <div class="sc-titre">本页新词汇</div>
+  </div>
+
+  <!-- Carte fiche — apparaît après "Qu'est-ce qu'une fiche ?" -->
+  <div class="carte-fiche" id="carteFiche">
+    <div class="cf-titre">你的个人档案 — 第1级</div>
+    <div class="cf-ligne">
+      <div class="cf-info">
+        <div class="cf-label">代码</div>
+        <div class="cf-valeur">fi-n1v30un</div>
+      </div>
+      <button class="cf-copier-btn" onclick="copierCF('fi-n1v30un', this)">复制</button>
+    </div>
+    <div class="cf-ligne">
+      <div class="cf-info">
+        <div class="cf-label">密码</div>
+        <div class="cf-valeur">maFiche01</div>
+      </div>
+      <button class="cf-copier-btn" onclick="copierCF('maFiche01', this)">复制</button>
+    </div>
+    <div class="cf-note">前往 <strong>Bravo</strong>，输入代码即可下载你的个人档案。保存好——之后要把成就添加进去。</div>
+    <a class="cf-lien-bravo" href="../../bravo/index.html" target="_blank" rel="noopener" onclick="apresClicBravoFiche()">
+      前往 Bravo
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg>
+    </a>
+    <button class="cf-btn-continuer" id="cfBtnContinuer" onclick="continuerDepuisFiche()">
+      继续
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M9 5l7 7-7 7"/></svg>
+    </button>
+    <!-- Zone prompt Claude.ai (apparaît après clic Continuer) -->
+    <div class="cf-prompt-zone" id="cfPromptZone">
+      <div class="cf-prompt-label">提示词 — Claude.ai</div>
+      <div class="cf-prompt-texte" id="cfPromptTexte">Dans ma fiche HTML (fiche_niveau_01.html), ajoute l'image du succès sv-sa111uut à l'endroit prévu pour les succès. Le code du succès est sv-sa111uut, son mot de passe est mon1ersalut, et il rapporte +2 piasses et +1 pt boni. Télécharge la fiche mise à jour.</div>
+      <button class="cf-prompt-copier" id="cfPromptCopier" onclick="copierPrompt(this)">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><rect x="8.5" y="7" width="11.5" height="14" rx="1.6"/><path d="M5.5 16.5H4.5C3.9 16.5 3.5 16 3.5 15.5V4.5C3.5 3.9 3.9 3.5 4.5 3.5H14.5C15 3.5 15.5 3.9 15.5 4.5V5.5"/></svg>
+        复制提示词
+      </button>
+      <button class="cf-btn-fait" id="cfBtnFait" onclick="confirmeFaitFiche()">
+        完成——我已粘贴到 Claude
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 13l4 4L19 7"/></svg>
+      </button>
+    </div>
+</div>
+
+<script>
+// ─────────────────────────────────────────────
+//  État
+// ─────────────────────────────────────────────
+var etape = 0;           // 1, 2 ou 3
+var kloeVisible = false; // Kloé est déjà apparue (image)
+var timersActifs = [];
+
+function creerTimer(fn, ms) {
+  var id = setTimeout(fn, ms);
+  timersActifs.push(id);
+  return id;
+}
+function annulerTimers() {
+  timersActifs.forEach(function(id){ clearTimeout(id); });
+  timersActifs = [];
+}
+
+// ─────────────────────────────────────────────
+//  Normalisation pour la validation
+// ─────────────────────────────────────────────
+function normaliser(s) {
+  return s.toLowerCase()
+    .replace(/[^a-z\u00e0-\u00ff]/g, '')
+    .trim();
+}
+
+// ─────────────────────────────────────────────
+//  Contenu des bulles de Kloé par étape
+// ─────────────────────────────────────────────
+var kloeBulles = {
+  1: '<div class="bulle-kloe avec-pointe">'
+   + '<span class="mot-fr">« Salut »</span>的意思是“嗨”——朋友之间随意打招呼用的说法。'
+   + '你也跟 Bek 说一遍吧。'
+   + '</div>',
+
+  2: '<div class="bulle-kloe">'
+   + '<span class="mot-fr">« Bravo ! »</span>的意思是“做得好！”——Bek 在庆祝，'
+   + '因为你刚写下了你的第一个法语单词。'
+   + '</div>'
+   + '<div class="bulle-kloe avec-pointe">'
+   + '现在跟她说一声 <span class="mot-fr">« merci »</span> 吧——法语里是“谢谢”的意思。'
+   + '</div>',
+
+  3: '<div class="bulle-kloe">'
+   + '<span class="mot-fr">« Un succès »</span>是你在这个网站上解锁的小徽章——证明你学到了东西。'
+   + '你刚拿到了第一个。'
+   + '</div>'
+   + '<div class="bulle-kloe avec-pointe">'
+   + '前往 <strong>Bravo</strong> 页面，把代码输入 <strong>Le&nbsp;charriot</strong>，'
+   + '再用密码永久解锁它。两个都收好。'
+   + '</div>'
+};
+
+// ─────────────────────────────────────────────
+//  Cross-fade de l'image de Bek
+// ─────────────────────────────────────────────
+function remplacerBulleBek(html, classeExtra) {
+  var zone = document.getElementById('bulleBek');
+  if (!zone) return;
+  zone.innerHTML = html;
+  zone.className = 'bulle-bek' + (classeExtra ? ' ' + classeExtra : '');
+}
+
+function crossfadeBek(newSrc) {
+  var img = document.getElementById('bekImg');
+  if (img.getAttribute('src') === newSrc) {
+    // Même source — forcer un rechargement visible uniquement si l'image
+    // n'est pas encore affichée correctement (naturalWidth === 0)
+    if (img.naturalWidth > 0) return;
+    img.src = newSrc + '?r=' + Date.now();
+    return;
+  }
+  img.style.opacity = '0';
+  setTimeout(function() {
+    img.src = newSrc;
+    void img.offsetWidth; // force reflow — évite le flash
+    img.style.opacity = '1';
+  }, 500);
+}
+
+// ─────────────────────────────────────────────
+//  Remplacement du contenu de Kloé
+// ─────────────────────────────────────────────
+function remplacerKloe(htmlContent, imgSrc, callback) {
+  var el = document.getElementById('kloeContenu');
+  // Si Kloé est déjà visible, fondu sortie du contenu avant de le remplacer
+  if (kloeVisible) {
+    el.style.opacity = '0';
+    setTimeout(function() {
+      el.innerHTML = htmlContent;
+      // Stocker les bulles sans animation — elles seront déclenchées par montrerKloe()
+      el._pendingCallback = callback;
+      el.style.opacity = '1';
+      // Changer l'image de Kloé si nécessaire
+      var img = document.getElementById('kloeImg');
+      if (img && imgSrc && img.getAttribute('src') !== imgSrc) {
+        img.style.opacity = '0';
+        setTimeout(function() { img.src = imgSrc; void img.offsetWidth; img.style.opacity = '1'; }, 500);
+      }
+      // Déclencher les animations des bulles immédiatement (Kloé déjà visible)
+      el.querySelectorAll('.bulle-kloe').forEach(function(b, i) {
+        b.style.animation = 'apparaitre 0.5s ease ' + (0.1 + i * 0.2) + 's forwards';
+      });
+      if (callback) callback();
+    }, 400);
+  } else {
+    // Kloé pas encore visible : injecter le contenu sans animation,
+    // les bulles s'animeront quand montrerKloe() sera appelée
+    el.innerHTML = htmlContent;
+    el.style.opacity = '1';
+    el._pendingCallback = callback;
+    // Changer l'image si différente
+    var img = document.getElementById('kloeImg');
+    if (img && imgSrc) img.src = imgSrc;
+  }
+}
+
+// ─────────────────────────────────────────────
+//  Montrer Kloé (image + bulles en même temps)
+// ─────────────────────────────────────────────
+function montrerKloe() {
+  if (!kloeVisible) {
+    kloeVisible = true;
+    var kz = document.getElementById('kloeZone');
+    kz.style.opacity = '1';
+    // Déclencher les animations des bulles au même moment
+    var el = document.getElementById('kloeContenu');
+    el.querySelectorAll('.bulle-kloe').forEach(function(b, i) {
+      b.style.animation = 'apparaitre 0.5s ease ' + (0.1 + i * 0.2) + 's forwards';
+    });
+    var cb = el._pendingCallback;
+    if (cb) { el._pendingCallback = null; cb(); }
+  }
+}
+
+// ─────────────────────────────────────────────
+//  Zone de réponse
+// ─────────────────────────────────────────────
+function cacherReponseZone() {
+  var rz = document.getElementById('reponseZone');
+  rz.classList.remove('visible');
+}
+function montrerReponseZone() {
+  var rz = document.getElementById('reponseZone');
+  rz.classList.add('visible');
+  document.getElementById('reponseInput').focus();
+}
+function reinitialiserReponse(contexte) {
+  document.getElementById('reponseInput').value = '';
+  document.getElementById('reponseFeedback').className = 'reponse-feedback';
+  document.getElementById('reponseFeedback').textContent = '';
+  document.getElementById('reponseContexte').innerHTML = contexte;
+}
+
+// ─────────────────────────────────────────────
+//  Vocabulaire dynamique
+// ─────────────────────────────────────────────
+function ajouterCheckbox(id, mot, trad) {
+  if (document.getElementById(id)) return;
+  var sc = document.getElementById('sectionCocher');
+  sc.style.display = 'block';
+  var div = document.createElement('div');
+  div.className = 'sc-item sc-item-nouveau';
+  div.innerHTML = '<input type="checkbox" id="' + id + '" onchange="toggleMot(this,\'' + mot + '\',\'' + trad + '\')">'
+    + '<label for="' + id + '">' + mot + ' <span class="sc-trad">— ' + trad + '</span></label>';
+  sc.appendChild(div);
+  // Restaurer l'état depuis localStorage
+  var liste = chargerListe();
+  if (liste.find(function(i){ return i.mot === mot; })) {
+    document.getElementById(id).checked = true;
+  }
+}
+
+// ─────────────────────────────────────────────
+//  ÉTAPE 1
+// ─────────────────────────────────────────────
+function demarrerEtape1() {
+  annulerTimers();
+  var _nuage = document.getElementById('bulleNuage'); if (_nuage) _nuage.classList.remove('visible');
+  etape = 1;
+
+  // Bek
+  crossfadeBek('images/bek_salue.png');
+  var bulleBek = document.getElementById('bulleBek');
+  bulleBek.style.display = '';
+  bulleBek.style.opacity = '1';
+  bulleBek.textContent = 'Salut !';
+
+  // Flèche retour cachée
+  document.getElementById('flecheRetour').classList.remove('visible');
+
+  // Zone droite : réponse visible, succès cachée
+  cacherReponseZone();
+  reinitialiserReponse('Bek 刚说了 «\u00a0Salut\u00a0!&nbsp;»——你也说一遍。');
+  document.getElementById('succesZone').classList.remove('visible');
+
+  // Bulle de Kloé pour étape 1
+  remplacerKloe(kloeBulles[1], '../images/iris/iris_salue.png');
+
+  // Séquence de minuteries
+  creerTimer(function() {
+    document.getElementById('ecran2').scrollIntoView({behavior:'smooth'});
+    montrerKloe();
+    ajouterCheckbox('mot-salut', 'salut', '嗨（随意说法）');
+  }, 5000);
+
+  creerTimer(function() {
+    document.getElementById('ecran1').scrollIntoView({behavior:'smooth'});
+    montrerReponseZone();
+  }, 20000);
+}
+
+// ─────────────────────────────────────────────
+//  ÉTAPE 2  (déclenchée par bonne réponse "salut")
+// ─────────────────────────────────────────────
+function demarrerEtape2() {
+  annulerTimers();
+  var _nuage = document.getElementById('bulleNuage'); if (_nuage) _nuage.classList.remove('visible');
+  etape = 2;
+
+  // Bek
+  crossfadeBek('images/bek_bravo.png');
+  var bulleBek = document.getElementById('bulleBek');
+  bulleBek.style.display = '';
+  bulleBek.style.opacity = '1';
+  bulleBek.textContent = 'Bravo !';
+
+  // Flèche retour visible
+  document.getElementById('flecheRetour').classList.add('visible');
+
+  // Ajouter "Salut" au vocabulaire (confirmé)
+  ajouterCheckbox('mot-salut', 'salut', '嗨（随意说法）');
+
+  // Zone de réponse : mise à jour pour "merci"
+  cacherReponseZone();
+  reinitialiserReponse('Bek 很开心。现在说 «\u00a0merci\u00a0» 谢谢她。');
+
+  // Nouveau contenu de Kloé
+  remplacerKloe(kloeBulles[2], '../images/iris/iris_explique_01.png', function() {
+    ajouterCheckbox('mot-bravo', 'bravo', '做得好！');
+    ajouterCheckbox('mot-merci', 'merci', '谢谢');
+  });
+
+  // Défilement vers Kloé, puis retour
+  creerTimer(function() {
+    document.getElementById('ecran2').scrollIntoView({behavior:'smooth'});
+    montrerKloe();
+  }, 2000);
+
+  creerTimer(function() {
+    document.getElementById('ecran1').scrollIntoView({behavior:'smooth'});
+    montrerReponseZone();
+  }, 17000);
+}
+
+// ─────────────────────────────────────────────
+//  ÉTAPE 3  (déclenchée par bonne réponse "merci")
+// ─────────────────────────────────────────────
+function demarrerEtape3() {
+  annulerTimers();
+  etape = 3;
+
+  // Bek — placeholder bek_succes.png (à remplacer par l'image définitive)
+  crossfadeBek('images/bek_succes.png');
+  document.getElementById('bulleBek').textContent = 'Voilà !';
+
+  // Flèche retour visible
+  document.getElementById('flecheRetour').classList.add('visible');
+
+  // Zone droite : réponse → image succès
+  cacherReponseZone();
+  setTimeout(function() {
+    document.getElementById('succesZone').classList.add('visible');
+  }, 600);
+
+  // Nouveau contenu de Kloé
+  remplacerKloe(kloeBulles[3], '../images/iris/iris_explique_02.png', function() {
+    ajouterCheckbox('mot-succes', 'succès', '成就／徽章');
+  });
+
+  // Défilement vers Kloé
+  creerTimer(function() {
+    document.getElementById('ecran2').scrollIntoView({behavior:'smooth'});
+    montrerKloe();
+  }, 3000);
+
+  // Révélation de la carte ticket après 10s supplémentaires
+  creerTimer(function() {
+    document.getElementById('carteCode').classList.add('visible');
+  }, 13000);
+}
+
+// ─────────────────────────────────────────────
+//  Retour à l'étape précédente
+// ─────────────────────────────────────────────
+// ─────────────────────────────────────────────
+//  Après clic sur "Go to Bravo"
+// ─────────────────────────────────────────────
+function apresClicBravo() {
+  // Kloé change d'image et de texte
+  remplacerKloe(
+    '<div class="bulle-kloe avec-pointe">下载完成就告诉我一声，我还有东西要给你看。</div>',
+    '../images/iris/iris_attend_01.png',
+    null
+  );
+  // Faire défiler vers Kloé
+  setTimeout(function() {
+    document.getElementById('ecran2').scrollIntoView({behavior:'smooth'});
+  }, 300);
+  // Afficher le bouton Continuer avec animation d'attention, masquer le lien Bravo
+  setTimeout(function() {
+    document.getElementById('lienBravo').style.display = 'none';
+    var btn = document.getElementById('btnContinuer');
+    btn.style.display = 'flex';
+    setTimeout(function(){ btn.classList.add('appel'); }, 600);
+  }, 500);
+}
+
+function continuerApresSucces() {
+  annulerTimers();
+  var _nuage = document.getElementById('bulleNuage');
+  if (_nuage) _nuage.classList.remove('visible');
+  document.getElementById('btnContinuer').classList.remove('appel');
+  var carteCode = document.getElementById('carteCode');
+  if (carteCode) carteCode.classList.remove('visible');
+  document.getElementById('succesZone').classList.remove('visible');
+  crossfadeBek('images/bek_chocolat.png');
+  document.getElementById('bulleBek').style.display = 'none';
+  creerTimer(function() {
+    document.getElementById('bulleNuage').classList.add('visible');
+  }, 800);
+  remplacerKloe(
+    '<div class=\"bulle-kloe\">下面是<strong>词汇区</strong>——勾选你想记住的单词，它们会出现在右上角的<strong>单词列表</strong>里，可以复制粘贴到你的个人档案中。</div><div class=\"bulle-kloe avec-pointe\">明白了吗？ — <button class=\"btn-oui\" onclick=\"surConfirmationVocab()\">明白了。</button></div>',
+    '../images/iris/iris_pointe_bas_01.png',
+    null
+  );
+  var sc = document.getElementById('sectionCocher');
+  if (sc) sc.style.display = 'block';
+  creerTimer(function() {
+    var e2 = document.getElementById('ecran2');
+    if (e2) e2.scrollIntoView({behavior:'smooth', block:'start'});
+  }, 300);
+  creerTimer(function() {
+    if (sc) sc.scrollIntoView({behavior:'smooth', block:'start'});
+  }, 2600);
+  creerTimer(function() {
+    var bs = document.getElementById('btnSuivant');
+    if (bs) { bs.classList.remove('indisponible'); bs.setAttribute('href', 'zh_histoire_000_p02.html'); }
+  }, 800);
+}
+
+function montrerFiche() {
+  annulerTimers();
+  // Bulle nuage disparaît immédiatement — c'est le secret
+  var bn = document.getElementById('bulleNuage');
+  if (bn) bn.classList.remove('visible');
+  window.scrollTo({top: 0, behavior: 'smooth'});
+  // Bek présente la fiche
+  crossfadeBek('images/bek_chocolat.png');
+  var bulleBek = document.getElementById('bulleBek');
+  bulleBek.style.display = '';
+  bulleBek.style.opacity = '0';
+  creerTimer(function() {
+    crossfadeBek('images/bek_fiche.png');
+  }, 1200);
+  creerTimer(function() {
+    bulleBek.textContent = 'Tadam !';
+    bulleBek.style.opacity = '1';
+    document.getElementById('ficheZone').classList.add('visible');
+    ajouterCheckbox('mot-tadam', 'tadam', '哒哒！／瞧！');
+  }, 2400);
+  // Kloé avec iris_pointe_bas_02 explique qu'on télécharge la fiche sur Bravo
+  creerTimer(function() {
+    remplacerKloe(
+      '<div class="bulle-kloe avec-pointe">你的<strong>个人档案</strong>在 Bravo 上。把代码输入 <strong>Le charriot</strong> 即可下载——然后就能把成就加进去。</div>',
+      '../images/iris/iris_pointe_bas_02.png',
+      null
+    );
+    document.getElementById('ecran2').scrollIntoView({behavior:'smooth', block:'start'});
+  }, 3600);
+  creerTimer(function() {
+    var cf = document.getElementById('carteFiche');
+    if (cf) { cf.classList.add('visible'); cf.scrollIntoView({behavior:'smooth', block:'start'}); }
+  }, 5000);
+}
+
+function copierCF(valeur, btn) {
+  navigator.clipboard.writeText(valeur).then(function() {
+    var original = btn.textContent;
+    btn.textContent = '已复制！';
+    btn.classList.add('copie');
+    setTimeout(function() { btn.textContent = original; btn.classList.remove('copie'); }, 1600);
+  });
+}
+
+function apresClicBravoFiche() {
+  var btn = document.getElementById('cfBtnContinuer');
+  if (btn) {
+    setTimeout(function() {
+      btn.classList.add('visible');
+      btn.scrollIntoView({behavior:'smooth', block:'nearest'});
+    }, 800);
+  }
+}
+
+function continuerDepuisFiche() {
+  // Kloé explique le prompt Claude.ai
+  remplacerKloe(
+    '<div class="bulle-kloe">有了个人档案，你现在可以用 Claude.ai 把成就添加进去。</div>'
+    + '<div class="bulle-kloe avec-pointe">复制下面的提示词，粘贴到 <strong>claude.ai</strong>，附上你的个人档案 HTML 文件——Claude 会帮你添加成就。完成后点击“完成”。</div>',
+    '../images/iris/iris_explique_03.png',
+    null
+  );
+  setTimeout(function() {
+    document.getElementById('ecran2').scrollIntoView({behavior:'smooth', block:'start'});
+  }, 300);
+  // Afficher la zone prompt dans la carte
+  setTimeout(function() {
+    document.getElementById('cfPromptZone').classList.add('visible');
+    document.getElementById('cfBtnContinuer').style.display = 'none';
+    // Le bouton "Done" apparaît après avoir copié le prompt (via copierPrompt)
+  }, 800);
+}
+
+function copierPrompt(btn) {
+  var texte = document.getElementById('cfPromptTexte').textContent;
+  var svgCopier = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><rect x="8.5" y="7" width="11.5" height="14" rx="1.6"/><path d="M5.5 16.5H4.5C3.9 16.5 3.5 16 3.5 15.5V4.5C3.5 3.9 3.9 3.5 4.5 3.5H14.5C15 3.5 15.5 3.9 15.5 4.5V5.5"/></svg> 复制提示词';
+  function onCopied() {
+    btn.textContent = '\u2713 已复制！';
+    btn.classList.add('copie');
+    document.getElementById('cfBtnFait').classList.add('visible');
+    setTimeout(function() { btn.innerHTML = svgCopier; btn.classList.remove('copie'); }, 2000);
+  }
+  function fallback() {
+    var ta = document.createElement('textarea');
+    ta.value = texte; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.focus(); ta.select();
+    try { document.execCommand('copy'); } catch(e) {}
+    document.body.removeChild(ta);
+  }
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(texte).then(onCopied).catch(function() { fallback(); onCopied(); });
+  } else { fallback(); onCopied(); }
+}
+
+function confirmeFaitFiche() {
+  // Masquer le bouton "Done"
+  document.getElementById('cfBtnFait').classList.remove('visible');
+
+  // Kloé change → invite à continuer, AVEC le bouton directement près d'elle
+  remplacerKloe(
+    '<div class="bulle-kloe avec-pointe">现在你的个人档案应该是这样的——已经加上了第一个成就。点击下面查看。</div>'
+    + '<button class="cc-btn-continuer" id="btnVersP02" onclick="window.location.href=\'zh_histoire_000_p02.html\'">'
+    + '继续'
+    + '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg>'
+    + '</button>',
+    '../images/iris/iris_pointe_droite_01.png',
+    function() {
+      setTimeout(function() {
+        var btn = document.getElementById('btnVersP02');
+        if (btn) btn.classList.add('appel');
+      }, 600);
+    }
+  );
+
+  // Scroll vers Kloé pour qu'elle soit visible
+  setTimeout(function() {
+    document.getElementById('ecran2').scrollIntoView({behavior:'smooth', block:'center'});
+  }, 200);
+
+  // Activer le bouton Suivant de la nav (filet de sécurité)
+  setTimeout(function() {
+    var bs = document.getElementById('btnSuivant');
+    if (bs) { bs.classList.remove('indisponible'); bs.setAttribute('href', 'zh_histoire_000_p02.html'); }
+  }, 600);
+}
+
+function revenirEtape() {
+  annulerTimers();
+  // Cacher le nuage de pensée si visible
+  var nuage = document.getElementById('bulleNuage');
+  if (nuage) nuage.classList.remove('visible');
+  // Restaurer entièrement la bulle Bek (display ET opacity, quelle que soit
+  // la combinaison de masquages successifs qui a pu l'affecter)
+  var bulle = document.getElementById('bulleBek');
+  if (bulle) { bulle.style.display = ''; bulle.style.opacity = '1'; }
+  // Cacher ficheZone et carteFiche si on revient en arrière
+  var fz = document.getElementById('ficheZone'); if (fz) fz.classList.remove('visible');
+  var cf = document.getElementById('carteFiche'); if (cf) cf.classList.remove('visible');
+  if (etape === 2) {
+    document.getElementById('carteCode').classList.remove('visible');
+    demarrerEtape1();
+  } else if (etape === 3) {
+    document.getElementById('carteCode').classList.remove('visible');
+    document.getElementById('succesZone').classList.remove('visible');
+    demarrerEtape2();
+  }
+}
+
+// ─────────────────────────────────────────────
+//  Validation de la réponse
+// ─────────────────────────────────────────────
+function validerReponse() {
+  var val = normaliser(document.getElementById('reponseInput').value);
+  var fb = document.getElementById('reponseFeedback');
+
+  if (etape === 1 && val === 'salut') {
+    fb.className = 'reponse-feedback ok';
+    fb.textContent = '做得不错。';
+    setTimeout(function() { demarrerEtape2(); }, 800);
+    return;
+  }
+  if (etape === 2 && val === 'merci') {
+    fb.className = 'reponse-feedback ok';
+    fb.textContent = '做得不错。';
+    setTimeout(function() { demarrerEtape3(); }, 800);
+    return;
+  }
+  // Mauvaise réponse
+  if (val === '') return;
+  fb.className = 'reponse-feedback non';
+  fb.textContent = '再试一次。';
+}
+
+// ─────────────────────────────────────────────
+//  Copier un champ de la carte ticket
+// ─────────────────────────────────────────────
+function copierChamp(id, btn) {
+  var texte = document.getElementById(id).textContent;
+  navigator.clipboard.writeText(texte).then(function() {
+    var texteEl = btn.querySelector('.cc-copier-texte');
+    var original = texteEl.textContent;
+    texteEl.textContent = '已复制！';
+    btn.classList.add('copie');
+    setTimeout(function(){ texteEl.textContent = original; btn.classList.remove('copie'); }, 1800);
+  });
+}
+
+// ─────────────────────────────────────────────
+//  Bulle flottante vocabulaire
+// ─────────────────────────────────────────────
+function chargerListe() {
+  var d = localStorage.getItem('keb_bek_vocab');
+  return d ? JSON.parse(d) : [];
+}
+function sauvegarderListe(liste) {
+  localStorage.setItem('keb_bek_vocab', JSON.stringify(liste));
+}
+function rafraichirAffichage() {
+  var liste = chargerListe();
+  document.getElementById('bfCompteur').textContent = liste.length;
+  document.getElementById('bfMiniCompteur').textContent = liste.length;
+  var corps = document.getElementById('bfCorps');
+  if (liste.length === 0) {
+    corps.innerHTML = '<div class="bf-vide">勾选下面的单词，加到这里。</div>';
+    return;
+  }
+  corps.innerHTML = liste.map(function(item) {
+    return '<div class="bf-item"><span>' + item.mot + '</span>'
+      + '<span style="color:var(--gris);font-size:11.5px;">' + item.trad + '</span></div>';
+  }).join('');
+}
+function toggleMot(checkbox, mot, trad) {
+  var liste = chargerListe();
+  if (checkbox.checked) {
+    if (!liste.find(function(i){ return i.mot === mot; })) liste.push({mot:mot, trad:trad});
+  } else {
+    liste = liste.filter(function(i){ return i.mot !== mot; });
+  }
+  sauvegarderListe(liste);
+  rafraichirAffichage();
+}
+function toggleBulle(e) {
+  if (e.target.closest('.bf-btn-min')) return;
+  document.getElementById('bulle-flottante').classList.toggle('repliee');
+}
+function toggleMinimise(e) {
+  e.stopPropagation();
+  document.getElementById('bulle-flottante').classList.toggle('minimisee');
+}
+function copierListe() {
+  var liste = chargerListe();
+  if (liste.length === 0) return;
+  var texte = liste.map(function(i){ return i.mot + ' — ' + i.trad; }).join('\n');
+  navigator.clipboard.writeText(texte).then(function() {
+    var btn = document.getElementById('bfCopier');
+    var el = document.getElementById('bfCopierTexte');
+    var original = el.textContent;
+    el.textContent = '已复制！'; btn.classList.add('copie');
+    setTimeout(function(){ el.textContent = original; btn.classList.remove('copie'); }, 1800);
+  });
+}
+function demanderPurge() { document.getElementById('confirm-overlay').classList.add('actif'); }
+function annulerPurge() { document.getElementById('confirm-overlay').classList.remove('actif'); }
+function confirmerPurge() {
+  localStorage.removeItem('keb_bek_vocab');
+  rafraichirAffichage();
+  document.querySelectorAll('.sc-item input[type=checkbox]').forEach(function(cb){ cb.checked = false; });
+  document.getElementById('confirm-overlay').classList.remove('actif');
+}
+
+// ─────────────────────────────────────────────
+//  Initialisation
+// ─────────────────────────────────────────────
+rafraichirAffichage();
+// Court délai pour laisser l'animation d'entrée de Bek se faire avant de démarrer
+setTimeout(function() { demarrerEtape1(); }, 100);
+function fermerChocolat(e) {
+  if (e && e.target !== document.getElementById('reponseChocolat')) return;
+  document.getElementById('reponseChocolat').classList.remove('visible');
+}
+
+function montrerReponseChocolat() {
+  document.getElementById('bulleNuage').classList.remove('visible');
+  var rc = document.getElementById('reponseChocolat');
+  rc.classList.add('visible');
+  rc.scrollIntoView({behavior:'smooth', block:'center'});
+  creerTimer(function() { document.getElementById('inputChocolat').focus(); }, 400);
+}
+
+function validerChocolat() {
+  var val = document.getElementById('inputChocolat').value
+    .trim().toLowerCase()
+    .replace(/^elle pense\s*/i, '')
+    .replace(/[.,!?;]/g, '')
+    .replace(/\s+/g, ' ');
+  var feedback = document.getElementById('feedbackChocolat');
+  var acceptees = [
+    'a un gateau au chocolat',
+    'au gateau au chocolat',
+    'au gateau au chocolat de sa mere',
+    'à un gâteau au chocolat',
+    'au gâteau au chocolat',
+    'au gâteau au chocolat de sa mère'
+  ];
+  feedback.classList.remove('ok', 'non');
+  if (!val) return;
+  if (acceptees.indexOf(val) !== -1) {
+    feedback.textContent = '🍫 Oui ! Bek pense au gâteau au chocolat de sa mère !';
+    feedback.classList.add('ok');
+    creerTimer(function() {
+      // Masquer le formulaire, garder le modal ouvert
+      document.querySelector('.rc-label').style.display = 'none';
+      document.querySelector('.rc-question').style.display = 'none';
+      document.querySelector('.rc-input').style.display = 'none';
+      document.querySelector('.rc-btn').style.display = 'none';
+      document.querySelector('.rc-aide').style.display = 'none';
+      feedback.style.display = 'none';
+      // Afficher la vue succès dans le modal
+      document.getElementById('rcSucces').classList.add('visible');
+      ajouterCheckbox('mot-chocolat', 'le chocolat', '巧克力');
+    }, 1800);
+  } else {
+    feedback.textContent = 'Indice : pense à quelque chose de délicieux…';
+    feedback.classList.add('non');
+  }
+}
+
+function copierRcSucces(id, btn) {
+  navigator.clipboard.writeText(document.getElementById(id).textContent).then(function() {
+    var original = btn.textContent;
+    btn.textContent = '✓'; btn.classList.add('copie');
+    setTimeout(function(){ btn.textContent = original; btn.classList.remove('copie'); }, 1800);
+  });
+}
+
+function apresClicBravoChocolat() {
+  // Afficher le bouton Continuer après clic sur Bravo
+  setTimeout(function() {
+    document.getElementById('rcContinuer').classList.add('visible');
+  }, 400);
+}
+
+function fermerChocolatSucces() {
+  // Changer l'image de Bek maintenant que le modal va se fermer
+  crossfadeBek('images/bek_chocolat.png');
+  // Fermer le modal et réinitialiser pour usage futur
+  var rc = document.getElementById('reponseChocolat');
+  rc.classList.remove('visible');
+  // Réinitialiser le formulaire pour si l'élève revient
+  setTimeout(function() {
+    document.querySelector('.rc-label').style.display = '';
+    document.querySelector('.rc-question').style.display = '';
+    document.querySelector('.rc-input').style.display = '';
+    document.querySelector('.rc-btn').style.display = '';
+    document.querySelector('.rc-aide').style.display = '';
+    document.getElementById('feedbackChocolat').style.display = '';
+    document.getElementById('rcSucces').classList.remove('visible');
+    document.getElementById('rcContinuer').classList.remove('visible');
+    document.getElementById('inputChocolat').value = '';
+  }, 400);
+}
+
+function surConfirmationVocab() {
+  remplacerKloe(
+    '<div class=\"bulle-kloe avec-pointe\">说到个人档案——你可以在 <strong>Bravo</strong> 上下载它。词汇、成就、皮亚斯和奖励积分都记录在那里。点下面了解更多。</div><button class=\"btn-quoi-fiche\" onclick=\"montrerFiche()\">&#10022; 什么是个人档案？</button>',
+    '../images/iris/iris_explique_01.png',
+    null
+  );
+  var sc = document.getElementById('sectionCocher');
+  if (sc) sc.scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+</script>
+</body>
+</html>
