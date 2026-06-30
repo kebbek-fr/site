@@ -368,6 +368,21 @@
     box-shadow:0 3px 10px rgba(133,79,11,0.35);transition:transform 0.15s,box-shadow 0.15s;
   }
   .cf-lien-bravo:hover{transform:translateY(-2px);box-shadow:0 5px 14px rgba(133,79,11,0.45);}
+  .cf-prompt-zone{margin-top:14px;background:var(--violet-clair);border:1.5px solid var(--violet);border-radius:12px;padding:12px 14px;display:none;}
+  .cf-prompt-zone.visible{display:block;}
+  .cf-prompt-label{font-size:11px;font-weight:800;color:var(--violet-fonce);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px;}
+  .cf-prompt-texte{font-size:12.5px;color:var(--texte);line-height:1.6;white-space:pre-wrap;user-select:text;}
+  .cf-prompt-copier{margin-top:8px;width:100%;background:var(--violet-fonce);color:#fff;border:none;border-radius:8px;padding:7px;font-size:12px;font-weight:700;cursor:pointer;transition:background 0.15s;display:flex;align-items:center;justify-content:center;gap:6px;}
+  .cf-prompt-copier:hover{background:var(--violet);}
+  .cf-prompt-copier.copie{background:var(--vert-fonce);}
+  .cf-btn-fait{margin-top:10px;width:100%;background:var(--vert-fonce);color:#fff;border:none;border-radius:100px;padding:9px;font-family:"Patrick Hand",cursive;font-size:15px;cursor:pointer;display:none;align-items:center;justify-content:center;gap:7px;box-shadow:0 3px 10px rgba(74,122,54,0.3);transition:transform 0.15s,box-shadow 0.15s;}
+  .cf-btn-fait.visible{display:flex;}
+  .cf-btn-fait:hover{transform:translateY(-2px);box-shadow:0 5px 14px rgba(74,122,54,0.45);}
+  .cf-apercu-fiche{margin-top:14px;display:none;flex-direction:column;align-items:center;gap:10px;}
+  .cf-apercu-fiche.visible{display:flex;}
+  .cf-apercu-img{width:100%;border-radius:10px;box-shadow:0 6px 20px var(--ombre);}
+  .cf-btn-p02{display:flex;align-items:center;justify-content:center;gap:7px;background:var(--vert-fonce);color:#fff;font-family:"Patrick Hand",cursive;font-size:16px;padding:10px 22px;border-radius:100px;border:none;cursor:pointer;text-decoration:none;box-shadow:0 4px 14px rgba(74,122,54,0.35);transition:transform 0.18s,box-shadow 0.18s;}
+  .cf-btn-p02:hover{transform:translateY(-2px);box-shadow:0 7px 20px rgba(74,122,54,0.45);}
   /* Bouton fiche */
   .btn-quoi-fiche{
     display:flex;align-items:center;justify-content:center;gap:7px;margin-top:12px;width:100%;
@@ -457,6 +472,17 @@
   .rc-succes-continuer { display:none; align-items:center; justify-content:center; gap:7px; width:100%; background:var(--vert-fonce); color:#fff; font-family:"Patrick Hand",cursive; font-size:15px; padding:8px 16px; border-radius:100px; border:none; cursor:pointer; box-shadow:0 3px 10px rgba(74,122,54,0.3); transition:transform 0.15s,box-shadow 0.15s; }
   .rc-succes-continuer.visible { display:flex; }
   .rc-succes-continuer:hover { transform:translateY(-2px); }
+  
+  .btn-oui {
+    display: inline-block; margin-top: 8px;
+    background: var(--vert-fonce); color: #fff;
+    border: none; border-radius: 100px;
+    padding: 7px 18px; font-size: 14px; font-weight: 700;
+    font-family: "Patrick Hand", cursive; cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s;
+    box-shadow: 0 3px 10px rgba(74,122,54,0.3);
+  }
+  .btn-oui:hover { transform: translateY(-2px); box-shadow: 0 5px 14px rgba(74,122,54,0.4); }
   @keyframes apparaitre{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
   .cf-btn-continuer{
     display:flex;align-items:center;justify-content:center;gap:7px;margin-top:14px;width:100%;
@@ -777,7 +803,24 @@
       Continuar
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M9 5l7 7-7 7"/></svg>
     </button>
-  </div>
+    <div class="cf-prompt-zone" id="cfPromptZone">
+      <div class="cf-prompt-label">Invite — Claude.ai</div>
+      <div class="cf-prompt-texte" id="cfPromptTexte">Dans ma fiche HTML (fiche_niveau_01.html), ajoute l'image du succès sv-sa111uut à l'endroit prévu pour les succès. Le code du succès est sv-sa111uut, son mot de passe est mon1ersalut, et il rapporte +2 piasses et +1 pt boni. Télécharge la fiche mise à jour.</div>
+      <button class="cf-prompt-copier" id="cfPromptCopier" onclick="copierPrompt(this)">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><rect x="8.5" y="7" width="11.5" height="14" rx="1.6"/><path d="M5.5 16.5H4.5C3.9 16.5 3.5 16 3.5 15.5V4.5C3.5 3.9 3.9 3.5 4.5 3.5H14.5C15 3.5 15.5 3.9 15.5 4.5V5.5"/></svg>
+        Copiar la invite
+      </button>
+      <button class="cf-btn-fait" id="cfBtnFait" onclick="confirmeFaitFiche()">
+        ¡Listo — lo pegué en Claude!
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 13l4 4L19 7"/></svg>
+      </button>
+    </div>
+    <div class="cf-apercu-fiche" id="cfApercuFiche">
+      <a class="cf-btn-p02" href="es_histoire_000_p02.html">
+        Continuar
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M9 5l7 7-7 7"/></svg>
+      </a>
+    </div>
 </div>
 
 <script>
@@ -1069,22 +1112,16 @@ function apresClicBravo() {
 
 function continuerApresSucces() {
   annulerTimers();
-  var _nuage = document.getElementById('bulleNuage'); if (_nuage) _nuage.classList.remove('visible');
-  var _nuage = document.getElementById('bulleNuage'); if (_nuage) _nuage.classList.remove('visible');
+  var _nuage = document.getElementById('bulleNuage');
+  if (_nuage) _nuage.classList.remove('visible');
   document.getElementById('btnContinuer').classList.remove('appel');
-  // Faire disparaître la carte succès ET refermer l'espace
   var carteCode = document.getElementById('carteCode');
   if (carteCode) carteCode.classList.remove('visible');
   document.getElementById('succesZone').classList.remove('visible');
-  // Bek en mode attente — bulle retirée
   crossfadeBek('images/bek_chocolat.png');
   document.getElementById('bulleBek').style.display = 'none';
-  creerTimer(function() {
-    document.getElementById('bulleNuage').classList.add('visible');
-  }, 800);
-  // Kloé pointe bas — parle de la fiche sur Bravo
   remplacerKloe(
-    '<div class="bulle-kloe avec-pointe">¡Tu <strong>ficha personal</strong> está disponible en Bravo! Introduce tu código en <strong>Le charriot</strong> para descargarla — ¡podrás añadir tus logros!</div><button class="btn-quoi-fiche" onclick="mostrarFicha()">&#10022; ¿Qué es una ficha?</button>',
+    '<div class=\"bulle-kloe\">Abajo encontrarás la <strong>sección de vocabulario</strong> — marca las casillas junto a las palabras que quieres recordar. ¡Aparecerán en la <strong>lista de palabras</strong> arriba a la derecha, donde podrás copiarlas y pegarlas en tu ficha personal!</div><div class=\"bulle-kloe avec-pointe\">¿Entendido? — <button class=\"btn-oui\" onclick=\"surConfirmationVocab()\">Sí, entendido!</button></div>',
     '../images/kloe/kloe_pointe_bas_01.png',
     null
   );
@@ -1098,7 +1135,7 @@ function continuerApresSucces() {
     if (sc) sc.scrollIntoView({behavior:'smooth', block:'start'});
   }, 2600);
   creerTimer(function() {
-    var bs = document.getElementById('btnSiguiente');
+    var bs = document.getElementById('btnSuivant');
     if (bs) { bs.classList.remove('indisponible'); bs.setAttribute('href', 'es_histoire_000_p02.html'); }
   }, 800);
 }
@@ -1156,9 +1193,68 @@ function apresClicBravoFiche() {
 }
 
 function continuerDepuisFiche() {
-  var bs = document.getElementById('btnSiguiente');
-  if (bs) { bs.classList.remove('indisponible'); bs.setAttribute('href', 'es_histoire_000_p02.html'); }
-  window.location.href = 'es_histoire_000_p02.html';
+  reemplazarKloe(
+    '<div class="bulle-kloe">Ahora que tienes tu ficha personal, puedes añadir tu logro usando Claude.ai.</div>'
+    + '<div class="bulle-kloe avec-pointe">Copia la invite aquí abajo, pégala en <strong>claude.ai</strong> y adjunta tu ficha HTML — ¡Claude lo añadirá por ti! Cuando esté listo, haz clic en "¡Listo!".</div>',
+    '../images/kloe/kloe_explique_03.png',
+    null
+  );
+  setTimeout(function() {
+    document.getElementById('ecran2').scrollIntoView({behavior:'smooth', block:'start'});
+  }, 300);
+  setTimeout(function() {
+    document.getElementById('cfPromptZone').classList.add('visible');
+    document.getElementById('cfBtnContinuar').style.display = 'none';
+    // Le bouton "Done" apparaît après clic sur Copier
+  }, 800);
+}
+
+function copierPrompt(btn) {
+  var el = document.getElementById('cfPromptTexte');
+  var texte = el.textContent;
+  function fallback() {
+    var ta = document.createElement('textarea');
+    ta.value = texte;
+    ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.focus(); ta.select();
+    try { document.execCommand('copy'); } catch(e) {}
+    document.body.removeChild(ta);
+  }
+  function onCopied() {
+    var original = btn.innerHTML;
+    btn.textContent = '\u2713 \u00a1Copiado!';
+    btn.classList.add('copie');
+    setTimeout(function() {
+      document.getElementById('cfBtnFait').classList.add('visible');
+    }, 400);
+    setTimeout(function() { btn.innerHTML = original; btn.classList.remove('copie'); }, 2000);
+  }
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(texte).then(onCopied).catch(function() { fallback(); onCopied(); });
+  } else {
+    fallback(); onCopied();
+  }
+}
+
+function confirmeFaitFiche() {
+  reemplazarKloe(
+    '<div class="bulle-kloe avec-pointe">\u00a1As\u00ed es como deber\u00eda verse tu ficha ahora \u2014 con tu primer logro a\u00f1adido! Haz clic en <strong>Continuar</strong> para verlo en la siguiente p\u00e1gina.</div>',
+    '../images/kloe/kloe_pointe_droite_01.png',
+    null
+  );
+  // Scroll vers Kloé pour qu'elle soit visible
+  setTimeout(function() {
+    var kloe = document.querySelector('.kloe-img');
+    if (kloe) kloe.scrollIntoView({behavior:'smooth', block:'center'});
+  }, 200);
+  document.getElementById('cfBtnFait').classList.remove('visible');
+  setTimeout(function() {
+    var apercu = document.getElementById('cfApercuFiche');
+    apercu.classList.add('visible');
+    var bs = document.getElementById('btnSiguiente');
+    if (bs) { bs.classList.remove('indisponible'); bs.setAttribute('href', 'es_histoire_000_p02.html'); }
+  }, 800);
 }
 
 function revenirEtape() {
@@ -1428,6 +1524,16 @@ function cerrarChocolatExito() {
     document.getElementById('rcContinuer').classList.remove('visible');
     document.getElementById('inputChocolat').value = '';
   }, 400);
+}
+
+function surConfirmationVocab() {
+  remplacerKloe(
+    '<div class=\"bulle-kloe avec-pointe\">¡Y hablando de tu ficha personal — puedes descargarla en <strong>Bravo</strong>! Allí llevas la cuenta de todo lo que ganas: vocabulario, logros, piasses y points bonis. ¡Haz clic abajo para saber más!</div><button class=\"btn-quoi-fiche\" onclick=\"mostrarFicha()\">&#10022; ¿Qué es una ficha?</button>',
+    '../images/kloe/kloe_explique_01.png',
+    null
+  );
+  var sc = document.getElementById('sectionCocher');
+  if (sc) sc.scrollIntoView({behavior:'smooth', block:'start'});
 }
 
 </script>
