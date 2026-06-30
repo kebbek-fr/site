@@ -138,11 +138,13 @@
   <div class="contenu-duo">
 
     <div class="kloe-colonne">
-      <img class="kloe-img-grande" id="kloeImgP02" src="../images/kloe/kloe_pointe_droite_01.png" alt="Kloé" onerror="this.style.display='none';">
+      <img class="kloe-img-grande" id="kloeImgP02" src="../images/kloe/kloe_presente_droite_01.png" alt="Kloé" onerror="this.style.display='none';">
       <div class="kloe-bulles" id="kloeBullesP02">
         <div class="bulle-kloe" id="bulleP02a"></div>
-        <button class="btn-suite" id="btnSuiteP02" onclick="passerEtape2()">Continuar &#9656;</button>
+        <button class="btn-suite" id="btnSuiteP02a" onclick="passerEtape2()">Continuar &#9656;</button>
         <div class="bulle-kloe" id="bulleP02b"></div>
+        <button class="btn-suite" id="btnSuiteP02b" onclick="passerEtape3()">Continuar &#9656;</button>
+        <div class="bulle-kloe" id="bulleP02c"></div>
       </div>
       <div class="choix-zone" id="choixZoneP02">
         <a href="../histoire_001/pt_histoire_001_p01.html" class="btn-histoire">&#9656; História 1</a>
@@ -154,7 +156,7 @@
       <img
         class="fiche-img-grande"
         id="ficheImgP02"
-        src="../../bravo/images/fiches/fiche-image-niveau_01.png"
+        src="../../bravo/images/fiches/fiche-image-niveau_01_avec-succes_01.png"
         alt="A tua ficha pessoal"
         onerror="this.style.opacity='0.25';">
     </div>
@@ -176,7 +178,7 @@
 
 <script>
 function passerEtape2() {
-  var btn = document.getElementById('btnSuiteP02');
+  var btn = document.getElementById('btnSuiteP02a');
   btn.classList.remove('visible');
 
   var b1 = document.getElementById('bulleP02a');
@@ -185,14 +187,39 @@ function passerEtape2() {
   var img = document.getElementById('kloeImgP02');
   img.style.opacity = '0';
   setTimeout(function() {
-    img.src = '../images/kloe/kloe_explique_02.png';
+    img.src = '../images/kloe/kloe_perplexe_01.png';
     void img.offsetWidth;
     img.style.opacity = '1';
 
     var b2 = document.getElementById('bulleP02b');
-    b2.innerHTML = "Ah! Mas onde est\u00e3o as piastras e os pontos b\u00f3nus? Ah, \u00e9 verdade! Tens de pedir ao teu professor ou professora para os adicionar com a instru\u00e7\u00e3o m\u00e1gica dele/dela. Mas n\u00e3o te preocupes se n\u00e3o tiveres professor \u2014 as piastras e os pontos b\u00f3nus servem s\u00f3 para tornar a aprendizagem mais divertida. E sabes que mais? Tamb\u00e9m n\u00e3o precisas da ficha se n\u00e3o te interessar. \u00c9 s\u00f3 muito mais divertido com ela&hellip; eu usaria se fosse a ti!";
+    b2.innerHTML = "Ah! Mas onde est\u00e3o as <strong>PIASTRAS</strong> e os <strong>PONTOS B\u00d3NUS</strong>?";
     b2.classList.add('visible');
     b2.style.animation = 'apparaitre 0.45s ease forwards';
+
+    setTimeout(function() {
+      document.getElementById('btnSuiteP02b').classList.add('visible');
+    }, 1100);
+  }, 350);
+}
+
+function passerEtape3() {
+  var btn = document.getElementById('btnSuiteP02b');
+  btn.classList.remove('visible');
+
+  var b2 = document.getElementById('bulleP02b');
+  b2.classList.remove('visible');
+
+  var img = document.getElementById('kloeImgP02');
+  img.style.opacity = '0';
+  setTimeout(function() {
+    img.src = '../images/kloe/kloe_comprehensive_01.png';
+    void img.offsetWidth;
+    img.style.opacity = '1';
+
+    var b3 = document.getElementById('bulleP02c');
+    b3.innerHTML = "\u00c9 verdade! Tens de pedir ao teu professor ou professora para os adicionar com a instru\u00e7\u00e3o m\u00e1gica dele/dela. Mas n\u00e3o te preocupes se n\u00e3o tiveres professor \u2014 as piastras e os pontos b\u00f3nus servem s\u00f3 para tornar a aprendizagem mais divertida. E sabes que mais? Tamb\u00e9m n\u00e3o precisas da ficha se n\u00e3o te interessar. \u00c9 s\u00f3 muito mais divertido com ela&hellip; eu usaria se fosse a ti!";
+    b3.classList.add('visible');
+    b3.style.animation = 'apparaitre 0.45s ease forwards';
 
     document.getElementById('choixZoneP02').style.display = 'flex';
     document.getElementById('choixZoneP02').style.animation = 'apparaitre 0.5s ease 0.3s forwards';
@@ -206,7 +233,7 @@ function passerEtape2() {
   b1.style.animation = 'apparaitre 0.5s ease 0.4s forwards';
 
   setTimeout(function() {
-    document.getElementById('btnSuiteP02').classList.add('visible');
+    document.getElementById('btnSuiteP02a').classList.add('visible');
   }, 1400);
 })();
 </script>
