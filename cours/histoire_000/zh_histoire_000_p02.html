@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>故事 0 — Le français avec Keb &amp; Bek</title>
+  <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    :root{
+    --beige:#F2EDE3; --beige-clair:#FDF8F2; --bleu-poudre:#B8C9E0; --bleu-fonce:#7A9BBF;
+    --vert:#7FA86E; --vert-clair:#EAF3DE; --vert-fonce:#4A7A36; --texte:#2A2422;
+    --gris:#8A8480; --blanc:#ffffff; --ombre:rgba(42,36,34,0.14);
+    --corail:#E0593C; --corail-clair:#FBEAE6;
+    --rouge:#C0392B; --rouge-clair:#FDECEA;
+    --ambre:#D4A24E; --ambre-clair:#FAEEDA; --ambre-fonce:#854F0B;
+    --violet:#7B5EA8; --violet-fonce:#5A4080; --gris-clair:#C9C2BC;
+  }
+    html { scroll-behavior:smooth; }
+    body { min-height:100vh; background:var(--beige); font-family:"Nunito",sans-serif; color:var(--texte); display:flex; flex-direction:column; }
+
+    /* ── Bouton retour ── */
+    .btn-retour {
+      position:fixed; top:16px; left:16px; z-index:200;
+      display:inline-flex; align-items:center; gap:6px;
+      padding:7px 14px 7px 10px;
+      background:var(--beige-clair); border:1.5px solid var(--violet);
+      border-radius:100px; font-size:13px; font-weight:700;
+      color:var(--violet-fonce); text-decoration:none;
+      transition:background 0.15s, box-shadow 0.15s;
+      box-shadow:0 2px 8px rgba(123,94,168,0.12);
+    }
+    .btn-retour:hover { background:var(--violet-clair); }
+
+    /* ── Écran principal : Kloé + fiche côte à côte ── */
+    .ecran-principal {
+      flex:1; min-height:100vh;
+      display:flex; align-items:center; justify-content:center;
+      padding:clamp(80px,10vw,110px) clamp(20px,5vw,60px) 50px;
+    }
+    .contenu-duo {
+      display:flex; align-items:flex-start; justify-content:center;
+      gap:clamp(28px,5vw,60px); max-width:1000px; width:100%; flex-wrap:wrap;
+    }
+
+    .kloe-colonne {
+      display:flex; flex-direction:column; align-items:center; gap:14px;
+      max-width:340px; flex-shrink:0; padding-top:10px;
+    }
+    .kloe-img-grande { width:clamp(110px,15vw,160px); object-fit:contain; transition:opacity 0.4s ease; }
+    .kloe-bulles { display:flex; flex-direction:column; gap:10px; width:100%; min-height:1px; }
+    .bulle-kloe {
+      background:white; border:2px solid var(--corail);
+      border-radius:18px 18px 18px 4px;
+      padding:14px 18px; font-size:clamp(14px,1.7vw,16px);
+      line-height:1.6; color:var(--texte); text-align:left;
+      opacity:0; display:none;
+    }
+    .bulle-kloe.visible { display:block; }
+    @keyframes apparaitre { from{opacity:0;transform:translateY(12px);} to{opacity:1;transform:translateY(0);} }
+    .btn-suite {
+      align-self:flex-end; margin-top:2px;
+      display:inline-flex; align-items:center; gap:5px;
+      padding:7px 16px; border-radius:100px;
+      background:var(--corail); color:#fff; border:none;
+      font-size:13px; font-weight:700; cursor:pointer;
+      box-shadow:0 3px 10px rgba(224,89,60,0.3);
+      transition:background 0.15s, transform 0.15s;
+      opacity:0; display:none;
+    }
+    .btn-suite.visible { display:inline-flex; animation:apparaitre 0.4s ease forwards; }
+    .btn-suite:hover { background:#c8482e; transform:translateY(-1px); }
+    .choix-zone {
+      display:none; gap:10px; flex-wrap:wrap; justify-content:center; margin-top:6px;
+    }
+    .btn-histoire {
+      padding:10px 20px; border-radius:100px;
+      background:var(--vert-fonce); color:#fff; border:none;
+      font-size:14px; font-weight:700; cursor:pointer;
+      text-decoration:none; display:inline-flex; align-items:center; gap:5px;
+      box-shadow:0 4px 14px rgba(74,122,54,0.3);
+      transition:background 0.15s, transform 0.15s;
+    }
+    .btn-histoire:hover { background:#3d6a28; transform:translateY(-2px); }
+    .btn-menu {
+      padding:10px 18px; border-radius:100px;
+      background:transparent; color:var(--violet-fonce);
+      border:1.5px solid var(--violet); font-size:14px; font-weight:700;
+      cursor:pointer; text-decoration:none;
+      display:inline-flex; align-items:center; gap:5px;
+      transition:background 0.15s, transform 0.15s;
+    }
+    .btn-menu:hover { background:var(--violet-clair); transform:translateY(-2px); }
+
+    .fiche-colonne { display:flex; justify-content:center; flex:1; min-width:280px; }
+    .fiche-img-grande {
+      max-width:min(560px,90vw); width:100%;
+      border-radius:18px;
+      box-shadow:0 10px 36px rgba(42,36,34,0.2);
+      border:2px solid var(--bleu-poudre);
+      animation:apparaitre 0.7s ease 0.15s both;
+    }
+
+    @media(max-width:760px) {
+      .contenu-duo { flex-direction:column; align-items:center; }
+      .kloe-colonne { max-width:480px; }
+    }
+
+    /* ── Nav pages ── */
+    .nav-pages {
+      display:flex; justify-content:space-between; align-items:center;
+      padding:14px 24px;
+      background:var(--beige-clair);
+      border-top:1.5px solid rgba(184,201,224,0.4);
+    }
+    .btn-nav {
+      display:inline-flex; align-items:center; gap:5px;
+      padding:8px 16px; border-radius:100px;
+      font-size:13px; font-weight:700; text-decoration:none;
+      transition:background 0.15s, transform 0.15s;
+    }
+    .btn-precedent { background:var(--beige); color:var(--gris); border:1.5px solid rgba(138,132,128,0.3); }
+    .btn-precedent:hover { background:var(--beige-clair); }
+    .btn-suivant { background:var(--vert-fonce); color:#fff; box-shadow:0 4px 14px rgba(74,122,54,0.3); }
+    .btn-suivant:hover { background:#3d6a28; transform:translateY(-1px); }
+    .btn-nav.indisponible { opacity:0.4; pointer-events:none; border:1.5px dashed rgba(138,132,128,0.4); background:transparent; color:var(--gris); box-shadow:none; }
+  </style>
+</head>
+<body>
+
+<a href="../menus/zh.html" class="btn-retour">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M5 12L11 6M5 12L11 18"/></svg>
+  返回
+</a>
+
+<!-- ── Kloé présente la fiche en grand ── -->
+<section class="ecran-principal">
+  <div class="contenu-duo">
+
+    <div class="kloe-colonne">
+      <img class="kloe-img-grande" id="kloeImgP02" src="../images/iris/iris_presente_droite_01.png" alt="Iris" onerror="this.style.display='none';">
+      <div class="kloe-bulles" id="kloeBullesP02">
+        <div class="bulle-kloe" id="bulleP02a"></div>
+        <button class="btn-suite" id="btnSuiteP02a" onclick="passerEtape2()">继续 &#9656;</button>
+        <div class="bulle-kloe" id="bulleP02b"></div>
+        <button class="btn-suite" id="btnSuiteP02b" onclick="passerEtape3()">继续 &#9656;</button>
+        <div class="bulle-kloe" id="bulleP02c"></div>
+      </div>
+      <div class="choix-zone" id="choixZoneP02">
+        <a href="../histoire_001/zh_histoire_001_p01.html" class="btn-histoire">&#9656; Histoire 1</a>
+        <a href="../menus/zh.html" class="btn-menu">← 主菜单</a>
+      </div>
+    </div>
+
+    <div class="fiche-colonne">
+      <img
+        class="fiche-img-grande"
+        id="ficheImgP02"
+        src="../../bravo/images/fiches/fiche-image-niveau_01_avec-succes_01.png"
+        alt="你的个人档案"
+        onerror="this.style.opacity='0.25';">
+    </div>
+
+  </div>
+</section>
+
+<!-- ── Navigation ── -->
+<nav class="nav-pages">
+  <a href="zh_histoire_000_p01.html" class="btn-nav btn-precedent">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg>
+    上一页
+  </a>
+  <a href="zh_histoire_000_p03.html" class="btn-nav btn-suivant indisponible">
+    下一页
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg>
+  </a>
+</nav>
+
+<script>
+function passerEtape2() {
+  var btn = document.getElementById('btnSuiteP02a');
+  btn.classList.remove('visible');
+
+  var b1 = document.getElementById('bulleP02a');
+  b1.classList.remove('visible');
+
+  var img = document.getElementById('kloeImgP02');
+  img.style.opacity = '0';
+  setTimeout(function() {
+    img.src = '../images/iris/iris_perplexe_01.png';
+    void img.offsetWidth;
+    img.style.opacity = '1';
+
+    var b2 = document.getElementById('bulleP02b');
+    b2.innerHTML = "\u4f60\u6210\u5c31\u5f97\u5230\u7684 <strong>PIASSES</strong> \u548c <strong>POINTS BONIS</strong> \u53bb\u54ea\u4e86\uff1f\u8fd8\u662f\u663e\u793a 0&hellip;";
+    b2.classList.add('visible');
+    b2.style.animation = 'apparaitre 0.45s ease forwards';
+
+    setTimeout(function() {
+      document.getElementById('btnSuiteP02b').classList.add('visible');
+    }, 1100);
+  }, 350);
+}
+
+function passerEtape3() {
+  var btn = document.getElementById('btnSuiteP02b');
+  btn.classList.remove('visible');
+
+  var b2 = document.getElementById('bulleP02b');
+  b2.classList.remove('visible');
+
+  var img = document.getElementById('kloeImgP02');
+  img.style.opacity = '0';
+  setTimeout(function() {
+    img.src = '../images/iris/iris_comprehensive_01.png';
+    void img.offsetWidth;
+    img.style.opacity = '1';
+
+    var b3 = document.getElementById('bulleP02c');
+    b3.innerHTML = "\u554a\uff0c\u5bf9\u2014\u2014\u4f60\u5f97\u8ba9\u8001\u5e08\u7528\u9b54\u6cd5\u63d0\u793a\u8bcd\u628a\u8fd9\u4e9b\u52a0\u4e0a\u3002\u4e0d\u8fc7\u6ca1\u6709\u8001\u5e08\u4e5f\u6ca1\u5173\u7cfb\uff0cpiasses \u548c points bonis \u53ea\u662f\u8ba9\u5b66\u4e60\u66f4\u6709\u8da3\u800c\u5df2\u3002\u8bf4\u5b9e\u8bdd\uff0c\u5982\u679c\u4f60\u4e0d\u611f\u5174\u8da3\uff0c\u6863\u6848\u4e5f\u4e0d\u662f\u5fc5\u9700\u7684\u3002\u53ea\u662f\u6709\u4e86\u5b83\u4f1a\u6709\u8da3\u5f97\u591a&hellip;\u6362\u4f5c\u662f\u6211\uff0c\u6211\u4f1a\u7528\u3002";
+    b3.classList.add('visible');
+    b3.style.animation = 'apparaitre 0.45s ease forwards';
+
+    document.getElementById('choixZoneP02').style.display = 'flex';
+    document.getElementById('choixZoneP02').style.animation = 'apparaitre 0.5s ease 0.3s forwards';
+  }, 350);
+}
+
+(function() {
+  var b1 = document.getElementById('bulleP02a');
+  b1.innerHTML = "\u4f60\u7684\u4e2a\u4eba\u6863\u6848\u73b0\u5728\u662f\u8fd9\u6837\u7684\uff0c\u90fd\u66f4\u65b0\u597d\u4e86\u3002\u4e0a\u9762\u662f\u6863\u6848\u6807\u9898\u548c\u4f60\u7684\u7b49\u7ea7\uff0c\u7136\u540e\u662f\u4f60\u7684 piasses\u3001points bonis\uff0c\u8fd8\u6709\u51e0\u4e2a\u5206\u680f\uff1a\u6210\u5c31\u5fbd\u7ae0\u3001\u8bcd\u6c47\u5217\u8868\u3001\u5f85\u7528\u4ee3\u7801\u548c\u8bf4\u660e\u3002";
+  b1.classList.add('visible');
+  b1.style.animation = 'apparaitre 0.5s ease 0.4s forwards';
+
+  setTimeout(function() {
+    document.getElementById('btnSuiteP02a').classList.add('visible');
+  }, 1400);
+})();
+</script>
+
+</body>
+</html>
