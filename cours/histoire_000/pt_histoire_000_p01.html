@@ -840,26 +840,26 @@ function normalizar(s) {
 // ─────────────────────────────────────────────
 var kloeBaloes = {
   1: '<div class="bulle-kloe avec-pointe">'
-   + '<span class="mot-fr">« Salut »</span> significa <em>«oi»</em> — uma saudação informal entre amigos. '
-   + 'Atenção: em francês o <em>t</em> final não se pronuncia. '
-   + 'Diz o mesmo à Bek!'
+   + 'Olha, <span class="mot-fr">« Salut »</span> significa <em>«oi»</em> — é uma saudação informal, entre amigos. '
+   + 'Repara bem: em francês, o <em>t</em> final não se pronuncia. '
+   + 'Anda, diz o mesmo à Bek!'
    + '</div>',
 
   2: '<div class="bulle-kloe">'
-   + '<span class="mot-fr">« Bravo ! »</span> significa <em>«bravo!»</em> — a Bek está a festejar '
+   + 'Boa! <span class="mot-fr">« Bravo ! »</span> significa <em>«bravo!»</em> — a Bek está a festejar, '
    + 'porque acabaste de escrever a tua primeira palavra em francês!'
    + '</div>'
    + '<div class="bulle-kloe avec-pointe">'
-   + 'Agora diz-lhe <span class="mot-fr">« merci »</span> para agradeceres — significa <em>«obrigado/a»</em> em francês.'
+   + 'Pronto, agora diz-lhe <span class="mot-fr">« merci »</span> para lhe agradeceres — significa <em>«obrigado/a»</em> em francês.'
    + '</div>',
 
   3: '<div class="bulle-kloe">'
-   + '<span class="mot-fr">« Un succès »</span> é uma pequena conquista que desbloqueias neste site — '
-   + 'uma prova do que aprendeste. Acabaste de ganhar a tua primeira!'
+   + 'Olha só: <span class="mot-fr">« Un succès »</span> é uma pequena conquista que desbloqueias neste site — '
+   + 'uma prova do que já aprendeste. E acabaste mesmo de ganhar a tua primeira!'
    + '</div>'
    + '<div class="bulle-kloe avec-pointe">'
-   + 'Vai à página <strong>Bravo</strong> e introduz o teu código em <strong>Le&nbsp;charriot</strong>. '
-   + 'Depois usa a tua senha para a desbloquear de vez. Guarda-as em lugar seguro!'
+   + 'Então, vai à página <strong>Bravo</strong> e introduz o teu código em <strong>Le&nbsp;charriot</strong>. '
+   + 'Depois usa a tua senha para a desbloqueares de vez. Guarda-as num sítio seguro!'
    + '</div>'
 };
 
@@ -1077,7 +1077,7 @@ function iniciarEtapa3() {
 // ─────────────────────────────────────────────
 function apresClicBravo() {
   substituirKloe(
-    '<div class="bulle-kloe avec-pointe">Avisa-me quando tiveres terminado de descarregar a tua conquista. Tenho mais coisas para te mostrar!</div>',
+    '<div class="bulle-kloe avec-pointe">Olha, avisa-me quando tiveres acabado de descarregar a tua conquista, sim? Ainda tenho mais coisas para te mostrar!</div>',
     '../images/kloe/kloe_attend_01.png',
     null
   );
@@ -1104,7 +1104,7 @@ function continuerApresSucces() {
     document.getElementById('bulleNuage').classList.add('visible');
   }, 800);
   remplacerKloe(
-    '<div class=\"bulle-kloe\">Lá em baixo encontras a <strong>secção de vocabulário</strong> — marca as caixas ao lado das palavras que queres recordar. Aparecerão na <strong>lista de palavras</strong> no canto superior direito, onde podes copiá-las e colá-las na tua ficha pessoal!</div><div class=\"bulle-kloe avec-pointe\">Entendido? — <button class=\"btn-oui\" onclick=\"surConfirmationVocab()\">Sim, entendido!</button></div>',
+    '<div class=\"bulle-kloe\">Lá em baixo tens a <strong>secção de vocabulário</strong> — marca as caixinhas ao lado das palavras que queres guardar. Elas aparecem na <strong>lista de palavras</strong> ali ao canto superior direito, onde as podes copiar e colar na tua ficha pessoal!</div><div class=\"bulle-kloe avec-pointe\">Ficou claro? — <button class=\"btn-oui\" onclick=\"surConfirmationVocab()\">Sim, ficou!</button></div>',
     '../images/kloe/kloe_pointe_bas_01.png',
     null
   );
@@ -1144,7 +1144,7 @@ function mostrarFicha() {
   // Kloé avec kloe_pointe_bas_02 explique qu'on télécharge la fiche sur Bravo
   criarTimer(function() {
     remplacerKloe(
-      '<div class="bulle-kloe avec-pointe">A tua <strong>ficha pessoal</strong> está disponível no Bravo! Introduz o teu código no <strong>Le charriot</strong> para a descarregar — vais poder adicionar as tuas conquistas!</div>',
+      '<div class="bulle-kloe avec-pointe">Boa! A tua <strong>ficha pessoal</strong> já está disponível no Bravo. Introduz o teu código no <strong>Le charriot</strong> para a descarregares — e já podes começar a adicionar as tuas conquistas!</div>',
       '../images/kloe/kloe_pointe_bas_02.png',
       null
     );
@@ -1177,8 +1177,8 @@ function apresClicBravoFiche() {
 
 function continuerDepuisFiche() {
   substituirKloe(
-    '<div class="bulle-kloe">Agora que tens a tua ficha pessoal, podes adicionar a tua conquista usando o Claude.ai.</div>'
-    + '<div class="bulle-kloe avec-pointe">Copia o prompt aqui em baixo, cola-o no <strong>claude.ai</strong> e anexa o teu ficheiro HTML — o Claude adiciona-o por ti! Quando estiver feito, clica em "Feito!".</div>',
+    '<div class="bulle-kloe">Agora que já tens a tua ficha pessoal, podes lá adicionar a tua conquista, com a ajuda do Claude.ai.</div>'
+    + '<div class="bulle-kloe avec-pointe">Copia o prompt aqui em baixo, cola-o no <strong>claude.ai</strong> e anexa o teu ficheiro HTML — o Claude trata do resto! Quando estiver pronto, carrega em "Feito!".</div>',
     '../images/kloe/kloe_explique_03.png',
     null
   );
@@ -1224,7 +1224,7 @@ function confirmarFeitoFicha() {
   document.getElementById('cfBtnFait').classList.remove('visible');
 
   substituirKloe(
-    '<div class="bulle-kloe avec-pointe">\u00c9 assim que a tua ficha deve ficar agora \u2014 com a tua primeira conquista adicionada! Clica abaixo para a ver.</div>'
+    '<div class="bulle-kloe avec-pointe">\u00c9 assim mesmo, pronto! Agora a tua ficha j\u00e1 tem a tua primeira conquista adicionada! Carrega aqui em baixo para a veres.</div>'
     + '<button class="cc-btn-continuer" id="btnVersP02" onclick="window.location.href=\'pt_histoire_000_p02.html\'">'
     + 'Continuar'
     + '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg>'
@@ -1520,7 +1520,7 @@ function fecharChocolatSucesso() {
 
 function surConfirmationVocab() {
   remplacerKloe(
-    '<div class=\"bulle-kloe avec-pointe\">E por falar da tua ficha pessoal — podes descarregá-la em <strong>Bravo</strong>. É lá que guardas tudo o que ganhas: vocabulário, sucessos, piasses e points bonis. Clica abaixo para saber mais!</div><button class=\"btn-quoi-fiche\" onclick=\"mostrarFicha()\">&#10022; O que é uma ficha?</button>',
+    '<div class=\"bulle-kloe avec-pointe\">E por falar na tua ficha pessoal — podes descarregá-la em <strong>Bravo</strong>. É lá que fica guardado tudo o que vais ganhando: vocabulário, sucessos, piasses e points bonis. Carrega aqui em baixo para saberes mais!</div><button class=\"btn-quoi-fiche\" onclick=\"mostrarFicha()\">&#10022; O que é uma ficha?</button>',
     '../images/kloe/kloe_explique_01.png',
     null
   );
