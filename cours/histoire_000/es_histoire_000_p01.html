@@ -699,7 +699,7 @@
         <div class="rc-succes-titre">🍫 Secret de Bek</div>
         <div class="rc-succes-ligne">
           <div class="rc-succes-info">
-            <span class="rc-succes-label">Code</span>
+            <span class="rc-succes-label">Código</span>
             <span class="rc-succes-valeur" id="rcCode">sn-ch0kb3k</span>
           </div>
           <button class="rc-succes-copier" onclick="copiarRcSucces('rcCode',this)">Copier</button>
@@ -846,7 +846,7 @@ function normalizar(s) {
 var kloeBurbujas = {
   1: '<div class="bulle-kloe avec-pointe">'
    + '<span class="mot-fr">« Salut »</span> significa <em>«hola»</em> — un saludo informal y amistoso entre conocidos. '
-   + 'Existe también en español, pero en francés se pronuncia diferente: la <em>t</em> final no se pronuncia. '
+   + 'En francés se pronuncia de forma particular: la <em>t</em> final no se pronuncia. '
    + '¡Díselo a Bek!'
    + '</div>',
 
@@ -1441,7 +1441,7 @@ function copierListe() {
     var btn = document.getElementById('bfCopiar');
     var el = document.getElementById('bfCopiarTexto');
     var original = el.textContent;
-    el.textContent = 'Copied!'; btn.classList.add('copie');
+    el.textContent = '¡Copiado!'; btn.classList.add('copie');
     setTimeout(function(){ el.textContent = original; btn.classList.remove('copie'); }, 1800);
   });
 }
