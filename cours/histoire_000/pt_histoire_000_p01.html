@@ -770,10 +770,10 @@
     <div class="sc-titulo">Vocabulário novo nesta página</div>
   </div>
   <div class="carte-fiche" id="carteFiche">
-    <div class="cf-titre">A tua ficha pessoal — Nivel 1</div>
+    <div class="cf-titre">A tua ficha pessoal — Nível 1</div>
     <div class="cf-ligne">
       <div class="cf-info">
-        <div class="cf-label">Codigo</div>
+        <div class="cf-label">Código</div>
         <div class="cf-valeur">fi-n1v30un</div>
       </div>
       <button class="cf-copier-btn" onclick="copiarCF('fi-n1v30un', this)">Copiar</button>
@@ -785,7 +785,7 @@
       </div>
       <button class="cf-copier-btn" onclick="copiarCF('maFiche01', this)">Copiar</button>
     </div>
-    <div class="cf-note">Va a <strong>Bravo</strong> e introduz o codigo para descarregar a tua ficha. Guarda-a — vais adicionar os teus sucessos!</div>
+    <div class="cf-note">Vai a <strong>Bravo</strong> e introduz o código para descarregar a tua ficha. Guarda-a — vais adicionar os teus sucessos!</div>
     <a class="cf-lien-bravo" href="../../bravo/index.html" target="_blank" rel="noopener" onclick="apresClicBravoFiche()">
       Ir a Bravo
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg>
@@ -841,7 +841,7 @@ function normalizar(s) {
 var kloeBaloes = {
   1: '<div class="bulle-kloe avec-pointe">'
    + '<span class="mot-fr">« Salut »</span> significa <em>«oi»</em> — uma saudação informal entre amigos. '
-   + 'Atenção: em português existe «salut» também, mas em francês o <em>t</em> final não se pronuncia. '
+   + 'Atenção: em francês o <em>t</em> final não se pronuncia. '
    + 'Diz o mesmo à Bek!'
    + '</div>',
 
@@ -1432,7 +1432,7 @@ function copierListe() {
     var btn = document.getElementById('bfCopiar');
     var el = document.getElementById('bfCopiarTexto');
     var original = el.textContent;
-    el.textContent = 'Copied!'; btn.classList.add('copie');
+    el.textContent = 'Copiado!'; btn.classList.add('copie');
     setTimeout(function(){ el.textContent = original; btn.classList.remove('copie'); }, 1800);
   });
 }
