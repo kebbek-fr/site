@@ -144,6 +144,10 @@
     border:2.5px solid var(--c,var(--gris));display:flex;align-items:center;justify-content:center;
     font-family:"Patrick Hand",cursive;font-weight:700;font-size:16px;color:var(--c,var(--gris));
   }
+  /* Niveau 1 (dialogue simple, ni récit ni pensée) : cercle plein coloré, sans bordure — le style le plus sobre des trois. */
+  .bulle-item:not(.recit):not(.pensee) .bulle-avatar{
+    background:var(--c,var(--gris));border:none;color:var(--blanc);
+  }
   .bulle-corps{flex:1;padding:1px 0 1px 12px;border-left:2.5px solid var(--c,var(--gris));}
   .bulle-qui{display:block;font-family:"Nunito",sans-serif;font-weight:800;font-size:10.5px;
     letter-spacing:0.06em;text-transform:uppercase;color:var(--c,var(--gris));margin-bottom:2px;}
@@ -424,10 +428,12 @@ var scenes = [
     bulles: []
   },
   { // 2
-    persos: ['bek_neutre_01.png'],
-    narration: 'Bek arrive avec un morceau de gâteau.',
-    reflet: { qui:'bek', texte: 'Bek arrive avec un morceau de g\u00e2teau pour Keb. Elle est tr\u00e8s contente de le lui donner.' },
-    bulles: []
+    persos: ['bek_marche_gateau_01.png'],
+    narration: 'Bek marche rapidement vers Keb avec une grosse part de gâteau.',
+    reflet: { qui:'bek', texte: 'Bek marche rapidement vers Keb avec une grosse part de g\u00e2teau. Elle a tr\u00e8s h\u00e2te de le lui donner. Elle l\u2019appelle par son surnom pour attirer son attention.' },
+    bulles: [
+      { qui:'bek', minNiveau:1, texte: 'Keb !' }
+    ]
   },
   { // 3
     persos: ['bek_neutre_01.png'],
