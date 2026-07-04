@@ -462,8 +462,6 @@
   <div class="perso-ligne" id="stagePersos"></div>
   <p class="stage-narration" id="stageNarration"></p>
 
-  <div class="bulle-pile" id="bullePile"></div>
-
   <div class="stage-nav">
     <button class="btn-etape-retour" id="btnEtapeRetour" disabled aria-label="Previous step">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg>
@@ -472,6 +470,8 @@
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg>
     </button>
   </div>
+
+  <div class="bulle-pile" id="bullePile"></div>
 </section>
 
 <!-- ── Encadré Kloé — clin d'œil personnel, apparaît à partir de la scène 6 ── -->
@@ -1022,6 +1022,25 @@ btnRetour.addEventListener('click', function() {
   if (step > 0) {
     step--;
     rendre();
+  }
+});
+
+// Navigation au clavier (ordinateur) — flèches gauche/droite équivalentes
+// aux boutons Retour/Continue, pour aller plus vite. Désactivée si l'élève
+// est en train de taper dans un champ (les flèches doivent alors déplacer
+// le curseur dans le texte, pas naviguer entre les scènes).
+document.addEventListener('keydown', function(e) {
+  var actif = document.activeElement;
+  var dansChamp = actif && (actif.tagName === 'INPUT' || actif.tagName === 'TEXTAREA' || actif.isContentEditable);
+  if (dansChamp) return;
+  if (e.key === 'ArrowRight') {
+    e.preventDefault();
+    btnContinuer.click();
+  } else if (e.key === 'ArrowLeft') {
+    if (!btnRetour.disabled) {
+      e.preventDefault();
+      btnRetour.click();
+    }
   }
 });
 
