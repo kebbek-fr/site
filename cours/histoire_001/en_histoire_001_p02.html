@@ -971,12 +971,14 @@ document.getElementById('caVaInput2').addEventListener('keydown', function(e) {
   var val = normaliserCaVa(this.value);
   if (!val) return;
 
-  var chantal = (val === 'qui est chantal') || (val === 'chantal cest qui') || (val === 'chantal est qui');
+  var chantal = (val === 'qui est chantal') || (val === 'chantal cest qui') || (val === 'chantal est qui')
+    || (val === 'cest qui') || (val === 'qui est ce');
   var retour2 = document.getElementById('caVaRetour2');
   if (chantal) {
     retour2.innerHTML =
       '<div class="bi-recompense">'
       +   '<div class="bi-recompense-titre">Title unlocked \u2014 Le petit curieux / La petite curieuse !</div>'
+      +   '<div class="bi-mdp-note" style="font-style:normal;">C\u2019est la m\u00e8re de Keb\u00a0!</div>'
       +   '<div class="bi-code-row">'
       +     '<span class="bi-code" id="titreCode">ta-cur13ux</span>'
       +     '<button class="bi-copier-btn" onclick="copierBiCode(this)">Copy</button>'
