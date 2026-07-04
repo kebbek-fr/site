@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Story 1 — Introduction — Le français avec Keb &amp; Bek</title>
+  <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    :root{
+      --beige:#F2EDE3; --beige-clair:#FDF8F2; --bleu-poudre:#B8C9E0; --bleu-fonce:#7A9BBF;
+      --vert:#7FA86E; --vert-clair:#EAF3DE; --vert-fonce:#4A7A36; --texte:#2A2422;
+      --gris:#8A8480; --blanc:#ffffff; --ombre:rgba(42,36,34,0.14);
+      --corail:#E0593C; --corail-clair:#FBEAE6;
+      --violet:#7B5EA8; --violet-fonce:#5A4080; --gris-clair:#C9C2BC;
+    }
+    html { scroll-behavior:smooth; }
+    body { min-height:100vh; background:var(--beige); font-family:"Nunito",sans-serif; color:var(--texte); display:flex; flex-direction:column; }
+
+    /* ── Bouton passer l'intro — toujours disponible ── */
+    .btn-passer {
+      position:fixed; top:16px; right:16px; z-index:200;
+      display:inline-flex; align-items:center; gap:6px;
+      padding:8px 16px; border-radius:100px;
+      background:var(--beige-clair); border:1.5px solid var(--gris-clair);
+      color:var(--gris); font-size:13px; font-weight:700;
+      text-decoration:none; cursor:pointer;
+      transition:background 0.15s, border-color 0.15s, color 0.15s;
+      box-shadow:0 2px 8px var(--ombre);
+    }
+    .btn-passer:hover { background:#fff; border-color:var(--violet); color:var(--violet-fonce); }
+
+    /* ── Écran principal : Kloé seule, centrée ── */
+    .ecran-principal {
+      flex:1; min-height:100vh;
+      display:flex; align-items:center; justify-content:center;
+      padding:clamp(90px,10vw,110px) clamp(20px,5vw,60px) 60px;
+    }
+    .kloe-colonne {
+      display:flex; flex-direction:column; align-items:center; gap:20px;
+      max-width:520px; width:100%;
+    }
+    .kloe-img-grande { width:clamp(220px,32vw,340px); object-fit:contain; transition:opacity 0.4s ease; }
+    .kloe-bulles { display:flex; flex-direction:column; gap:10px; width:100%; }
+    .bulle-kloe {
+      background:#fff; border:2px solid var(--corail);
+      border-radius:18px 18px 18px 4px;
+      padding:14px 18px; font-size:clamp(14px,1.7vw,16px);
+      line-height:1.6; color:var(--texte); text-align:left;
+      opacity:0; display:none;
+    }
+    .bulle-kloe.visible { display:block; }
+    @keyframes apparaitre { from{opacity:0;transform:translateY(12px);} to{opacity:1;transform:translateY(0);} }
+
+    .btn-suite {
+      align-self:flex-end; margin-top:2px;
+      display:inline-flex; align-items:center; gap:5px;
+      padding:7px 16px; border-radius:100px;
+      background:var(--corail); color:#fff; border:none;
+      font-size:13px; font-weight:700; cursor:pointer;
+      box-shadow:0 3px 10px rgba(224,89,60,0.3);
+      transition:background 0.15s, transform 0.15s;
+      opacity:0; display:none;
+    }
+    .btn-suite.visible { display:inline-flex; animation:apparaitre 0.4s ease forwards; }
+    .btn-suite:hover { background:#c8482e; transform:translateY(-1px); }
+
+    .choix-zone {
+      display:none; gap:10px; flex-wrap:wrap; justify-content:center; margin-top:10px; width:100%;
+    }
+    .btn-histoire {
+      padding:11px 22px; border-radius:100px;
+      background:var(--vert-fonce); color:#fff; border:none;
+      font-size:14px; font-weight:700; cursor:pointer;
+      text-decoration:none; display:inline-flex; align-items:center; gap:6px;
+      box-shadow:0 4px 14px rgba(74,122,54,0.3);
+      transition:background 0.15s, transform 0.15s;
+    }
+    .btn-histoire:hover { background:#3d6a28; transform:translateY(-2px); }
+
+    /* ── Emplacement réservé — sera rempli plus tard, une fois les
+         nouveautés (sélecteur de niveau, questions) stabilisées.
+         Ne rien afficher tant que ce n'est pas prêt. ── */
+    .kloe-nouveautes { display:none; }
+  </style>
+</head>
+<body>
+
+<a href="#" class="btn-passer" id="btnPasser">
+  Skip intro
+  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg>
+</a>
+
+<section class="ecran-principal">
+  <div class="kloe-colonne">
+    <img class="kloe-img-grande" id="kloeImg" alt="Kloé" src="images/kloe_salue_01.png" onerror="this.style.display='none';">
+
+    <div class="kloe-bulles" id="kloeBulles">
+      <div class="bulle-kloe" id="bulle1"></div>
+      <button class="btn-suite" id="btnSuite1">Continue &#9656;</button>
+      <div class="bulle-kloe" id="bulle2"></div>
+      <button class="btn-suite" id="btnSuite2">Continue &#9656;</button>
+      <div class="bulle-kloe" id="bulle3"></div>
+
+      <!-- ────────────────────────────────────────────────────────
+           EMPLACEMENT RÉSERVÉ pour l'explication des nouveautés
+           (sélecteur de niveau en simulation cliquable, questions
+           en bas de page). Ne pas activer tant que ces mécanismes
+           ne sont pas stabilisés dans histoire_001_p02.
+      <div class="kloe-nouveautes" id="kloeNouveautes">
+        ...
+      </div>
+      ──────────────────────────────────────────────────────── -->
+
+      <div class="choix-zone" id="choixZone">
+        <a href="histoire_001_p02.html" class="btn-histoire">&#9656; Start the story</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+function passerIntro() {
+  window.location.href = 'histoire_001_p02.html';
+}
+document.getElementById('btnPasser').addEventListener('click', function(e){
+  e.preventDefault();
+  passerIntro();
+});
+
+function etape2() {
+  document.getElementById('btnSuite1').classList.remove('visible');
+  var b1 = document.getElementById('bulle1');
+  b1.classList.remove('visible');
+
+  var img = document.getElementById('kloeImg');
+  img.style.opacity = '0';
+  setTimeout(function(){
+    img.src = 'images/kloe_se_presente_01.png';
+    img.style.opacity = '1';
+
+    var b2 = document.getElementById('bulle2');
+    b2.innerHTML = "I'm Bek\u2019s best friend \u2014 and I helped her put together the English, Spanish, and Portuguese versions of this course.";
+    b2.classList.add('visible');
+    b2.style.animation = 'apparaitre 0.45s ease forwards';
+
+    setTimeout(function(){
+      document.getElementById('btnSuite2').classList.add('visible');
+    }, 1300);
+  }, 350);
+}
+document.getElementById('btnSuite1').addEventListener('click', etape2);
+
+function etape3() {
+  document.getElementById('btnSuite2').classList.remove('visible');
+  var b2 = document.getElementById('bulle2');
+  b2.classList.remove('visible');
+
+  var img = document.getElementById('kloeImg');
+  img.style.opacity = '0';
+  setTimeout(function(){
+    img.src = 'images/kloe_explique_01.png';
+    img.style.opacity = '1';
+
+    var b3 = document.getElementById('bulle3');
+    b3.textContent = "I'll walk you through a couple of new things around here soon \u2014 but they're not quite ready yet. Let's just dive into the story for now!";
+    b3.classList.add('visible');
+    b3.style.animation = 'apparaitre 0.45s ease forwards';
+
+    document.getElementById('choixZone').style.display = 'flex';
+    document.getElementById('choixZone').style.animation = 'apparaitre 0.5s ease 0.3s forwards';
+  }, 350);
+}
+document.getElementById('btnSuite2').addEventListener('click', etape3);
+
+(function(){
+  var b1 = document.getElementById('bulle1');
+  b1.innerHTML = "Hi again! Assuming you\u2019ve been through the tutorial, we\u2019ve already met \u2014 I\u2019m Klo\u00e9.";
+  b1.classList.add('visible');
+  b1.style.animation = 'apparaitre 0.5s ease 0.4s forwards';
+
+  setTimeout(function(){
+    document.getElementById('btnSuite1').classList.add('visible');
+  }, 1300);
+})();
+</script>
+
+</body>
+</html>
