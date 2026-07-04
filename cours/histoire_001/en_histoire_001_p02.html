@@ -161,7 +161,7 @@
 
   /* ── Bulle d'invitation à répondre, affichée à droite des personnages ── */
   .bulle-invite{
-    width:230px; flex-shrink:0; align-self:center;
+    width:270px; flex-shrink:0; align-self:center;
     background:var(--beige-clair); border:2px solid var(--violet);
     border-radius:20px; padding:16px 18px;
     display:flex; flex-direction:column; gap:10px;
@@ -248,7 +248,9 @@
     font-family:"Nunito",sans-serif;font-weight:400;text-align:left;font-size:12.5px;line-height:1.5;color:var(--texte);
     white-space:normal;
   }
-  .vocab-tooltip .vt-nom{font-family:"Patrick Hand",cursive;font-weight:700;font-size:13px;color:var(--corail);margin-bottom:3px;display:block;}
+  .vocab-tooltip .vt-entete{display:flex;align-items:center;gap:6px;margin-bottom:3px;}
+  .vocab-tooltip .vt-img{width:26px;height:26px;border-radius:50%;object-fit:cover;border:1.5px solid var(--corail);flex-shrink:0;background:var(--ambre-clair);}
+  .vocab-tooltip .vt-nom{font-family:"Patrick Hand",cursive;font-weight:700;font-size:13px;color:var(--corail);}
   .vocab-tooltip::after{content:"";position:absolute;top:100%;left:50%;transform:translateX(-50%);border:7px solid transparent;border-top-color:var(--corail);}
   .vocab-mot:hover .vocab-tooltip,.vocab-mot.active .vocab-tooltip{display:block;}
 
@@ -404,7 +406,7 @@
   <div class="repli-corps" id="corpsHaut">
     <header class="entete">
       <div class="entete-eyebrow">Story 1</div>
-      <div class="entete-titre"><span class="vocab-mot" data-mot="Miam" data-trad="an exclamation for &quot;yum!&quot; — said when food looks or tastes good.">Miam<span class="vocab-tooltip"><span class="vt-nom">Kloé</span>an exclamation for "yum!" — said when food looks or tastes good.</span></span>&nbsp;!</div>
+      <div class="entete-titre"><span class="vocab-mot" data-mot="Miam" data-trad="an exclamation for &quot;yum!&quot; — said when food looks or tastes good.">Miam<span class="vocab-tooltip"><span class="vt-entete"><img class="vt-img" id="vtImgMiam" alt=""><span class="vt-nom">Kloé</span></span>an exclamation for "yum!" — said when food looks or tastes good.</span></span>&nbsp;!</div>
       <div class="entete-sub">A page from Bek's diary</div>
     </header>
 
@@ -485,12 +487,31 @@
 <script>
 
 // ─────────────────────────────────────────────
+//  Vignette Kloé qui explique — rotation kloe_explique_01..12,
+//  compteur persistant par appareil (localStorage), partagé avec
+//  les autres pages du cours (même clé kbkKloeExpliqueN partout).
+// ─────────────────────────────────────────────
+function prochaineImageExplique() {
+  var n = parseInt(localStorage.getItem('kbkKloeExpliqueN') || '0', 10);
+  if (isNaN(n) || n < 1 || n > 12) n = 0;
+  n = (n % 12) + 1;
+  localStorage.setItem('kbkKloeExpliqueN', n);
+  var num = (n < 10 ? '0' : '') + n;
+  return 'images/kloe/kloe_explique_' + num + '.png';
+}
+
+// ─────────────────────────────────────────────
 //  Mot expliqué par Kloé — génère le span cliquable + sa bulle
 // ─────────────────────────────────────────────
 function vocab(mot, explication) {
   return '<span class="vocab-mot" data-mot="' + mot + '">' + mot
-    + '<span class="vocab-tooltip"><span class="vt-nom">Kloé</span>' + explication + '</span></span>';
+    + '<span class="vocab-tooltip"><span class="vt-entete"><img class="vt-img" src="' + prochaineImageExplique() + '" alt=""><span class="vt-nom">Kloé</span></span>' + explication + '</span></span>';
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+  var vtImgMiam = document.getElementById('vtImgMiam');
+  if (vtImgMiam) vtImgMiam.src = prochaineImageExplique();
+});
 
 // ─────────────────────────────────────────────
 //  Normalisation d'une réponse tapée par l'élève — identique au canon
