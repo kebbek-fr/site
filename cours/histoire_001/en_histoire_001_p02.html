@@ -525,12 +525,15 @@ function majBulleEvolutive(div, niveau) {
   div.classList.toggle('recit', !enReflet);
   div.classList.toggle('pensee', !!enReflet);
   div.classList.remove('bulle-bek', 'bulle-keb');
-  if (enReflet) { div.classList.add('bulle-' + qui); }
+  // La couleur et la lettre du personnage restent affichées dans les deux
+  // états (récit neutre ET pensée) dès qu'on connaît le "qui" — seul le
+  // style (plein/pointillé, ton neutre/attribué) change avec le niveau.
+  if (qui) { div.classList.add('bulle-' + qui); }
 
   var avatarEl = div.querySelector('.bulle-avatar');
   var corpsEl  = div.querySelector('.bulle-corps');
-  avatarEl.textContent = enReflet ? (qui === 'bek' ? 'B' : 'K') : '';
-  var nomHTML = enReflet ? '<span class="bulle-qui">' + (qui === 'bek' ? 'Bek' : 'Keb') + '</span>' : '';
+  avatarEl.textContent = qui ? (qui === 'bek' ? 'B' : 'K') : '';
+  var nomHTML = qui ? '<span class="bulle-qui">' + (qui === 'bek' ? 'Bek' : 'Keb') + '</span>' : '';
   corpsEl.innerHTML = nomHTML + '<div class="bulle-texte">' + (enReflet ? t3 : t2) + '</div>';
 }
 
@@ -543,12 +546,14 @@ function construirePile() {
     // avec le niveau (voir recitPourNiveau / mettreAJourBullesEvolutives),
     // au lieu d'empiler récit + pensée comme deux bulles séparées
     if (scene.narration || scene.reflet) {
+      var quiDeduit = scene.reflet ? scene.reflet.qui
+        : (scene.persos.length === 1 ? (scene.persos[0].indexOf('bek') === 0 ? 'bek' : 'keb') : null);
       bullesScene.push({
         recit: true,
         minNiveau: 2,
         texteNiveau2: scene.narration || '',
         texteNiveau3: scene.reflet ? scene.reflet.texte : null,
-        qui: scene.reflet ? scene.reflet.qui : null,
+        qui: quiDeduit,
         texte: scene.narration || (scene.reflet ? scene.reflet.texte : '')
       });
     }
@@ -572,8 +577,8 @@ function construirePile() {
         div.dataset.texteNiveau3 = b.texteNiveau3 || '';
         div.dataset.qui = b.qui || '';
       }
-      var avatar = b.recit ? '' : (b.qui === 'bek' ? 'B' : 'K');
-      var nom = b.recit ? '' : '<span class="bulle-qui">' + (b.qui === 'bek' ? 'Bek' : 'Keb') + '</span>';
+      var avatar = b.qui ? (b.qui === 'bek' ? 'B' : 'K') : '';
+      var nom = b.qui ? '<span class="bulle-qui">' + (b.qui === 'bek' ? 'Bek' : 'Keb') + '</span>' : '';
       div.innerHTML = '<div class="bulle-avatar">' + avatar + '</div>'
         + '<div class="bulle-corps">' + nom + '<div class="bulle-texte">' + b.texte + '</div></div>';
       elPile.appendChild(div);
