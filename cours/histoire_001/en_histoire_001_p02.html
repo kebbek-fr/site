@@ -154,6 +154,51 @@
     color:var(--texte); text-align:center;
   }
 
+  /* ── Bulle d'invitation à répondre, affichée à droite des personnages ── */
+  .bulle-invite{
+    width:230px; flex-shrink:0; align-self:center;
+    background:var(--beige-clair); border:2px solid var(--violet);
+    border-radius:20px; padding:16px 18px;
+    display:flex; flex-direction:column; gap:10px;
+    opacity:0; transform:translateY(10px) scale(0.96);
+    transition:opacity 0.3s ease, transform 0.3s ease;
+    box-shadow:0 6px 18px rgba(90,64,128,0.12);
+  }
+  .bulle-invite.in{ opacity:1; transform:translateY(0) scale(1); }
+  .bi-question{font-family:"Patrick Hand",cursive;font-size:16.5px;color:var(--violet-fonce);line-height:1.35;}
+  .bi-input-row{display:flex;gap:7px;}
+  .bi-input{
+    flex:1; min-width:0; padding:8px 12px; border-radius:100px;
+    border:1.5px solid var(--gris-clair); font-family:"Nunito",sans-serif; font-size:13.5px;
+    background:var(--blanc); color:var(--texte);
+  }
+  .bi-input:focus{outline:none;border-color:var(--violet);}
+  .bi-btn{
+    padding:8px 15px;border-radius:100px;border:none;
+    background:var(--violet-fonce);color:#fff;font-family:"Patrick Hand",cursive;
+    font-size:13.5px;cursor:pointer;transition:background 0.15s ease;
+  }
+  .bi-btn:hover{background:var(--violet);}
+  .bi-feedback{font-family:"Nunito",sans-serif;font-weight:700;font-size:13px;min-height:1.2em;}
+  .bi-feedback.ok{color:var(--vert-fonce);}
+  .bi-feedback.retry{color:var(--corail);}
+
+  .bi-recompense{
+    margin-top:2px;background:var(--ambre-clair);border:1.5px dashed var(--ambre);
+    border-radius:14px;padding:11px 13px;display:flex;flex-direction:column;gap:6px;
+  }
+  .bi-recompense-titre{font-family:"Patrick Hand",cursive;font-size:14.5px;color:var(--ambre-fonce);font-weight:700;}
+  .bi-code-row{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;}
+  .bi-code{
+    font-family:"Nunito",monospace;font-weight:700;font-size:13px;color:var(--texte);
+    background:var(--blanc);padding:4px 10px;border-radius:8px;border:1px solid var(--gris-clair);
+  }
+  .bi-copier-btn{
+    padding:4px 12px;border-radius:100px;border:1.5px solid var(--ambre-fonce);
+    background:transparent;color:var(--ambre-fonce);font-size:11.5px;font-weight:700;cursor:pointer;
+  }
+  .bi-mdp-note{font-size:11.5px;color:var(--gris);font-style:italic;}
+
   .stage-narration{text-align:center;font-size:14px;font-style:italic;color:#6b6152;font-weight:600;
     min-height:1.3em;margin-top:6px;}
 
@@ -196,6 +241,7 @@
     background:var(--blanc);border:2px solid var(--corail);border-radius:14px;
     padding:9px 13px;width:200px;box-shadow:0 8px 22px rgba(42,36,34,0.2);z-index:15;
     font-family:"Nunito",sans-serif;font-weight:400;text-align:left;font-size:12.5px;line-height:1.5;color:var(--texte);
+    white-space:normal;
   }
   .vocab-tooltip .vt-nom{font-family:"Patrick Hand",cursive;font-weight:700;font-size:13px;color:var(--corail);margin-bottom:3px;display:block;}
   .vocab-tooltip::after{content:"";position:absolute;top:100%;left:50%;transform:translateX(-50%);border:7px solid transparent;border-top-color:var(--corail);}
@@ -442,6 +488,17 @@ function vocab(mot, explication) {
 }
 
 // ─────────────────────────────────────────────
+//  Normalisation d'une réponse tapée par l'élève — identique au canon
+//  déjà utilisé dans en_histoire_000_p01.html (minuscules, lettres et
+//  accents français seulement, espaces retirés).
+// ─────────────────────────────────────────────
+function normaliser(s) {
+  return (s || '').toLowerCase()
+    .replace(/[^a-z\u00e0-\u00ff]/g, '')
+    .trim();
+}
+
+// ─────────────────────────────────────────────
 //  Données des 7 scènes
 //  narration : légende sous l'image, remplacée à chaque étape (niveau ≥ 2)
 //  bulles    : s'accumulent dans la pile, restent visibles (niveau ≥ minNiveau)
@@ -458,15 +515,19 @@ var scenes = [
     narration: 'Bek marche rapidement vers Keb avec une grosse part de gâteau.',
     reflet: { qui:'bek', texte: 'Bek marche rapidement vers Keb avec une grosse part de g\u00e2teau. Elle a tr\u00e8s h\u00e2te de le lui donner. Elle l\u2019appelle par son surnom pour attirer son attention.' },
     bulles: [
-      { qui:'bek', minNiveau:1, texte: 'Keb !' }
+      { qui:'bek', minNiveau:1, posX:37, texte: 'Keb !' }
     ]
   },
   { // 3
-    persos: ['bek_neutre_01.png'],
+    persos: ['bek_tiens_keb_surpris_01.png'],
     narration: null,
     bulles: [
-      { qui:'bek', minNiveau:1, texte: vocab('Tiens', 'literally <em>"you\u2019re holding,"</em> but here it just means <em>"here you go!"</em> — you say it when you hand something to someone.') + ' !' }
-    ]
+      { qui:'bek', minNiveau:1, posX:26, texte: vocab('Tiens', 'literally <em>"you\u2019re holding,"</em> but here it just means <em>"here you go!"</em> — you say it when you hand something to someone.') + ' !' }
+    ],
+    inviteReponse: {
+      question: 'If someone offers you something, what do you say?',
+      placeholder: 'Type your answer\u2026'
+    }
   },
   { // 4
     persos: ['keb_neutre_01.png'],
@@ -569,6 +630,82 @@ function majBulleEvolutive(div, niveau) {
   corpsEl.innerHTML = nomHTML + '<div class="bulle-texte">' + (enReflet ? t3 : t2) + '</div>';
 }
 
+// ─────────────────────────────────────────────
+//  Bulle d'invitation à répondre — affichée à droite des personnages
+//  pour les scènes qui définissent scene.inviteReponse. Reconstruite à
+//  chaque rendu (avant/suivant), donc toujours remise à zéro comme le
+//  reste de la scène.
+// ─────────────────────────────────────────────
+function ajouterInvite(scene) {
+  if (!scene.inviteReponse) return;
+  var inv = scene.inviteReponse;
+  var div = document.createElement('div');
+  div.className = 'bulle-invite';
+  div.innerHTML =
+    '<div class="bi-question">' + inv.question + '</div>'
+    + '<div class="bi-input-row">'
+    +   '<input type="text" class="bi-input" id="biInput" placeholder="' + inv.placeholder + '">'
+    +   '<button class="bi-btn" id="biBtn">Check</button>'
+    + '</div>'
+    + '<div class="bi-feedback" id="biFeedback"></div>'
+    + '<div id="biRecompense"></div>';
+  elPersos.appendChild(div);
+
+  var input = div.querySelector('#biInput');
+  var btn   = div.querySelector('#biBtn');
+  var fb    = div.querySelector('#biFeedback');
+  var rec   = div.querySelector('#biRecompense');
+
+  function verifierInvite() {
+    var val = normaliser(input.value);
+    if (val === '') return;
+
+    if (val === 'mercibeaucoup') {
+      fb.className = 'bi-feedback ok';
+      fb.textContent = 'Nice work! \ud83c\udf89';
+      if (!rec.dataset.affiche) {
+        rec.dataset.affiche = '1';
+        rec.innerHTML =
+          '<div class="bi-recompense">'
+          +   '<div class="bi-recompense-titre">\u2728 Achievement unlocked \u2014 Tr\u00e8s poli !</div>'
+          +   '<div class="bi-code-row">'
+          +     '<span class="bi-code" id="biCode">sv-m3rc1m38</span>'
+          +     '<button class="bi-copier-btn" onclick="copierBiCode(this)">Copy</button>'
+          +   '</div>'
+          +   '<div class="bi-mdp-note">Ask your teacher for the password to unlock it in Bravo!</div>'
+          + '</div>';
+      }
+      return;
+    }
+    if (val === 'merci') {
+      fb.className = 'bi-feedback ok';
+      fb.textContent = 'Nice work!';
+      return;
+    }
+    fb.className = 'bi-feedback retry';
+    fb.textContent = 'Try again!';
+  }
+
+  btn.addEventListener('click', verifierInvite);
+  input.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') { e.preventDefault(); verifierInvite(); }
+  });
+}
+
+function copierBiCode(btn) {
+  var code = document.getElementById('biCode').textContent;
+  var fini = function() {
+    var original = btn.textContent;
+    btn.textContent = 'Copied!';
+    setTimeout(function() { btn.textContent = original; }, 1500);
+  };
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(code).then(fini, fini);
+  } else {
+    fini();
+  }
+}
+
 function construirePile() {
   elPile.innerHTML = '';
   scenes.forEach(function(scene, i) {
@@ -641,13 +778,22 @@ function rendre() {
     if (!zone) return;
     var bulle = document.createElement('div');
     bulle.className = 'bulle-stage bulle-' + b.qui;
+    // posX : décalage horizontal optionnel (en %), utile quand l'image
+    // combine plusieurs personnages dans un seul fichier (zone "seul")
+    // et que la bulle doit pointer vers la tête du bon personnage plutôt
+    // que rester centrée sur l'ensemble de l'illustration.
+    if (typeof b.posX === 'number') { bulle.style.left = b.posX + '%'; }
     bulle.innerHTML = '<div class="bulle-stage-texte">' + b.texte + '</div>';
     zone.appendChild(bulle);
   });
 
+  // Bulle d'invitation à répondre, à droite des personnages (scènes qui le prévoient)
+  ajouterInvite(scene);
+
   setTimeout(function() {
     elPersos.querySelectorAll('.perso-zone').forEach(function(z){ z.classList.add('in'); });
     elPersos.querySelectorAll('.bulle-stage').forEach(function(bs){ bs.classList.add('in'); });
+    elPersos.querySelectorAll('.bulle-invite').forEach(function(bi){ bi.classList.add('in'); });
   }, 20);
 
   var r = recitPourNiveau(scene, niveauActuel);
