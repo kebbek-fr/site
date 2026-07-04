@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Story 1 — Le français avec Keb &amp; Bek</title>
+<link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,400i&display=swap" rel="stylesheet">
+<style>
+  *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+  :root{
+    --beige:#F2EDE3; --beige-clair:#FDF8F2; --bleu-poudre:#B8C9E0; --bleu-fonce:#7A9BBF;
+    --vert:#7FA86E; --vert-clair:#EAF3DE; --vert-fonce:#4A7A36; --texte:#2A2422;
+    --gris:#8A8480; --blanc:#ffffff; --ombre:rgba(42,36,34,0.14);
+    --corail:#E0593C; --corail-clair:#FBEAE6;
+    --rouge:#C0392B; --rouge-clair:#FDECEA;
+    --ambre:#D4A24E; --ambre-clair:#FAEEDA; --ambre-fonce:#854F0B;
+    --violet:#7B5EA8; --violet-fonce:#5A4080; --violet-clair:#EEE9F7; --gris-clair:#C9C2BC;
+  }
+  html{scroll-behavior:smooth;}
+  body{background:var(--beige);font-family:"Nunito",sans-serif;color:var(--texte);padding-bottom:60px;}
+
+  /* ── Back button (canonique) ── */
+  #btn-retour{
+    position:fixed;top:18px;left:18px;z-index:200;
+    display:flex;align-items:center;gap:7px;
+    font-family:"Patrick Hand",cursive;font-size:15px;
+    color:var(--violet-fonce);text-decoration:none;
+    background:var(--beige-clair);border:1.5px solid var(--violet);
+    border-radius:100px;padding:7px 16px 7px 11px;
+    box-shadow:0 3px 10px rgba(90,64,128,0.15);
+    transition:transform 0.18s ease,box-shadow 0.18s ease;
+  }
+  #btn-retour:hover{transform:translateX(-3px);box-shadow:0 5px 16px rgba(90,64,128,0.25);}
+
+  /* ── Boîte de vocabulaire flottante (canonique) ── */
+  #bulle-flottante{
+    position:fixed;top:16px;right:16px;z-index:200;width:240px;
+    background:var(--beige-clair);border:1.5px solid var(--bleu-poudre);border-radius:16px;
+    box-shadow:0 6px 20px var(--ombre);overflow:hidden;
+    transition:width 0.25s ease,opacity 0.25s ease;
+  }
+  #bulle-flottante.minimisee{width:46px;border-radius:50%;}
+  #bulle-flottante.minimisee .bf-corps,
+  #bulle-flottante.minimisee .bf-footer,
+  #bulle-flottante.minimisee .bf-titre-texte,
+  #bulle-flottante.minimisee .bf-compteur,
+  #bulle-flottante.minimisee .bf-chevron{display:none;}
+  #bulle-flottante.minimisee .bf-header{padding:0;width:46px;height:46px;justify-content:center;border-radius:50%;}
+  #bulle-flottante.minimisee .bf-icone-seule{display:flex;}
+  .bf-icone-seule{display:none;width:100%;height:100%;align-items:center;justify-content:center;position:relative;}
+  .bf-icone-seule .bf-mini-compteur{position:absolute;top:-2px;right:-2px;background:var(--vert-fonce);color:#fff;border-radius:50%;width:16px;height:16px;font-size:9px;display:flex;align-items:center;justify-content:center;font-weight:800;}
+  .bf-header{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 14px;background:var(--vert-clair);cursor:pointer;user-select:none;}
+  .bf-titre{font-size:12.5px;font-weight:800;color:var(--vert-fonce);text-transform:uppercase;letter-spacing:0.04em;display:flex;align-items:center;gap:6px;}
+  .bf-icone-svg{flex-shrink:0;}
+  .bf-compteur{background:var(--vert-fonce);color:#fff;border-radius:100px;font-size:11px;padding:1px 7px;font-weight:700;}
+  .bf-actions-header{display:flex;align-items:center;gap:6px;}
+  .bf-btn-min{background:none;border:none;cursor:pointer;color:var(--vert-fonce);width:20px;height:20px;display:flex;align-items:center;justify-content:center;border-radius:50%;transition:background 0.15s;flex-shrink:0;}
+  .bf-btn-min:hover{background:rgba(74,122,54,0.15);}
+  .bf-chevron{font-size:11px;color:var(--vert-fonce);transition:transform 0.25s;}
+  #bulle-flottante.repliee .bf-chevron{transform:rotate(-90deg);}
+  .bf-corps{max-height:220px;overflow-y:auto;padding:10px 14px;}
+  #bulle-flottante.repliee .bf-corps,#bulle-flottante.repliee .bf-footer{display:none;}
+  .bf-item{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:13px;padding:5px 0;border-bottom:1px dotted rgba(138,128,115,0.3);}
+  .bf-item:last-child{border-bottom:none;}
+  .bf-vide{font-size:12px;color:var(--gris);font-style:italic;text-align:center;padding:8px 0;}
+  .bf-footer{padding:8px 14px;border-top:1px solid rgba(184,201,224,0.4);display:flex;gap:6px;}
+  .bf-btn-footer{flex:1;background:none;border:1.5px solid var(--bleu-fonce);color:var(--bleu-fonce);border-radius:8px;padding:6px;font-size:11.5px;font-weight:700;cursor:pointer;transition:background 0.15s;display:flex;align-items:center;justify-content:center;gap:5px;}
+  .bf-btn-footer:hover{background:#EEF4FB;}
+  .bf-btn-footer.copie{background:var(--vert-fonce);border-color:var(--vert-fonce);color:#fff;}
+  .bf-purger{flex:1;background:none;border:1.5px solid var(--rouge);color:var(--rouge);border-radius:8px;padding:6px;font-size:11.5px;font-weight:700;cursor:pointer;transition:background 0.15s;display:flex;align-items:center;justify-content:center;gap:5px;}
+  .bf-purger:hover{background:var(--rouge-clair);}
+
+  #confirm-overlay{position:fixed;inset:0;background:rgba(42,36,34,0.4);z-index:300;display:none;align-items:center;justify-content:center;}
+  #confirm-overlay.actif{display:flex;}
+  .confirm-boite{background:var(--blanc);border-radius:16px;padding:24px;max-width:300px;text-align:center;box-shadow:0 12px 36px rgba(0,0,0,0.25);}
+  .confirm-boite p{font-size:14px;margin-bottom:16px;line-height:1.5;}
+  .confirm-btns{display:flex;gap:10px;justify-content:center;}
+  .confirm-btns button{padding:8px 16px;border-radius:8px;border:none;font-size:13px;font-weight:700;cursor:pointer;}
+  .btn-annuler{background:var(--beige);color:var(--texte);}
+  .btn-confirmer{background:var(--rouge);color:#fff;}
+
+  /* ── Panneaux repliables (haut et questions) ── */
+  .repli-groupe{max-width:480px;margin:0 auto;padding:0 20px;}
+  .repli-barre{
+    width:100%;background:var(--beige-clair);border:1.5px solid var(--violet);border-radius:100px;
+    padding:12px 20px;display:flex;align-items:center;justify-content:center;gap:10px;cursor:pointer;
+    font-family:"Patrick Hand",cursive;font-size:18px;font-weight:700;color:var(--violet-fonce);
+    transition:background 0.15s;box-shadow:0 3px 10px rgba(90,64,128,0.1);
+  }
+  .repli-barre:hover{background:var(--violet-clair);}
+  .repli-chevron{font-size:13px;transition:transform 0.25s ease;flex-shrink:0;}
+  .repli-groupe.ouvert .repli-chevron{transform:rotate(180deg);}
+  .repli-corps{padding-top:4px;}
+  .icone-etincelle{vertical-align:-2px;color:var(--ambre-fonce);}
+
+  .entete{max-width:640px;margin:0 auto;padding:22px 20px 0;text-align:center;}
+  .entete-eyebrow{font-size:12.5px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:var(--violet-fonce);}
+  .entete-titre{font-family:"Patrick Hand",cursive;font-size:38px;color:var(--texte);margin-top:4px;transform:rotate(-0.6deg);}
+  .entete-sub{font-size:13.5px;color:var(--gris);font-style:italic;margin-top:6px;}
+
+  /* ── Sélecteur de difficulté ── */
+  .diff-boite{max-width:460px;margin:26px auto 0;background:var(--beige-clair);border:1.5px solid var(--violet);
+    border-radius:18px;padding:16px 20px;}
+  .diff-titre{font-family:"Patrick Hand",cursive;font-size:16px;color:var(--violet-fonce);text-align:center;margin-bottom:10px;}
+  .diff-options{display:flex;gap:8px;}
+  .diff-opt{flex:1;background:var(--blanc);border:1.5px solid var(--bleu-poudre);border-radius:12px;
+    padding:9px 6px;text-align:center;cursor:pointer;font-size:12.5px;font-weight:700;color:var(--gris);
+    transition:background 0.15s,border-color 0.15s,color 0.15s;}
+  .diff-opt .diff-num{display:block;font-family:"Patrick Hand",cursive;font-size:20px;line-height:1.1;}
+  .diff-opt:hover{background:var(--violet-clair);}
+  .diff-opt.actif{background:var(--violet);border-color:var(--violet);color:#fff;}
+  .diff-desc{text-align:center;font-size:12px;color:var(--gris);margin-top:9px;font-style:italic;min-height:16px;}
+
+  /* ── Scène unique + compteur ── */
+  .stage-compteur{text-align:center;font-family:"Patrick Hand",cursive;font-size:14px;font-weight:700;
+    color:var(--gris);letter-spacing:0.02em;margin-bottom:6px;}
+
+  .stage-wrap{max-width:640px;margin:0 auto;padding:36px 24px 6px;}
+  .perso-ligne{display:flex;align-items:flex-end;justify-content:center;gap:36px;flex-wrap:wrap;width:100%;min-height:340px;}
+  .perso-zone{position:relative;width:280px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;
+    opacity:0;transform:scale(0.94);transition:opacity 0.3s ease,transform 0.3s ease;}
+  .perso-zone.seul{width:340px;}
+  .perso-zone.in{opacity:1;transform:scale(1);}
+  .perso-zone::after{
+    content:"";display:block;width:200px;height:14px;margin:-6px auto 0;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 170 14'%3E%3Cpath d='M6 8 C 30 3, 55 11, 85 7 C 115 3, 140 10, 164 6' fill='none' stroke='%237A9BBF' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat:no-repeat;background-position:center;background-size:contain;opacity:0.5;
+  }
+  .perso-zone img{width:100%;display:block;}
+
+  .stage-narration{text-align:center;font-size:14px;font-style:italic;color:#6b6152;font-weight:600;
+    min-height:1.3em;margin-top:6px;}
+
+  /* ── Pile de bulles — s'accumule au fil des clics ── */
+  .bulle-pile{display:flex;flex-direction:column;gap:2px;margin-top:20px;}
+  .bulle-item{
+    display:flex;align-items:flex-start;gap:12px;
+    opacity:0;max-height:0;overflow:hidden;
+    transition:opacity 0.35s ease,max-height 0.35s ease,margin 0.35s ease;
+  }
+  .bulle-item.in{opacity:1;max-height:140px;margin:9px 0;overflow:visible;}
+  .bulle-avatar{
+    flex-shrink:0;width:36px;height:36px;border-radius:50%;background:var(--blanc);
+    border:2.5px solid var(--c,var(--gris));display:flex;align-items:center;justify-content:center;
+    font-family:"Patrick Hand",cursive;font-weight:700;font-size:16px;color:var(--c,var(--gris));
+  }
+  .bulle-corps{flex:1;padding:1px 0 1px 12px;border-left:2.5px solid var(--c,var(--gris));}
+  .bulle-qui{display:block;font-family:"Nunito",sans-serif;font-weight:800;font-size:10.5px;
+    letter-spacing:0.06em;text-transform:uppercase;color:var(--c,var(--gris));margin-bottom:2px;}
+  .bulle-texte{font-family:"Patrick Hand",cursive;font-size:22px;line-height:1.3;color:var(--texte);}
+  .bulle-item.pensee .bulle-avatar{border-style:dashed;}
+  .bulle-item.pensee .bulle-corps{border-left-style:dashed;}
+  .bulle-item.pensee .bulle-texte{font-family:"Nunito",sans-serif;font-style:italic;font-size:14px;
+    font-weight:600;color:var(--gris);}
+  .bulle-item.recit .bulle-avatar{border-color:var(--gris-clair);color:var(--gris);}
+  .bulle-item.recit .bulle-corps{border-left-color:var(--gris-clair);}
+  .bulle-item.recit .bulle-texte{font-family:"Nunito",sans-serif;font-style:italic;font-size:14.5px;
+    font-weight:600;color:#6b6152;}
+  .bulle-bek{--c:var(--vert-fonce);}
+  .bulle-keb{--c:var(--bleu-fonce);}
+
+  /* Mot expliqué par Kloé — pointillé ambre, tooltip corail */
+  .vocab-mot{position:relative;border-bottom:2.5px dashed var(--ambre-fonce);cursor:pointer;font-weight:800;color:inherit;padding-bottom:1px;}
+  .vocab-tooltip{
+    display:none;position:absolute;left:50%;bottom:100%;transform:translateX(-50%) translateY(-6px);
+    background:var(--blanc);border:2px solid var(--corail);border-radius:14px;
+    padding:9px 13px;width:200px;box-shadow:0 8px 22px rgba(42,36,34,0.2);z-index:15;
+    font-family:"Nunito",sans-serif;font-weight:400;text-align:left;font-size:12.5px;line-height:1.5;color:var(--texte);
+  }
+  .vocab-tooltip .vt-nom{font-family:"Patrick Hand",cursive;font-weight:700;font-size:13px;color:var(--corail);margin-bottom:3px;display:block;}
+  .vocab-tooltip::after{content:"";position:absolute;top:100%;left:50%;transform:translateX(-50%);border:7px solid transparent;border-top-color:var(--corail);}
+  .vocab-mot:hover .vocab-tooltip,.vocab-mot.active .vocab-tooltip{display:block;}
+
+  /* ── Contrôles de navigation de la scène ── */
+  .stage-nav{display:flex;align-items:center;justify-content:center;gap:14px;margin-top:26px;}
+  .btn-etape-retour{
+    width:38px;height:38px;border-radius:50%;border:1.5px solid var(--violet);background:var(--beige-clair);
+    color:var(--violet-fonce);display:flex;align-items:center;justify-content:center;cursor:pointer;
+    transition:opacity 0.2s ease,background 0.15s ease;
+  }
+  .btn-etape-retour:hover{background:var(--violet-clair);}
+  .btn-etape-retour[disabled]{opacity:0.35;cursor:default;pointer-events:none;}
+  .btn-continuer{
+    display:inline-flex;align-items:center;gap:7px;background:var(--vert-fonce);color:#fff;border:none;
+    border-radius:100px;padding:10px 24px;font-family:"Patrick Hand",cursive;font-size:18px;cursor:pointer;
+    box-shadow:0 4px 14px rgba(74,122,54,0.35);
+    transition:transform 0.18s cubic-bezier(0.34,1.56,0.64,1),box-shadow 0.18s;
+  }
+  .btn-continuer:hover{transform:translateY(-2px) scale(1.03);box-shadow:0 7px 20px rgba(74,122,54,0.45);}
+
+  /* ── Vocabulaire à cocher ── */
+  .section-cocher{
+    display:none;max-width:640px;margin:44px auto 0;
+    background:var(--beige-clair);border:1.5px solid rgba(184,201,224,0.5);
+    border-radius:18px;padding:20px 24px;box-shadow:0 4px 16px var(--ombre);
+  }
+  .sc-titre{font-family:"Patrick Hand",cursive;font-size:20px;color:var(--vert-fonce);margin-bottom:12px;}
+  .sc-item{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:10px;transition:background 0.15s;cursor:pointer;}
+  .sc-item:hover{background:var(--vert-clair);}
+  .sc-item input{width:18px;height:18px;accent-color:var(--vert-fonce);cursor:pointer;}
+  .sc-item label{font-size:14px;cursor:pointer;flex:1;}
+  .sc-item .sc-trad{color:var(--gris);font-size:12.5px;}
+  .sc-item-nouveau{animation:apparaitre 0.5s ease forwards;}
+  @keyframes apparaitre{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+
+  /* ── Séparateur avant les questions ── */
+  .separateur{max-width:600px;margin:46px auto 0;padding:0 24px;}
+  .separateur hr{border:none;border-top:1.5px solid rgba(184,201,224,0.5);margin-bottom:8px;}
+  .separateur .label{font-size:11.5px;letter-spacing:0.12em;text-transform:uppercase;color:var(--gris);font-weight:800;}
+
+  /* ── Exercice niveau 1 ── */
+  .exercice{max-width:600px;margin:20px auto 0;padding:26px 24px;background:var(--beige-clair);
+    border:1.5px solid var(--bleu-poudre);border-radius:20px;}
+  .exercice-titre{font-family:"Patrick Hand",cursive;font-size:15px;font-weight:700;color:var(--bleu-fonce);
+    text-transform:uppercase;letter-spacing:0.06em;text-align:center;margin-bottom:14px;}
+  .qcm-question{font-size:16px;font-weight:700;text-align:center;margin-bottom:16px;}
+  .qcm-options{display:flex;flex-direction:column;gap:10px;}
+  .qcm-opt{background:var(--blanc);border:1.5px solid var(--bleu-poudre);border-radius:12px;
+    padding:11px 16px;font-size:15px;cursor:pointer;text-align:left;transition:background 0.15s,border-color 0.15s;}
+  .qcm-opt:hover{background:#EEF4FB;}
+  .qcm-opt.correcte{background:var(--vert-clair);border-color:var(--vert-fonce);}
+  .qcm-opt.incorrecte{background:var(--corail-clair);border-color:var(--corail);}
+  .qcm-feedback{margin-top:14px;text-align:center;font-family:"Patrick Hand",cursive;font-size:18px;min-height:24px;}
+  .qcm-feedback.ok{color:var(--vert-fonce);}
+  .qcm-feedback.retry{color:var(--corail);}
+
+  /* ── Section avancée (repliée) ── */
+  .avance{max-width:600px;margin:26px auto 0;padding:0 24px 10px;}
+  .avance-toggle{width:100%;background:none;border:1.5px dashed var(--violet);color:var(--violet-fonce);
+    border-radius:14px;padding:11px 16px;font-family:"Patrick Hand",cursive;font-size:16px;
+    cursor:pointer;text-align:left;display:flex;align-items:center;justify-content:space-between;transition:background 0.15s;}
+  .avance-toggle:hover{background:var(--violet-clair);}
+  .avance-corps{padding:18px 4px 4px;display:flex;flex-direction:column;gap:16px;}
+  .avance-question{font-size:14.5px;font-weight:700;}
+  .avance-texte{width:100%;min-height:70px;border:1.5px solid var(--bleu-poudre);border-radius:12px;
+    padding:10px 12px;font-family:"Nunito",sans-serif;font-size:14px;resize:vertical;background:var(--blanc);}
+  .avance-btn{align-self:flex-start;background:var(--violet);color:#fff;border:none;border-radius:100px;
+    padding:9px 20px;font-family:"Patrick Hand",cursive;font-size:16px;cursor:pointer;transition:background 0.15s;}
+  .avance-btn:hover{background:var(--violet-fonce);}
+  .avance-note{background:var(--violet-clair);border-left:3px solid var(--violet);
+    padding:11px 14px;border-radius:10px;font-size:13.5px;line-height:1.5;color:var(--violet-fonce);}
+
+  /* ── Nav pages (canonique) ── */
+  .nav-pages{max-width:600px;margin:36px auto 0;padding-top:24px;display:flex;justify-content:space-between;
+    align-items:center;width:100%;padding-left:20px;padding-right:20px;}
+  .btn-nav{display:flex;align-items:center;gap:7px;font-family:"Patrick Hand",cursive;font-size:16px;
+    padding:10px 22px;border-radius:100px;border:none;text-decoration:none;}
+  .btn-nav.indisponible{background:var(--beige-clair);color:var(--gris);border:1.5px dashed var(--gris-clair);opacity:0.55;}
+
+  @media(max-width:640px){
+    .perso-ligne{gap:18px;}
+    .perso-zone{width:110px;}
+    .bulle-texte{font-size:18px;}
+    #bulle-flottante{width:190px;}
+  }
+</style>
+</head>
+<body>
+
+<a href="../menus/en.html" id="btn-retour">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M5 12L11 6M5 12L11 18"/></svg>
+  Back
+</a>
+
+<!-- ── Boîte de vocabulaire flottante ── -->
+<div id="bulle-flottante">
+  <div class="bf-header" onclick="toggleBulle(event)">
+    <span class="bf-titre">
+      <svg class="bf-icone-svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M7 3.5C6 3.5 5.5 4 5.5 5V20C5.5 21 6 21.5 7 21.5H17C18 21.5 18.5 21 18.5 20V8L14 3.5Z"/>
+        <path d="M14 3.5V8H18.5"/><path d="M8.5 12.5H15.5"/><path d="M8.5 15.5H15.5"/><path d="M8.5 18H13"/>
+      </svg>
+      <span class="bf-titre-texte">My words</span>
+      <span class="bf-compteur" id="bfCompteur">0</span>
+    </span>
+    <div class="bf-actions-header">
+      <button class="bf-btn-min" onclick="toggleMinimise(event)" title="Minimize">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14"/></svg>
+      </button>
+      <span class="bf-chevron">&#9660;</span>
+    </div>
+    <span class="bf-icone-seule">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M7 3.5C6 3.5 5.5 4 5.5 5V20C5.5 21 6 21.5 7 21.5H17C18 21.5 18.5 21 18.5 20V8L14 3.5Z"/><path d="M14 3.5V8H18.5"/>
+      </svg>
+      <span class="bf-mini-compteur" id="bfMiniCompteur">0</span>
+    </span>
+  </div>
+  <div class="bf-corps" id="bfCorps"><div class="bf-vide">Check words below to save them here.</div></div>
+  <div class="bf-footer">
+    <button class="bf-btn-footer" id="bfCopiar" onclick="copierListe()">
+      <svg class="bf-icone-svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <rect x="8.5" y="7" width="11.5" height="14" rx="1.6"/><path d="M5.5 16.5H4.5C3.9 16.5 3.5 16 3.5 15.5V4.5C3.5 3.9 3.9 3.5 4.5 3.5H14.5C15 3.5 15.5 3.9 15.5 4.5V5.5"/>
+      </svg>
+      <span id="bfCopierTexte">Copy</span>
+    </button>
+    <button class="bf-purger" onclick="demanderPurge()">
+      <svg class="bf-icone-svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M5 7H19"/><path d="M9 7V4.8C9 4.4 9.4 4 9.8 4H14.2C14.6 4 15 4.4 15 4.8V7"/>
+        <path d="M7 7L7.8 20C7.85 20.6 8.35 21 8.9 21H15.1C15.65 21 16.15 20.6 16.2 20L17 7"/>
+        <path d="M10.3 11V17"/><path d="M13.7 11V17"/>
+      </svg>
+      Clear
+    </button>
+  </div>
+</div>
+
+<div id="confirm-overlay">
+  <div class="confirm-boite">
+    <p>Clear your whole word list? This can't be undone.</p>
+    <div class="confirm-btns">
+      <button class="btn-annuler" onclick="annulerPurge()">Cancel</button>
+      <button class="btn-confirmer" onclick="confirmerPurge()">Clear</button>
+    </div>
+  </div>
+</div>
+
+<div class="repli-groupe ouvert" id="groupeHaut" style="padding-top:56px;">
+  <button class="repli-barre" onclick="toggleRepli('groupeHaut')">
+    <span id="groupeHautLabel"><svg class="icone-etincelle" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 C13 8 14 9 20 11 C14 13 13 14 12 20 C11 14 10 13 4 11 C10 9 11 8 12 3 Z"/></svg> Miam ! · Level 1</span>
+    <span class="repli-chevron">▾</span>
+  </button>
+  <div class="repli-corps" id="corpsHaut">
+    <header class="entete">
+      <div class="entete-eyebrow">Story 1</div>
+      <div class="entete-titre"><span class="vocab-mot" data-mot="Miam" data-trad="an exclamation for &quot;yum!&quot; — said when food looks or tastes good.">Miam<span class="vocab-tooltip"><span class="vt-nom">Kloé</span>an exclamation for "yum!" — said when food looks or tastes good.</span></span>&nbsp;!</div>
+      <div class="entete-sub">A page from Bek's diary</div>
+    </header>
+
+    <!-- ── Sélecteur de difficulté ── -->
+    <div class="diff-boite">
+      <div class="diff-titre"><svg class="icone-etincelle" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 C13 8 14 9 20 11 C14 13 13 14 12 20 C11 14 10 13 4 11 C10 9 11 8 12 3 Z"/></svg> Choose your level <svg class="icone-etincelle" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 C13 8 14 9 20 11 C14 13 13 14 12 20 C11 14 10 13 4 11 C10 9 11 8 12 3 Z"/></svg></div>
+      <div class="diff-options" id="diffOptions">
+        <div class="diff-opt actif" data-niveau="1"><span class="diff-num">1</span>Dialogue only</div>
+        <div class="diff-opt" data-niveau="2"><span class="diff-num">2</span>+ actions</div>
+        <div class="diff-opt" data-niveau="3"><span class="diff-num">3</span>+ thoughts</div>
+      </div>
+      <div class="diff-desc" id="diffDesc">Just what Bek and Keb say to each other.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ── Scène unique + pile de bulles ── -->
+<section class="stage-wrap">
+  <div class="stage-compteur" id="stageCompteur">1 / 7</div>
+  <div class="perso-ligne" id="stagePersos"></div>
+  <p class="stage-narration" id="stageNarration"></p>
+
+  <div class="bulle-pile" id="bullePile"></div>
+
+  <div class="stage-nav">
+    <button class="btn-etape-retour" id="btnEtapeRetour" disabled aria-label="Previous step">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg>
+    </button>
+    <button class="btn-continuer" id="btnContinuer">Continue
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg>
+    </button>
+  </div>
+</section>
+
+<!-- ── Vocabulaire à cocher ── -->
+<div class="section-cocher" id="sectionCocher">
+  <div class="sc-titre">New words in this story</div>
+</div>
+
+<div class="repli-groupe" id="groupeQuestions" style="margin-top:36px;">
+  <button class="repli-barre" onclick="toggleRepli('groupeQuestions')">
+    <span><svg class="icone-etincelle" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 C13 8 14 9 20 11 C14 13 13 14 12 20 C11 14 10 13 4 11 C10 9 11 8 12 3 Z"/></svg> Questions</span>
+    <span class="repli-chevron">▾</span>
+  </button>
+  <div class="repli-corps" id="corpsQuestions" style="display:none;">
+    <!-- ── Exercice — Niveau 1 ── -->
+    <section class="exercice" id="exerciceSection">
+      <div class="exercice-titre">Quick check</div>
+      <div class="qcm-question">What does Bek say when she hands Keb his piece of cake?</div>
+      <div class="qcm-options" id="qcmOptions"></div>
+      <div class="qcm-feedback" id="qcmFeedback"></div>
+    </section>
+
+    <!-- ── Section avancée ── -->
+    <section class="avance" id="avanceSection">
+      <button class="avance-toggle" onclick="toggleAvance()"><span id="avanceToggleTexte">&#9656; Going further (optional)</span></button>
+      <div class="avance-corps" id="avanceCorps" style="display:none;">
+        <div>
+          <div class="avance-question">1. Why do you think Keb doesn't eat the cake right away?</div>
+          <textarea class="avance-texte" id="avanceReponse1" placeholder="Write a few words, in English or in French…"></textarea>
+        </div>
+        <div>
+          <div class="avance-question">2. Has a friend ever figured out what you needed without you having to ask? Describe the moment — in French if you can!</div>
+          <textarea class="avance-texte" id="avanceReponse2" placeholder="Write a few words, in English or in French…"></textarea>
+        </div>
+        <button class="avance-btn" onclick="avanceReflechi()">I've thought about it!</button>
+        <div class="avance-note" id="avanceNote" style="display:none;">There's no right or wrong answer here — this is just a moment to reflect in French. Kloé isn't grading you, she's just glad you thought about it!</div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<nav class="nav-pages">
+  <span class="btn-nav indisponible">‹ Previous</span>
+  <span class="btn-nav indisponible">Next ›</span>
+</nav>
+
+<script>
+
+// ─────────────────────────────────────────────
+//  Mot expliqué par Kloé — génère le span cliquable + sa bulle
+// ─────────────────────────────────────────────
+function vocab(mot, explication) {
+  return '<span class="vocab-mot" data-mot="' + mot + '">' + mot
+    + '<span class="vocab-tooltip"><span class="vt-nom">Kloé</span>' + explication + '</span></span>';
+}
+
+// ─────────────────────────────────────────────
+//  Données des 7 scènes
+//  narration : légende sous l'image, remplacée à chaque étape (niveau ≥ 2)
+//  bulles    : s'accumulent dans la pile, restent visibles (niveau ≥ minNiveau)
+// ─────────────────────────────────────────────
+var scenes = [
+  { // 1
+    persos: ['keb_ennuie_01.png'],
+    narration: 'Keb attend, tout seul. Il joue avec son chapeau.',
+    reflet: { qui:'keb', texte: 'Keb attend tout seul. Il joue avec son chapeau d\u2019anniversaire, car il s\u2019ennuie un peu.' },
+    bulles: []
+  },
+  { // 2
+    persos: ['bek_neutre_01.png'],
+    narration: 'Bek arrive avec un morceau de gâteau.',
+    reflet: { qui:'bek', texte: 'Bek arrive avec un morceau de g\u00e2teau pour Keb. Elle est tr\u00e8s contente de le lui donner.' },
+    bulles: []
+  },
+  { // 3
+    persos: ['bek_neutre_01.png'],
+    narration: null,
+    bulles: [
+      { qui:'bek', minNiveau:1, texte: vocab('Tiens', 'literally <em>"you\u2019re holding,"</em> but here it just means <em>"here you go!"</em> — you say it when you hand something to someone.') + ' !' }
+    ]
+  },
+  { // 4
+    persos: ['keb_neutre_01.png'],
+    narration: 'Keb regarde le gâteau, puis relève la tête.',
+    reflet: { qui:'keb', texte: 'Keb regarde le g\u00e2teau, puis rel\u00e8ve la t\u00eate : il n\u2019a pas de fourchette\u2026' },
+    bulles: []
+  },
+  { // 5
+    persos: ['bek_neutre_01.png'],
+    narration: null,
+    bulles: [
+      { qui:'bek', minNiveau:1, texte: vocab('Mange', '<em>eat!</em> — the <em>tu</em>-command form of the verb <em>manger</em>.') + ' !' }
+    ]
+  },
+  { // 6
+    persos: ['keb_neutre_01.png'],
+    narration: 'Keb regarde le gâteau encore une fois… mais ne mange pas.',
+    bulles: []
+  },
+  { // 7
+    persos: ['bek_neutre_01.png'],
+    narration: null,
+    bulles: [
+      { qui:'bek', minNiveau:1, texte: 'Oh ! ' + vocab('Attends', '<em>wait!</em> — from the verb <em>attendre</em>.') + '.' }
+    ]
+  },
+  { // 8
+    persos: ['bek_neutre_01.png'],
+    narration: 'Bek part… puis revient avec une fourchette.',
+    reflet: { qui:'bek', texte: 'Bek part en courant, puis revient avec une fourchette \u2014 elle a tout compris !' },
+    bulles: []
+  },
+  { // 9
+    persos: ['bek_neutre_01.png'],
+    narration: 'Bek plonge la fourchette dans le gâteau.',
+    bulles: [
+      { qui:'bek', minNiveau:1, texte: vocab('Ouvre', '<em>open!</em> — Bek is asking Keb to open his mouth.') + '.' }
+    ]
+  },
+  { // 10
+    persos: ['keb_neutre_01.png'],
+    narration: 'Keb ouvre la bouche. Bek lui donne la bouchée.',
+    bulles: [
+      { qui:'keb', minNiveau:1, texte: 'Miam ! C\u2019est ' + vocab('bon', '<em>good</em> — « c\u2019est bon ! » means <em>"it\u2019s good!"</em>') + ' !' }
+    ]
+  }
+];
+
+var step = 0;
+var niveauActuel = 1;
+
+var elPersos     = document.getElementById('stagePersos');
+var elNarration  = document.getElementById('stageNarration');
+var elCompteur   = document.getElementById('stageCompteur');
+var elPile       = document.getElementById('bullePile');
+var btnRetour    = document.getElementById('btnEtapeRetour');
+var btnContinuer = document.getElementById('btnContinuer');
+
+// ─────────────────────────────────────────────
+//  Construction de la pile de bulles (une fois par changement de niveau)
+// ─────────────────────────────────────────────
+// ─────────────────────────────────────────────
+//  Le texte "récit" d'une scène évolue avec le niveau :
+//  niveau 2 → narration neutre ; niveau 3 → réflexion du personnage (si prévue)
+//  Utilisé à la fois pour la légende sous l'image ET la bulle de la pile,
+//  pour qu'elles restent toujours identiques.
+// ─────────────────────────────────────────────
+function recitPourNiveau(scene, niveau) {
+  if (niveau >= 3 && scene.reflet) {
+    return { texte: scene.reflet.texte, qui: scene.reflet.qui, pensee: true };
+  }
+  if (niveau >= 2 && scene.narration) {
+    return { texte: scene.narration, pensee: false };
+  }
+  return null;
+}
+
+// ─────────────────────────────────────────────
+//  Bascule une bulle évolutive entre son état "récit" (niveau 2, neutre,
+//  sans personnage) et son état "réflexion" (niveau 3, attribuée, pointillée)
+// ─────────────────────────────────────────────
+function majBulleEvolutive(div, niveau) {
+  var qui = div.dataset.qui;
+  var t3 = div.dataset.texteNiveau3;
+  var t2 = div.dataset.texteNiveau2;
+  var enReflet = (niveau >= 3 && t3 && qui);
+
+  div.classList.toggle('recit', !enReflet);
+  div.classList.toggle('pensee', !!enReflet);
+  div.classList.remove('bulle-bek', 'bulle-keb');
+  if (enReflet) { div.classList.add('bulle-' + qui); }
+
+  var avatarEl = div.querySelector('.bulle-avatar');
+  var corpsEl  = div.querySelector('.bulle-corps');
+  avatarEl.textContent = enReflet ? (qui === 'bek' ? 'B' : 'K') : '';
+  var nomHTML = enReflet ? '<span class="bulle-qui">' + (qui === 'bek' ? 'Bek' : 'Keb') + '</span>' : '';
+  corpsEl.innerHTML = nomHTML + '<div class="bulle-texte">' + (enReflet ? t3 : t2) + '</div>';
+}
+
+function construirePile() {
+  elPile.innerHTML = '';
+  scenes.forEach(function(scene, i) {
+    var bullesScene = [];
+
+    // une seule bulle "récit" par scène — son contenu et son style évoluent
+    // avec le niveau (voir recitPourNiveau / mettreAJourBullesEvolutives),
+    // au lieu d'empiler récit + pensée comme deux bulles séparées
+    if (scene.narration || scene.reflet) {
+      bullesScene.push({
+        recit: true,
+        minNiveau: 2,
+        texteNiveau2: scene.narration || '',
+        texteNiveau3: scene.reflet ? scene.reflet.texte : null,
+        qui: scene.reflet ? scene.reflet.qui : null,
+        texte: scene.narration || (scene.reflet ? scene.reflet.texte : '')
+      });
+    }
+
+    bullesScene = bullesScene.concat(scene.bulles);
+
+    bullesScene.forEach(function(b, j) {
+      var div = document.createElement('div');
+      var classes = 'bulle-item';
+      if (b.recit) { classes += ' recit'; }
+      if (b.pensee) { classes += ' pensee'; }
+      if (b.qui) { classes += ' bulle-' + b.qui; }
+      div.className = classes;
+      div.dataset.scene = i;
+      div.dataset.minNiveau = b.minNiveau;
+      if (b.texteNiveau2 !== undefined) {
+        // bulle de récit évolutive : on mémorise les deux versions pour pouvoir
+        // basculer sans reconstruire toute la pile au changement de niveau
+        div.dataset.evolutif = '1';
+        div.dataset.texteNiveau2 = b.texteNiveau2 || '';
+        div.dataset.texteNiveau3 = b.texteNiveau3 || '';
+        div.dataset.qui = b.qui || '';
+      }
+      var avatar = b.recit ? '' : (b.qui === 'bek' ? 'B' : 'K');
+      var nom = b.recit ? '' : '<span class="bulle-qui">' + (b.qui === 'bek' ? 'Bek' : 'Keb') + '</span>';
+      div.innerHTML = '<div class="bulle-avatar">' + avatar + '</div>'
+        + '<div class="bulle-corps">' + nom + '<div class="bulle-texte">' + b.texte + '</div></div>';
+      elPile.appendChild(div);
+    });
+  });
+}
+
+// ─────────────────────────────────────────────
+//  Rendu de l'étape courante
+// ─────────────────────────────────────────────
+function rendre() {
+  var scene = scenes[step];
+  elCompteur.textContent = (step + 1) + ' / ' + scenes.length;
+
+  var classePerso = scene.persos.length === 1 ? 'perso-zone seul' : 'perso-zone';
+  elPersos.innerHTML = scene.persos.map(function(p) {
+    var nom = p.indexOf('bek') === 0 ? 'Bek' : 'Keb';
+    var src = 'images/' + p;
+    return '<div class="' + classePerso + '"><img src="' + src + '" alt="' + nom + '"></div>';
+  }).join('');
+  setTimeout(function() {
+    elPersos.querySelectorAll('.perso-zone').forEach(function(z){ z.classList.add('in'); });
+  }, 20);
+
+  var r = recitPourNiveau(scene, niveauActuel);
+  elNarration.textContent = r ? r.texte : '';
+
+  // les bulles évolutives (récit → réflexion) basculent de contenu/style
+  // selon le niveau courant, avant qu'on ne recalcule leur visibilité
+  elPile.querySelectorAll('.bulle-item[data-evolutif="1"]').forEach(function(item) {
+    majBulleEvolutive(item, niveauActuel);
+  });
+
+  // la pile : visible si (scène atteinte) ET (niveau suffisant)
+  elPile.querySelectorAll('.bulle-item').forEach(function(item) {
+    var visible = (parseInt(item.dataset.scene, 10) <= step) && (niveauActuel >= parseInt(item.dataset.minNiveau, 10));
+    item.classList.toggle('in', visible);
+  });
+
+  btnRetour.disabled = (step === 0);
+  btnContinuer.innerHTML = (step === scenes.length - 1)
+    ? 'See the questions <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>'
+    : 'Continue <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg>';
+
+  synchroniserVocabulaire();
+}
+
+btnContinuer.addEventListener('click', function() {
+  if (step < scenes.length - 1) {
+    step++;
+    rendre();
+  } else {
+    toggleRepli('groupeQuestions', true);
+    document.getElementById('groupeQuestions').scrollIntoView({behavior:'smooth'});
+  }
+});
+btnRetour.addEventListener('click', function() {
+  if (step > 0) {
+    step--;
+    rendre();
+  }
+});
+
+// Mots expliqués par Kloé — clic (mobile) ou survol (desktop)
+elPile.addEventListener('click', function(e) {
+  var mot = e.target.closest('.vocab-mot');
+  document.querySelectorAll('.vocab-mot.active').forEach(function(m) {
+    if (m !== mot) m.classList.remove('active');
+  });
+  if (mot) mot.classList.toggle('active');
+});
+
+// ─────────────────────────────────────────────
+//  Sélecteur de difficulté
+// ─────────────────────────────────────────────
+var descriptions = {
+  1: 'Just what Bek and Keb say to each other.',
+  2: 'Dialogue, plus short actions in French.',
+  3: 'Dialogue, actions, and their thoughts.'
+};
+document.querySelectorAll('.diff-opt').forEach(function(opt) {
+  opt.addEventListener('click', function() {
+    document.querySelectorAll('.diff-opt').forEach(function(o){ o.classList.remove('actif'); });
+    opt.classList.add('actif');
+    niveauActuel = parseInt(opt.dataset.niveau, 10);
+    document.getElementById('diffDesc').textContent = descriptions[niveauActuel];
+    document.getElementById('groupeHautLabel').innerHTML = '<svg class="icone-etincelle" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 C13 8 14 9 20 11 C14 13 13 14 12 20 C11 14 10 13 4 11 C10 9 11 8 12 3 Z"/></svg> Miam ! · Level ' + niveauActuel;
+    rendre();
+  });
+});
+
+// ─────────────────────────────────────────────
+//  Panneaux repliables (haut / questions)
+// ─────────────────────────────────────────────
+function toggleRepli(id, forceOuvert) {
+  var groupe = document.getElementById(id);
+  var corps = groupe.querySelector('.repli-corps');
+  var estOuvert = groupe.classList.contains('ouvert');
+  var nouveauEtat = (typeof forceOuvert === 'boolean') ? forceOuvert : !estOuvert;
+  groupe.classList.toggle('ouvert', nouveauEtat);
+  corps.style.display = nouveauEtat ? 'block' : 'none';
+}
+
+// ─────────────────────────────────────────────
+//  Vocabulaire à cocher (bas de page) — accumule au fil de la progression
+// ─────────────────────────────────────────────
+function synchroniserVocabulaire() {
+  var sc = document.getElementById('sectionCocher');
+  var motsVus = [];
+  scenes.forEach(function(scene, i) {
+    if (i > step) return;
+    scene.bulles.forEach(function(b) {
+      if (niveauActuel < b.minNiveau) return;
+      var temp = document.createElement('div');
+      temp.innerHTML = b.texte;
+      temp.querySelectorAll('.vocab-mot').forEach(function(el) {
+        var m = el.dataset.mot;
+        if (motsVus.indexOf(m) === -1) motsVus.push(m);
+      });
+    });
+  });
+  // le titre (Miam) compte toujours comme mot rencontré dès le début
+  motsVus.unshift('Miam');
+
+  sc.innerHTML = '<div class="sc-titre">New words in this story</div>';
+  if (motsVus.length === 0) { sc.style.display = 'none'; return; }
+  sc.style.display = 'block';
+
+  var lista = chargerListe();
+  motsVus.forEach(function(mot) {
+    var refEl = document.querySelector('.vocab-mot[data-mot="' + mot + '"]');
+    var trad = refEl ? refEl.querySelector('.vocab-tooltip').textContent.replace('Kloé','').trim() : '';
+    var id = 'mot-' + mot.toLowerCase();
+    if (document.getElementById(id)) return;
+    var div = document.createElement('div');
+    div.className = 'sc-item sc-item-nouveau';
+    div.innerHTML = '<input type="checkbox" id="' + id + '" onchange="basculerMot(this,\'' + mot + '\',\'' + trad.replace(/'/g,"\\'") + '\')">'
+      + '<label for="' + id + '">' + mot + ' <span class="sc-trad">— ' + trad + '</span></label>';
+    sc.appendChild(div);
+    if (lista.find(function(i){ return i.mot === mot; })) {
+      div.querySelector('input').checked = true;
+    }
+  });
+}
+
+// Repli en mémoire si localStorage est inaccessible (origines opaques type file://
+// dans certains navigateurs/sandbox, mode privé strict, etc.) — la liste ne survit
+// alors pas au rechargement de la page, mais la fonctionnalité ne casse plus.
+var listeVocabEnMemoire = [];
+var localStorageDisponible = (function(){
+  try {
+    localStorage.setItem('__test_kb__', '1');
+    localStorage.removeItem('__test_kb__');
+    return true;
+  } catch (e) {
+    console.warn('localStorage indisponible — la liste de vocabulaire ne persistera pas entre les visites.', e);
+    return false;
+  }
+})();
+
+function chargerListe() {
+  if (!localStorageDisponible) { return listeVocabEnMemoire; }
+  var d = localStorage.getItem('keb_bek_vocab');
+  return d ? JSON.parse(d) : [];
+}
+function sauvegarderListe(lista) {
+  if (!localStorageDisponible) { listeVocabEnMemoire = lista; return; }
+  localStorage.setItem('keb_bek_vocab', JSON.stringify(lista));
+}
+function rafraichirAffichage() {
+  var lista = chargerListe();
+  document.getElementById('bfCompteur').textContent = lista.length;
+  document.getElementById('bfMiniCompteur').textContent = lista.length;
+  var corps = document.getElementById('bfCorps');
+  if (lista.length === 0) {
+    corps.innerHTML = '<div class="bf-vide">Check words below to save them here.</div>';
+    return;
+  }
+  corps.innerHTML = lista.map(function(item) {
+    return '<div class="bf-item"><span>' + item.mot + '</span><span style="color:var(--gris);font-size:11.5px;">' + item.trad + '</span></div>';
+  }).join('');
+}
+function basculerMot(checkbox, mot, trad) {
+  var lista = chargerListe();
+  if (checkbox.checked) {
+    if (!lista.find(function(i){ return i.mot === mot; })) lista.push({mot:mot, trad:trad});
+  } else {
+    lista = lista.filter(function(i){ return i.mot !== mot; });
+  }
+  sauvegarderListe(lista);
+  rafraichirAffichage();
+}
+function toggleBulle(e) {
+  if (e.target.closest('.bf-btn-min')) return;
+  document.getElementById('bulle-flottante').classList.toggle('repliee');
+}
+function toggleMinimise(e) {
+  e.stopPropagation();
+  document.getElementById('bulle-flottante').classList.toggle('minimisee');
+}
+function copierListe() {
+  var lista = chargerListe();
+  if (lista.length === 0) return;
+  var texte = lista.map(function(i){ return i.mot + ' — ' + i.trad; }).join('\n');
+  navigator.clipboard.writeText(texte).then(function() {
+    var btn = document.getElementById('bfCopiar');
+    var el = document.getElementById('bfCopierTexte');
+    var original = el.textContent;
+    el.textContent = 'Copied!'; btn.classList.add('copie');
+    setTimeout(function(){ el.textContent = original; btn.classList.remove('copie'); }, 1800);
+  });
+}
+function demanderPurge() { document.getElementById('confirm-overlay').classList.add('actif'); }
+function annulerPurge() { document.getElementById('confirm-overlay').classList.remove('actif'); }
+function confirmerPurge() {
+  if (localStorageDisponible) { localStorage.removeItem('keb_bek_vocab'); }
+  listeVocabEnMemoire = [];
+  rafraichirAffichage();
+  document.querySelectorAll('.sc-item input[type=checkbox]').forEach(function(cb){ cb.checked = false; });
+  document.getElementById('confirm-overlay').classList.remove('actif');
+}
+
+// ─────────────────────────────────────────────
+//  Exercice — Niveau 1 (QCM)
+// ─────────────────────────────────────────────
+var qcmOptions = [
+  { texte: 'Tiens !', correcte: true },
+  { texte: 'Attends !', correcte: false },
+  { texte: 'Ouvre !', correcte: false }
+];
+function construireQCM() {
+  var zone = document.getElementById('qcmOptions');
+  zone.innerHTML = '';
+  qcmOptions.forEach(function(opt) {
+    var bouton = document.createElement('button');
+    bouton.className = 'qcm-opt';
+    bouton.textContent = opt.texte;
+    bouton.onclick = function() { verifierQCM(opt, bouton); };
+    zone.appendChild(bouton);
+  });
+}
+function verifierQCM(opt, bouton) {
+  var feedback = document.getElementById('qcmFeedback');
+  var tousLesBoutons = document.querySelectorAll('.qcm-opt');
+  tousLesBoutons.forEach(function(b) { b.disabled = true; });
+  if (opt.correcte) {
+    bouton.classList.add('correcte');
+    feedback.textContent = 'Great job!';
+    feedback.className = 'qcm-feedback ok';
+  } else {
+    bouton.classList.add('incorrecte');
+    feedback.textContent = 'Not quite — try again!';
+    feedback.className = 'qcm-feedback retry';
+    setTimeout(function() {
+      bouton.classList.remove('incorrecte');
+      tousLesBoutons.forEach(function(b) { b.disabled = false; });
+      feedback.textContent = '';
+    }, 1100);
+  }
+}
+
+// ─────────────────────────────────────────────
+//  Section avancée
+// ─────────────────────────────────────────────
+function toggleAvance() {
+  var corps = document.getElementById('avanceCorps');
+  var texte = document.getElementById('avanceToggleTexte');
+  var ouvert = corps.style.display === 'flex';
+  corps.style.display = ouvert ? 'none' : 'flex';
+  texte.innerHTML = ouvert ? '&#9656; Going further (optional)' : '&#9662; Going further (optional)';
+}
+function avanceReflechi() { document.getElementById('avanceNote').style.display = 'block'; }
+
+// ─────────────────────────────────────────────
+//  Démarrage
+// ─────────────────────────────────────────────
+construirePile();
+rendre();
+rafraichirAffichage();
+construireQCM();
+</script>
+
+</body>
+</html>
