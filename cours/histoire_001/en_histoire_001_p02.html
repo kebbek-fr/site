@@ -244,19 +244,15 @@
   .vocab-tooltip{
     display:none;position:absolute;left:50%;bottom:100%;transform:translateX(-50%) translateY(-6px);
     background:var(--blanc);border:2px solid var(--corail);border-radius:14px;
-    padding:9px 13px;width:200px;box-shadow:0 8px 22px rgba(42,36,34,0.2);z-index:15;
+    padding:12px 14px;width:260px;box-shadow:0 8px 22px rgba(42,36,34,0.2);z-index:15;
     font-family:"Nunito",sans-serif;font-weight:400;text-align:left;font-size:12.5px;line-height:1.5;color:var(--texte);
-    white-space:normal;
+    white-space:normal; align-items:flex-end;gap:10px;
   }
+  .vocab-tooltip .vt-texte{flex:1;min-width:0;}
+  .vocab-tooltip .vt-img{width:64px;height:auto;max-height:74px;object-fit:contain;flex-shrink:0;align-self:flex-end;}
   .vocab-tooltip .vt-nom{font-family:"Patrick Hand",cursive;font-weight:700;font-size:13px;color:var(--corail);margin-bottom:3px;display:block;}
-  .vt-img-externe{
-    display:none;position:absolute;left:calc(50% + 108px);bottom:100%;transform:translateY(-6px);
-    width:44px;height:44px;border-radius:50%;object-fit:cover;
-    border:2px solid var(--corail);background:var(--ambre-clair);z-index:16;
-  }
-  .vocab-mot:hover .vt-img-externe,.vocab-mot.active .vt-img-externe{display:block;}
   .vocab-tooltip::after{content:"";position:absolute;top:100%;left:50%;transform:translateX(-50%);border:7px solid transparent;border-top-color:var(--corail);}
-  .vocab-mot:hover .vocab-tooltip,.vocab-mot.active .vocab-tooltip{display:block;}
+  .vocab-mot:hover .vocab-tooltip,.vocab-mot.active .vocab-tooltip{display:flex;}
 
   /* ── Contrôles de navigation de la scène ── */
   .stage-nav{display:flex;align-items:center;justify-content:center;gap:14px;margin-top:26px;}
@@ -410,7 +406,7 @@
   <div class="repli-corps" id="corpsHaut">
     <header class="entete">
       <div class="entete-eyebrow">Story 1</div>
-      <div class="entete-titre"><span class="vocab-mot" data-mot="Miam" data-trad="an exclamation for &quot;yum!&quot; — said when food looks or tastes good.">Miam<span class="vocab-tooltip"><span class="vt-nom">Kloé</span>an exclamation for "yum!" — said when food looks or tastes good.</span><img class="vt-img-externe" id="vtImgMiam" alt=""></span>&nbsp;!</div>
+      <div class="entete-titre"><span class="vocab-mot" data-mot="Miam" data-trad="an exclamation for &quot;yum!&quot; — said when food looks or tastes good.">Miam<span class="vocab-tooltip"><span class="vt-texte"><span class="vt-nom">Kloé</span>an exclamation for "yum!" — said when food looks or tastes good.</span><img class="vt-img" id="vtImgMiam" alt=""></span></span>&nbsp;!</div>
       <div class="entete-sub">A page from Bek's diary</div>
     </header>
 
@@ -509,9 +505,7 @@ function prochaineImageExplique() {
 // ─────────────────────────────────────────────
 function vocab(mot, explication) {
   return '<span class="vocab-mot" data-mot="' + mot + '">' + mot
-    + '<span class="vocab-tooltip"><span class="vt-nom">Kloé</span>' + explication + '</span>'
-    + '<img class="vt-img-externe" src="' + prochaineImageExplique() + '" alt="">'
-    + '</span>';
+    + '<span class="vocab-tooltip"><span class="vt-texte"><span class="vt-nom">Kloé</span>' + explication + '</span><img class="vt-img" src="' + prochaineImageExplique() + '" alt=""></span></span>';
 }
 
 document.addEventListener('DOMContentLoaded', function() {
