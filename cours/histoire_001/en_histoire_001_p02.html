@@ -117,6 +117,11 @@
 
   .stage-wrap{max-width:640px;margin:0 auto;padding:36px 24px 6px;}
   .perso-ligne{display:flex;align-items:flex-end;justify-content:center;gap:36px;flex-wrap:wrap;width:100%;min-height:340px;}
+  /* Espace réservé au-dessus de la rangée quand une bulle BD (ancrée à la tête
+     d'un personnage) sera affichée cette scène — évite qu'elle empiète sur le
+     compteur au-dessus. Appliqué seulement si la scène a une bulle-stage
+     (voir rendre()), pour ne pas ajouter d'espace inutile aux scènes muettes. */
+  .perso-ligne.a-bulle-scene{margin-top:64px;}
   .perso-zone{position:relative;width:280px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;
     opacity:0;transform:scale(0.94);transition:opacity 0.3s ease,transform 0.3s ease;}
   .perso-zone.seul{width:340px;}
@@ -520,7 +525,8 @@ var scenes = [
   },
   { // 3
     persos: ['bek_tiens_keb_surpris_01.png'],
-    narration: null,
+    narration: 'Bek tend l’assiette avec le gâteau à Keb.',
+    reflet: { qui:'keb', texte: 'Bek tend l\u2019assiette avec le g\u00e2teau \u00e0 Keb. Keb est surpris par la taille de la part \u2014 c\u2019est tr\u00e8s g\u00e9n\u00e9reux !' },
     bulles: [
       { qui:'bek', minNiveau:1, posX:26, texte: vocab('Tiens', 'literally <em>"you\u2019re holding,"</em> but here it just means <em>"here you go!"</em> — you say it when you hand something to someone.') + ' !' }
     ],
@@ -772,10 +778,12 @@ function rendre() {
 
   // Bulle BD ancrée à la tête du personnage qui parle dans cette scène
   // (en plus de la pile du bas, qui elle reste toujours affichée)
+  var aBulleScene = false;
   (scene.bulles || []).forEach(function(b) {
     if (niveauActuel < b.minNiveau) return;
     var zone = elPersos.querySelector('.perso-zone[data-perso="' + b.qui + '"]');
     if (!zone) return;
+    aBulleScene = true;
     var bulle = document.createElement('div');
     bulle.className = 'bulle-stage bulle-' + b.qui;
     // posX : décalage horizontal optionnel (en %), utile quand l'image
@@ -786,6 +794,7 @@ function rendre() {
     bulle.innerHTML = '<div class="bulle-stage-texte">' + b.texte + '</div>';
     zone.appendChild(bulle);
   });
+  elPersos.classList.toggle('a-bulle-scene', aBulleScene);
 
   // Bulle d'invitation à répondre, à droite des personnages (scènes qui le prévoient)
   ajouterInvite(scene);
