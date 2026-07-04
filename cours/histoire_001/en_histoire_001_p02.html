@@ -469,7 +469,7 @@
 <!-- ── Encadré Kloé — clin d'œil personnel, apparaît à partir de la scène 6 ── -->
 <div class="kloe-aside" id="kloeAside" style="display:none;">
   <div class="kloe-aside-ligne">
-    <img class="kloe-aside-img" src="images/kloe_soucieuse_01.png" alt="Kloé" onerror="this.style.display='none';">
+    <img class="kloe-aside-img" id="kloeAsideImg" src="images/kloe_soucieuse_01.png" alt="Kloé" onerror="this.style.display='none';">
     <div class="kloe-aside-corps">
       <div class="kloe-aside-bulle">
         <div class="kloe-aside-question">Toi, ça va ?</div>
@@ -613,7 +613,7 @@ var scenes = [
     narration: 'Bek invite Keb à manger, mais il ne bouge pas.',
     reflet: { qui:'bek', texte: 'Bek ne comprend pas ce qui se passe. Le g\u00e2teau a l\u2019air d\u00e9licieux\u00a0! Elle le mangerait bien\u00a0!' },
     bulles: [
-      { qui:'bek', minNiveau:1, texte: vocab('Mange', '<em>eat!</em> — a command you\u2019d give a friend, from the verb <em>manger</em>.') + ' !' }
+      { qui:'bek', minNiveau:1, texte: vocab('Mange', '<em>eat!</em> — a command you\u2019d give a friend.') + ' !' }
     ]
   },
   { // 6
@@ -621,7 +621,7 @@ var scenes = [
     narration: 'Bek demande s\u2019il y a un probl\u00e8me. Keb l\u00e8ve les yeux vers Bek.',
     reflet: { qui:'keb', texte: 'Bek demande s\u2019il y a un probl\u00e8me. Keb l\u00e8ve les yeux vers Bek. Il pense\u00a0: \u00ab\u00a0Est-ce que chez eux ils mangent sans fourchettes\u00a0? C\u2019est salissant\u00a0!\u00a0\u00bb' },
     bulles: [
-      { qui:'bek', minNiveau:1, texte: '\u00c7a va\u00a0?' }
+      { qui:'bek', minNiveau:1, texte: vocab('\u00c7a va', 'an expression asking how someone\u2019s doing — like <em>\u201cAre you okay?\u201d</em> or <em>\u201cHow\u2019s it going?\u201d</em> You can answer with <em>\u201coui\u201d</em> (yes), <em>\u201cnon\u201d</em> (no), or the fuller <em>\u201coui, \u00e7a va\u201d</em> (yeah, I\u2019m okay).') + '\u00a0?' }
     ]
   },
   { // 7
@@ -922,7 +922,9 @@ function reinitialiserCaVa() {
   var zone2   = document.getElementById('caVaZone2');
   var input2  = document.getElementById('caVaInput2');
   var retour2 = document.getElementById('caVaRetour2');
+  var img     = document.getElementById('kloeAsideImg');
 
+  img.src = 'images/kloe_soucieuse_01.png';
   input1.value = '';
   input1.disabled = false;
   btn1.disabled = false;
@@ -975,10 +977,11 @@ document.getElementById('caVaInput2').addEventListener('keydown', function(e) {
     || (val === 'cest qui') || (val === 'qui est ce');
   var retour2 = document.getElementById('caVaRetour2');
   if (chantal) {
+    document.getElementById('kloeAsideImg').src = 'images/kloe_pointe_droite_01.png';
     retour2.innerHTML =
       '<div class="bi-recompense">'
       +   '<div class="bi-recompense-titre">Title unlocked \u2014 Le petit curieux / La petite curieuse !</div>'
-      +   '<div class="bi-mdp-note" style="font-style:normal;">C\u2019est la m\u00e8re de Keb\u00a0!</div>'
+      +   '<div class="bi-mdp-note" style="font-style:normal;">C\u2019est la m\u00e8re de Keb\u00a0! Voici un titre pour ta curiosit\u00e9\u00a0!</div>'
       +   '<div class="bi-code-row">'
       +     '<span class="bi-code" id="titreCode">ta-cur13ux</span>'
       +     '<button class="bi-copier-btn" onclick="copierBiCode(this)">Copy</button>'
@@ -1054,6 +1057,11 @@ function toggleRepli(id, forceOuvert) {
 // ─────────────────────────────────────────────
 //  Vocabulaire à cocher (bas de page) — accumule au fil de la progression
 // ─────────────────────────────────────────────
+// Mots à ne jamais mettre en minuscule dans l'encadré (noms propres) —
+// tous les autres mots suivis y perdent leur majuscule initiale, même
+// si celle-ci vient du fait qu'ils commencent une phrase dans l'histoire.
+var NOMS_PROPRES = [];
+
 function synchroniserVocabulaire() {
   var sc = document.getElementById('sectionCocher');
   var motsVus = [];
@@ -1080,12 +1088,13 @@ function synchroniserVocabulaire() {
   motsVus.forEach(function(mot) {
     var refEl = document.querySelector('.vocab-mot[data-mot="' + mot + '"]');
     var trad = refEl ? refEl.querySelector('.vocab-tooltip').textContent.replace('Kloé','').trim() : '';
-    var id = 'mot-' + mot.toLowerCase();
+    var id = 'mot-' + mot.toLowerCase().replace(/\s+/g, '-');
     if (document.getElementById(id)) return;
+    var motAffiche = NOMS_PROPRES.indexOf(mot) !== -1 ? mot : mot.charAt(0).toLowerCase() + mot.slice(1);
     var div = document.createElement('div');
     div.className = 'sc-item sc-item-nouveau';
     div.innerHTML = '<input type="checkbox" id="' + id + '" onchange="basculerMot(this,\'' + mot + '\',\'' + trad.replace(/'/g,"\\'") + '\')">'
-      + '<label for="' + id + '">' + mot + ' <span class="sc-trad">— ' + trad + '</span></label>';
+      + '<label for="' + id + '">' + motAffiche + ' <span class="sc-trad">— ' + trad + '</span></label>';
     sc.appendChild(div);
     if (lista.find(function(i){ return i.mot === mot; })) {
       div.querySelector('input').checked = true;
