@@ -203,6 +203,14 @@
     background:transparent;color:var(--ambre-fonce);font-size:11.5px;font-weight:700;cursor:pointer;
   }
   .bi-mdp-note{font-size:11.5px;color:var(--gris);font-style:italic;}
+  .bi-bravo-lien{
+    display:inline-flex;align-items:center;gap:6px;align-self:flex-start;margin-top:2px;
+    font-family:"Nunito",sans-serif;font-weight:700;font-size:12.5px;color:var(--ambre-fonce);
+    background:var(--blanc);border:1.5px solid var(--ambre-fonce);border-radius:100px;
+    padding:6px 14px;text-decoration:none;cursor:pointer;
+  }
+  .bi-bravo-lien:hover{background:var(--ambre-clair);}
+  .bi-bravo-lien svg{width:12px;height:12px;flex-shrink:0;}
 
   .stage-narration{text-align:center;font-size:14px;font-style:italic;color:#6b6152;font-weight:600;
     min-height:1.3em;margin-top:6px;}
@@ -750,6 +758,7 @@ function ajouterInvite(scene) {
           +     '<button class="bi-copier-btn" onclick="copierBiCode(this)">Copy</button>'
           +   '</div>'
           +   '<div class="bi-mdp-note">Ask your teacher for the password to unlock it in Bravo!</div>'
+          +   '<a class="bi-bravo-lien" href="../bravo/index.html" target="_blank" rel="noopener">Go to Bravo <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7 M9 7h8v8"/></svg></a>'
           + '</div>';
       }
       return;
@@ -910,6 +919,7 @@ function rendre() {
 function normaliserCaVa(s) {
   return s.toLowerCase()
     .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/['\u2019]/g, '')
     .replace(/[^a-z ]/g, ' ').replace(/\s+/g, ' ').trim();
 }
 
@@ -974,7 +984,7 @@ document.getElementById('caVaInput2').addEventListener('keydown', function(e) {
   if (!val) return;
 
   var chantal = (val === 'qui est chantal') || (val === 'chantal cest qui') || (val === 'chantal est qui')
-    || (val === 'cest qui') || (val === 'qui est ce');
+    || (val === 'cest qui') || (val === 'qui est ce') || (val === 'c est qui') || (val === 'qui cest');
   var retour2 = document.getElementById('caVaRetour2');
   if (chantal) {
     document.getElementById('kloeAsideImg').src = 'images/kloe_pointe_droite_01.png';
@@ -990,6 +1000,7 @@ document.getElementById('caVaInput2').addEventListener('keydown', function(e) {
       +     '<span class="bi-code" id="titreMdp">st99uneb814nnekes</span>'
       +     '<button class="bi-copier-btn" onclick="copierBiCode(this)">Copy</button>'
       +   '</div>'
+      +   '<a class="bi-bravo-lien" href="../bravo/index.html" target="_blank" rel="noopener">Go to Bravo <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7 M9 7h8v8"/></svg></a>'
       + '</div>';
   } else {
     retour2.textContent = ':-)';
