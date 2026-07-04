@@ -222,6 +222,31 @@
     margin-left: auto; font-size: 11px; color: var(--gris); white-space: nowrap;
   }
 
+  /* ══════════════════════════════════════
+     BARRE DE TRI
+  ══════════════════════════════════════ */
+  #barre-tri {
+    background: var(--beige-clair);
+    border-bottom: 1.5px solid rgba(184,201,224,0.4);
+    padding: 8px 20px;
+    display: flex; gap: 8px; align-items: center; flex-wrap: wrap;
+  }
+  #barre-tri-label {
+    font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em;
+    color: var(--gris); margin-right: 2px;
+  }
+  .tri-btn {
+    padding: 6px 13px; border-radius: 100px;
+    border: 1.5px solid rgba(184,201,224,0.5);
+    background: var(--blanc); color: var(--gris);
+    font-size: 12px; font-weight: 700; cursor: pointer;
+    display: flex; align-items: center; gap: 5px;
+    transition: all 0.15s;
+  }
+  .tri-btn svg { width: 12px; height: 12px; flex-shrink: 0; }
+  .tri-btn:hover { border-color: var(--bleu); color: var(--bleu); }
+  .tri-btn.actif { background: var(--bleu); border-color: var(--bleu); color: var(--blanc); }
+
   /* ── INVITE PROFESSEUR ── */
   #bandeau-prof {
     background: #1A1A2E;
@@ -571,6 +596,25 @@
 </div>
 
 <!-- ══════════════════════════════════════
+     BARRE DE TRI
+══════════════════════════════════════ -->
+<div id="barre-tri">
+  <span id="barre-tri-label">Trier :</span>
+  <button class="tri-btn actif" data-tri="emplacement" onclick="setTri('emplacement', this)" title="Ordre chronologique du parcours, de la page principale à la dernière histoire">
+    <svg viewBox="0 0 12 12" fill="none"><path d="M2 3 H10 M2 6 H10 M2 9 H7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+    Ordre du cours
+  </button>
+  <button class="tri-btn" data-tri="type" onclick="setTri('type', this)" title="Regroupe les titres ensemble, puis les succès, puis les fiches">
+    <svg viewBox="0 0 12 12" fill="none"><rect x="1.5" y="1.5" width="4" height="4" rx="1" stroke="currentColor" stroke-width="1.4"/><rect x="6.5" y="1.5" width="4" height="4" rx="1" stroke="currentColor" stroke-width="1.4"/><rect x="1.5" y="6.5" width="4" height="4" rx="1" stroke="currentColor" stroke-width="1.4"/></svg>
+    Par type
+  </button>
+  <button class="tri-btn" data-tri="alphabetique" onclick="setTri('alphabetique', this)" title="Ordre alphabétique du nom">
+    <svg viewBox="0 0 12 12" fill="none"><path d="M2 10 L4.5 2 L7 10 M2.8 7 H6.2 M8.5 4 V10 M8.5 4 L10.5 4 M8.5 7 H10 M8.5 10 H10.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+    Alphabétique
+  </button>
+</div>
+
+<!-- ══════════════════════════════════════
      ZONE PRINCIPALE
 ══════════════════════════════════════ -->
 <div id="zone-principale">
@@ -607,6 +651,13 @@ var MDP_MAITRE = "Valeuraph8?9!";
      verification : comment vérifier la validité quand l'élève présente son autocollant
      versions  : [] liste des variantes téléchargeables (ex. garçon / fille)
      notes     : notes internes supplémentaires (optionnel)
+     emplacement      : libellé affiché de l'endroit dans le cours (ex. "Histoire 000 — p01")
+     ordreEmplacement : nombre entier — position chronologique dans le parcours du cours,
+                        utilisé pour le tri "Ordre du cours" (PAS l'ordre alphabétique du
+                        libellé, qui donnerait un résultat incorrect — "Histoire" < "Page"
+                        alphabétiquement, alors que la page principale vient en premier).
+                        Convention : incréments de 10 pour pouvoir insérer un nouvel élément
+                        entre deux existants sans tout renuméroter (ex. 31 entre 30 et 40).
    }
 ══════════════════════════════════════════════ */
 var BRAVO_DATA = [
@@ -625,6 +676,7 @@ var BRAVO_DATA = [
     verification: "L'élève présente l'autocollant téléchargé (ta-kl1k3ur_garcon.png ou ta-kl1k3ur_fille.png). Vérifier que l'image correspond bien à l'autocollant officiel du titre. Le fond est violet pâle (#E8E0F0), liseré blanc niveau 1. Aucune condition supplémentaire à vérifier.",
     versions:     ["Le petit cliqueur (garçon)", "La petite cliqueuse (fille)"],
     emplacement:  "Page principale",
+    ordreEmplacement: 10,
     notes:        "Premier titre du site — obtenu en découvrant la page secrète via l'autocollant de couverture. Titre de type Découverte (🔍), garanti sans risque d'échec (🎁)."
   },
 
@@ -642,6 +694,7 @@ var BRAVO_DATA = [
     verification: "L'élève présente l'autocollant téléchargé (ta-d3p3ch3_garcon.png ou ta-d3p3ch3_fille.png). Vérifier que l'image correspond au lapin pressé officiel (version garçon : nœud papillon, version fille : ruban sur l'oreille + sacoche). Liseré bronze niveau 2, léger halo doré.",
     versions:     ["Le petit pressé (garçon)", "La petite pressée (fille)"],
     emplacement:  "Page du choix de langue",
+    ordreEmplacement: 20,
     notes:        "Titre de type Action — fenêtre de 5 secondes au chargement de cours/index.html. Mot de passe JAMAIS public — remis uniquement par Raphaël après un vrai cours payant. Les élèves en parcours gratuit peuvent collecter le code mais ne peuvent pas débloquer sans cours."
   },
 
@@ -659,10 +712,29 @@ var BRAVO_DATA = [
     verification: "L'élève présente l'autocollant sv-sa111uut.png (Keb avec bandeau hachimaki, texte « C'est parti », autocollant circulaire avec parties saillantes). Liseré blanc mat — niveau 1, sans éclat ni contour coloré. Code et mot de passe correspondent à la carte ticket de histoire_000.",
     versions:     ["sv-sa111uut (version unique — pas de variante garçon/fille)"],
     emplacement:  "Histoire 000 — p01",
+    ordreEmplacement: 30,
     notes:        "Premier succès de type vocabulaire (préfixe sv-). Débloqué automatiquement lors de la séquence histoire_000_p01 — aucune action secrète requise. Mot de passe public, intégré directement dans la page de cours."
   }
 
   /* ── Ajouter les prochains éléments ici, séparés par des virgules ── */
+
+  ,{
+    id:           "sv-m3rc1m38",
+    type:         "succes",
+    nom:          "Très poli",
+    code:         "sv-m3rc1m38",
+    mdp:          "kesskondi194mer6i",
+    niveau:       "Niveau 2 — Bronze",
+    piasses:      20,
+    bonis:        4,
+    emplacement:  "Histoire 001 — p02 (scène 3, bulle d'invitation à répondre)",
+    ordreEmplacement: 40,
+    condition:    "L'élève a répondu « Merci beaucoup » (et non simplement « Merci ») à la bulle d'invitation qui suit le moment où Bek tend une part de gâteau à Keb. Répondre « Merci » seul donne un encouragement mais ne débloque rien ; aucune pénalité, l'élève peut retenter indéfiniment. Le code s'affiche et se copie normalement dans la leçon, mais le mot de passe n'y est jamais révélé — la page affiche « Ask your teacher for the password to unlock it in Bravo! » à sa place.",
+    teaser:       "Il ne suffit pas de dire merci — il faut le dire comme il faut.",
+    verification: "L'élève présente l'autocollant téléchargé sv-m3rc1m38.png. Liseré bronze niveau 2 — contour beige doré très pâle, léger halo doré discret (plus marqué que le niveau 1 mat de sv-sa111uut, mais sans anneau tournant, réservé au niveau 4). Mot de passe sensible à la casse, jamais public — à remettre toi-même à l'élève lors d'un cours ou d'un suivi.",
+    versions:     ["sv-m3rc1m38 (version unique — pas de variante garçon/fille)"],
+    notes:        "Deuxième succès de vocabulaire (préfixe sv-), premier de niveau 2. Barème choisi au milieu de la fourchette niveau 2 (15–40$ / 4–8★) et aligné sur ta-d3p3ch3 (autre élément niveau 2 déjà à 20/4) plutôt que sur le minimum. Fiche bravo/succes/sv-m3rc1m38.html construite session 118 — image sv-m3rc1m38.png encore à générer."
+  }
 
   ,{
     id:           "sn-ch0kb3k",
@@ -674,6 +746,7 @@ var BRAVO_DATA = [
     piasses:      350,
     bonis:        20,
     emplacement:  "Histoire 000 — p01 (modal chocolat secret)",
+    ordreEmplacement: 31,
     condition:    "L'élève a répondu correctement en français à la question « À quoi est-ce que Bek pense très souvent ? » dans le modal chocolat de histoire_000_p01. Réponses acceptées : « au gâteau au chocolat », « le gâteau au chocolat », « gâteau au chocolat » (et variantes proches). La question est toujours en français, peu importe la langue d'interface de l'élève (EN/ES/PT).",
     verification: "Succès déclenché automatiquement par la page — l'élève reçoit le code sn-ch0kb3k et le mot de passe d8l1ci8useOBseS1ion directement dans le modal. Vérifier que le code correspond. Autocollant circulaire à créer (image sn-ch0kb3k.png — pas encore générée). Mot de passe sensible à la casse.",
     versions:     ["sn-ch0kb3k (version unique)"],
@@ -708,6 +781,7 @@ var TRADUCTIONS = {
    ÉTAT
 ══════════════════════════════════════════════ */
 var filtreActif = "tous";
+var triActif = "emplacement";
 var coches = {};   /* id → true */
 var ouverts = {};  /* id → true */
 
@@ -834,7 +908,48 @@ function construireCartes() {
   });
 
   peuplerSelectEmplacement();
+  trierCartes();
   filtrer();
+}
+
+/* ══════════════════════════════════════════════
+   TRI (Ordre du cours / Par type / Alphabétique)
+   Réordonne les nœuds .element-carte DÉJÀ CONSTRUITS en les
+   redéplaçant dans la zone — ne les recrée jamais, donc l'état
+   coché/déplié de chaque carte est toujours préservé au changement de tri.
+══════════════════════════════════════════════ */
+var ORDRE_TYPE = { titre: 0, succes: 1, fiche: 2 };
+
+function comparerElementsBravo(a, b) {
+  if (triActif === "type") {
+    var ta = ORDRE_TYPE.hasOwnProperty(a.type) ? ORDRE_TYPE[a.type] : 99;
+    var tb = ORDRE_TYPE.hasOwnProperty(b.type) ? ORDRE_TYPE[b.type] : 99;
+    if (ta !== tb) return ta - tb;
+    // à l'intérieur d'un même type : ordre chronologique du cours, comme repère stable
+    return (a.ordreEmplacement || 9999) - (b.ordreEmplacement || 9999);
+  }
+  if (triActif === "alphabetique") {
+    return a.nom.localeCompare(b.nom, "fr", { sensitivity: "base" });
+  }
+  // "emplacement" (par défaut) : ordre chronologique réel du parcours,
+  // PAS un tri alphabétique du libellé (voir note dans le schéma BRAVO_DATA)
+  return (a.ordreEmplacement || 9999) - (b.ordreEmplacement || 9999);
+}
+
+function trierCartes() {
+  var zone = document.getElementById("zone-principale");
+  var copie = BRAVO_DATA.slice().sort(comparerElementsBravo);
+  copie.forEach(function(el) {
+    var carte = document.getElementById("carte-" + el.id);
+    if (carte) zone.appendChild(carte); // déplace le nœud existant — ne recrée rien
+  });
+}
+
+function setTri(t, btn) {
+  triActif = t;
+  document.querySelectorAll(".tri-btn").forEach(function(b) { b.classList.remove("actif"); });
+  btn.classList.add("actif");
+  trierCartes();
 }
 
 /* ══════════════════════════════════════════════
