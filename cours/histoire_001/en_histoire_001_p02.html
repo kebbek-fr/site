@@ -271,6 +271,31 @@
   }
   .btn-continuer:hover{transform:translateY(-2px) scale(1.03);box-shadow:0 7px 20px rgba(74,122,54,0.45);}
 
+  /* ── Encadré Kloé — clin d'œil personnel (Ça va / Chantal) ── */
+  .kloe-aside{max-width:600px;margin:38px auto 0;padding:0 24px;animation:apparaitre 0.5s ease forwards;}
+  .kloe-aside-ligne{display:flex;align-items:flex-start;gap:14px;}
+  .kloe-aside-img{width:64px;flex-shrink:0;border-radius:50%;}
+  .kloe-aside-corps{flex:1;display:flex;flex-direction:column;gap:8px;}
+  .kloe-aside-bulle{
+    background:var(--blanc);border:2px solid var(--corail);border-radius:18px 18px 18px 4px;
+    padding:13px 16px;
+  }
+  .kloe-aside-question{font-family:"Patrick Hand",cursive;font-size:19px;color:var(--texte);margin-bottom:8px;}
+  .kloe-aside-ligne-saisie{display:flex;gap:8px;}
+  .kloe-aside-input{
+    flex:1;border:1.5px solid var(--bleu-poudre);border-radius:8px;padding:8px 11px;
+    font-family:"Nunito",sans-serif;font-size:14px;background:var(--beige-clair);
+  }
+  .kloe-aside-input:focus{outline:none;border-color:var(--corail);}
+  .kloe-aside-btn{
+    background:var(--corail);color:#fff;border:none;border-radius:8px;padding:8px 16px;
+    font-weight:800;cursor:pointer;transition:background 0.15s;
+  }
+  .kloe-aside-btn:hover{background:#c8482e;}
+  .kloe-aside-retour{
+    background:var(--corail-clair);border-left:3px solid var(--corail);border-radius:10px;
+    padding:10px 14px;font-size:14px;line-height:1.5;color:#7a3626;
+  }
   /* ── Vocabulaire à cocher ── */
   .section-cocher{
     display:none;max-width:640px;margin:44px auto 0;
@@ -441,6 +466,27 @@
   </div>
 </section>
 
+<!-- ── Encadré Kloé — clin d'œil personnel, apparaît à partir de la scène 6 ── -->
+<div class="kloe-aside" id="kloeAside" style="display:none;">
+  <div class="kloe-aside-ligne">
+    <img class="kloe-aside-img" src="images/kloe_explique_01.png" alt="Kloé" onerror="this.style.display='none';">
+    <div class="kloe-aside-corps">
+      <div class="kloe-aside-bulle">
+        <div class="kloe-aside-question">Toi, ça va ?</div>
+        <div class="kloe-aside-ligne-saisie" id="caVaZone1">
+          <input type="text" class="kloe-aside-input" id="caVaInput1" autocomplete="off">
+          <button class="kloe-aside-btn" id="caVaBtn1">→</button>
+        </div>
+      </div>
+      <div class="kloe-aside-retour" id="caVaRetour1" style="display:none;"></div>
+      <div class="kloe-aside-ligne-saisie" id="caVaZone2" style="display:none;">
+        <input type="text" class="kloe-aside-input" id="caVaInput2" autocomplete="off">
+      </div>
+      <div class="kloe-aside-retour" id="caVaRetour2" style="display:none;"></div>
+    </div>
+  </div>
+</div>
+
 <!-- ── Vocabulaire à cocher ── -->
 <div class="section-cocher" id="sectionCocher">
   <div class="sc-titre">New words in this story</div>
@@ -571,9 +617,12 @@ var scenes = [
     ]
   },
   { // 6
-    persos: ['keb_neutre_01.png'],
-    narration: 'Keb regarde le gâteau encore une fois… mais ne mange pas.',
-    bulles: []
+    persos: ['bek_ca_va_keb_01.png'],
+    narration: 'Bek demande s\u2019il y a un probl\u00e8me. Keb l\u00e8ve les yeux vers Bek.',
+    reflet: { qui:'keb', texte: 'Bek demande s\u2019il y a un probl\u00e8me. Keb l\u00e8ve les yeux vers Bek. Il pense\u00a0: \u00ab\u00a0Est-ce que chez eux ils mangent sans fourchettes\u00a0? C\u2019est salissant\u00a0!\u00a0\u00bb' },
+    bulles: [
+      { qui:'bek', minNiveau:1, texte: '\u00c7a va\u00a0?' }
+    ]
   },
   { // 7
     persos: ['bek_neutre_01.png'],
@@ -690,12 +739,12 @@ function ajouterInvite(scene) {
 
     if (val === 'mercibeaucoup') {
       fb.className = 'bi-feedback ok';
-      fb.textContent = 'Nice work! \ud83c\udf89';
+      fb.textContent = 'Nice work!';
       if (!rec.dataset.affiche) {
         rec.dataset.affiche = '1';
         rec.innerHTML =
           '<div class="bi-recompense">'
-          +   '<div class="bi-recompense-titre">\u2728 Achievement unlocked \u2014 Tr\u00e8s poli !</div>'
+          +   '<div class="bi-recompense-titre">Achievement unlocked \u2014 Tr\u00e8s poli !</div>'
           +   '<div class="bi-code-row">'
           +     '<span class="bi-code" id="biCode">sv-m3rc1m38</span>'
           +     '<button class="bi-copier-btn" onclick="copierBiCode(this)">Copy</button>'
@@ -721,7 +770,7 @@ function ajouterInvite(scene) {
 }
 
 function copierBiCode(btn) {
-  var code = document.getElementById('biCode').textContent;
+  var code = btn.previousElementSibling.textContent;
   var fini = function() {
     var original = btn.textContent;
     btn.textContent = 'Copied!';
@@ -847,8 +896,102 @@ function rendre() {
     ? 'See the questions <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>'
     : 'Continue <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg>';
 
+  var kloeAsideVisible = (step === 5);
+  document.getElementById('kloeAside').style.display = kloeAsideVisible ? 'block' : 'none';
+  reinitialiserCaVa();
+
   synchroniserVocabulaire();
 }
+
+// ─────────────────────────────────────────────
+//  Encadré Kloé — Ça va / Chantal (clin d'œil personnel, jamais gating)
+//  Exclusivement en français, quelle que soit la langue d'interface.
+// ─────────────────────────────────────────────
+function normaliserCaVa(s) {
+  return s.toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z ]/g, ' ').replace(/\s+/g, ' ').trim();
+}
+
+// Remet l'encadré Kloé à zéro — appelé à chaque navigation (avant/suivant)
+// pour qu'il ne garde jamais l'état d'une visite précédente de la scène 6.
+function reinitialiserCaVa() {
+  var input1  = document.getElementById('caVaInput1');
+  var btn1    = document.getElementById('caVaBtn1');
+  var retour1 = document.getElementById('caVaRetour1');
+  var zone2   = document.getElementById('caVaZone2');
+  var input2  = document.getElementById('caVaInput2');
+  var retour2 = document.getElementById('caVaRetour2');
+
+  input1.value = '';
+  input1.disabled = false;
+  btn1.disabled = false;
+  retour1.style.display = 'none';
+  retour1.textContent = '';
+  zone2.style.display = 'none';
+  input2.value = '';
+  input2.disabled = false;
+  retour2.style.display = 'none';
+  retour2.innerHTML = '';
+}
+
+document.getElementById('caVaBtn1').addEventListener('click', repondreCaVa1);
+document.getElementById('caVaInput1').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') repondreCaVa1();
+});
+
+function repondreCaVa1() {
+  var champ = document.getElementById('caVaInput1');
+  var val = normaliserCaVa(champ.value);
+  if (!val) return;
+
+  var negatif = /\bnon\b/.test(val) || /\bmal\b/.test(val);
+  var affirmatif = !negatif && (/\boui\b/.test(val) || /ca ?va/.test(val));
+
+  var retour = document.getElementById('caVaRetour1');
+  if (negatif) {
+    retour.textContent = 'Oh, je suis d\u00e9sol\u00e9e de l\u2019apprendre. Veux-tu parler avec Chantal\u00a0? Elle est psychologue. Elle peut t\u2019aider.';
+  } else if (affirmatif) {
+    retour.textContent = 'Je suis contente de l\u2019apprendre\u00a0!';
+  } else {
+    retour.textContent = 'Merci de me le dire.';
+  }
+  retour.style.display = 'block';
+
+  champ.disabled = true;
+  document.getElementById('caVaBtn1').disabled = true;
+  if (negatif) {
+    document.getElementById('caVaZone2').style.display = 'flex';
+    document.getElementById('caVaInput2').focus();
+  }
+}
+
+document.getElementById('caVaInput2').addEventListener('keydown', function(e) {
+  if (e.key !== 'Enter') return;
+  var val = normaliserCaVa(this.value);
+  if (!val) return;
+
+  var chantal = (val === 'qui est chantal') || (val === 'chantal cest qui') || (val === 'chantal est qui');
+  var retour2 = document.getElementById('caVaRetour2');
+  if (chantal) {
+    retour2.innerHTML =
+      '<div class="bi-recompense">'
+      +   '<div class="bi-recompense-titre">Title unlocked \u2014 Le petit curieux / La petite curieuse !</div>'
+      +   '<div class="bi-code-row">'
+      +     '<span class="bi-code" id="titreCode">ta-cur13ux</span>'
+      +     '<button class="bi-copier-btn" onclick="copierBiCode(this)">Copy</button>'
+      +   '</div>'
+      +   '<div class="bi-code-row">'
+      +     '<span class="bi-code" id="titreMdp">st99uneb814nnekes</span>'
+      +     '<button class="bi-copier-btn" onclick="copierBiCode(this)">Copy</button>'
+      +   '</div>'
+      + '</div>';
+  } else {
+    retour2.textContent = ':-)';
+  }
+  retour2.style.display = 'block';
+  this.disabled = true;
+});
 
 btnContinuer.addEventListener('click', function() {
   if (step < scenes.length - 1) {
