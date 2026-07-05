@@ -145,17 +145,6 @@
     mask-image:linear-gradient(to right, transparent 0%, rgba(0,0,0,0.55) 6%, black 14%, black 100%);
   }
 
-  /* ── Fondu sur tout le pourtour, pour les images en gros plan sans
-       silhouette découpée sur fond transparent (ex. scène 10 : mains +
-       gâteau, scène 11 : visages rapprochés) — sans ce fondu, le bord
-       rectangulaire de l'illustration tranche durement sur le fond
-       beige de la page. ── */
-  .perso-zone img[src*="bek_coupe_morceau_keb"],
-  .perso-zone img[src*="bek_ouvre_keb_01"]{
-    -webkit-mask-image:radial-gradient(ellipse farthest-corner at center, black 30%, rgba(0,0,0,0.45) 58%, transparent 90%);
-    mask-image:radial-gradient(ellipse farthest-corner at center, black 30%, rgba(0,0,0,0.45) 58%, transparent 90%);
-  }
-
   /* ── Bulle BD ancrée à la tête du personnage qui parle (en plus de la pile du bas) ── */
   .bulle-stage{
     position:absolute; top:0; left:50%; transform:translate(-50%,-100%) scale(0.85);
@@ -679,15 +668,16 @@ var scenes = [
     ]
   },
   { // 10
-    persos: ['bek_coupe_morceau_keb.png'],
-    narration: 'Bek plonge la fourchette dans le gâteau.',
+    persos: ['bek_tranche_morceau_keb_01.png'],
+    narration: 'Elle tranche un petit morceau du gâteau.',
+    reflet: { qui:'keb', texte: 'Elle tranche un petit morceau du g\u00e2teau. Le gar\u00e7on regarde attentivement la sc\u00e8ne pour voir ce qu\u2019elle compte faire.' },
     bulles: []
   },
   { // 11
     persos: ['bek_ouvre_keb_01.png'],
-    narration: 'Bek approche la bouchée de la bouche de Keb.',
+    narration: 'Bek apporte le morceau tranch\u00e9 pr\u00e8s de sa bouche.',
     bulles: [
-      { qui:'bek', minNiveau:1, texte: vocab('Ouvre', '<em>open!</em> — Bek is asking Keb to open his mouth.') + '.' }
+      { qui:'bek', minNiveau:1, texte: vocab('Ouvre', '<em>open!</em> — Bek is asking Keb to open his mouth.') + ' !' }
     ]
   },
   { // 12
