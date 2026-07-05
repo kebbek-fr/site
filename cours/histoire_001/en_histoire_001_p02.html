@@ -681,10 +681,17 @@ var scenes = [
     ]
   },
   { // 12
-    persos: ['keb_neutre_01.png'],
-    narration: 'Keb goûte la bouchée.',
+    persos: ['bek_keb_savoure_01.png'],
+    narration: 'Bek regarde Keb qui savoure sa bouch\u00e9e.',
+    reflet: { qui:'bek', texte: 'Bek regarde Keb qui savoure sa bouch\u00e9e. Elle attend avec impatience sa r\u00e9action, mais elle est d\u00e9j\u00e0 s\u00fbre qu\u2019il va adorer.' },
+    bulles: []
+  },
+  { // 13
+    persos: ['bek_keb_miam_01.png'],
+    narration: 'C\u2019est absolument d\u00e9licieux.',
+    reflet: { qui:'keb', texte: 'C\u2019est absolument d\u00e9licieux. Il n\u2019a pas d\u00e9gust\u00e9 beaucoup de g\u00e2teaux dans sa vie, mais il est franchement impressionn\u00e9.' },
     bulles: [
-      { qui:'keb', minNiveau:1, texte: 'Miam ! C\u2019est ' + vocab('bon', '<em>good</em> — « c\u2019est bon ! » means <em>"it\u2019s good!"</em>') + ' !' }
+      { qui:'keb', minNiveau:1, texte: 'Miam\u00a0!' }
     ]
   }
 ];
