@@ -424,10 +424,17 @@
   .titre-chapitre-wrap{position:relative;margin-bottom:10px;max-width:92vw;}
   .titre-chapitre{
     font-family:"Caveat",cursive;font-weight:700;font-size:clamp(34px,7.5vw,68px);color:var(--violet-fonce);line-height:1.15;
-    display:inline-block;clip-path:inset(0 100% -0.3em 0);max-width:100%;
+    display:inline-block;clip-path:inset(-0.5em 100% -0.5em 0);max-width:100%;
     animation:ecrireChapitre 1.6s cubic-bezier(0.65,0,0.35,1) forwards;
   }
-  @keyframes ecrireChapitre{ to{ clip-path:inset(0 0% -0.3em 0); } }
+  /* Le vrai problème n'était pas la largeur (bord droit) mais la hauteur :
+     le point du « ! » de Caveat pend bien plus bas que les descendantes
+     normales (p, g) et se faisait rogner par le bas de la boîte, même
+     avec la petite marge de -0.3em essayée précédemment. Correctif :
+     marge verticale généreuse et FIXE (-0.5em en haut ET en bas, présente
+     dès le départ, ne fait pas partie de l'animation) — seul le bord
+     droit continue d'animer pour l'effet d'écriture progressive. */
+  @keyframes ecrireChapitre{ to{ clip-path:inset(-0.5em -0.2em -0.5em 0); } }
   .pointe-stylo-chapitre{
     position:absolute;top:50%;left:0;width:14px;height:14px;transform:translateY(-50%);opacity:0;
     animation:deplacerPointeChapitre 1.6s cubic-bezier(0.65,0,0.35,1) forwards;
