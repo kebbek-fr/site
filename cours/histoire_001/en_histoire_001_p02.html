@@ -150,6 +150,17 @@
     mask-image:linear-gradient(to right, transparent 0%, rgba(0,0,0,0.55) 6%, black 14%, black 100%);
   }
 
+  /* ── Fondu sur tout le pourtour, pour les images en gros plan sans
+       silhouette découpée sur fond transparent (ex. scène 10 : mains +
+       gâteau, scène 11 : visages rapprochés) — sans ce fondu, le bord
+       rectangulaire de l'illustration tranche durement sur le fond
+       beige de la page. ── */
+  .perso-zone img[src*="bek_coupe_morceau_keb"],
+  .perso-zone img[src*="bek_ouvre_keb_01"]{
+    -webkit-mask-image:radial-gradient(ellipse 88% 88% at center, black 55%, rgba(0,0,0,0.6) 75%, transparent 100%);
+    mask-image:radial-gradient(ellipse 88% 88% at center, black 55%, rgba(0,0,0,0.6) 75%, transparent 100%);
+  }
+
   /* ── Bulle BD ancrée à la tête du personnage qui parle (en plus de la pile du bas) ── */
   .bulle-stage{
     position:absolute; top:0; left:50%; transform:translate(-50%,-100%) scale(0.85);
@@ -673,15 +684,20 @@ var scenes = [
     ]
   },
   { // 10
-    persos: ['bek_neutre_01.png'],
+    persos: ['bek_coupe_morceau_keb.png'],
     narration: 'Bek plonge la fourchette dans le gâteau.',
+    bulles: []
+  },
+  { // 11
+    persos: ['bek_ouvre_keb_01.png'],
+    narration: 'Bek approche la bouchée de la bouche de Keb.',
     bulles: [
       { qui:'bek', minNiveau:1, texte: vocab('Ouvre', '<em>open!</em> — Bek is asking Keb to open his mouth.') + '.' }
     ]
   },
-  { // 11
+  { // 12
     persos: ['keb_neutre_01.png'],
-    narration: 'Keb ouvre la bouche. Bek lui donne la bouchée.',
+    narration: 'Keb goûte la bouchée.',
     bulles: [
       { qui:'keb', minNiveau:1, texte: 'Miam ! C\u2019est ' + vocab('bon', '<em>good</em> — « c\u2019est bon ! » means <em>"it\u2019s good!"</em>') + ' !' }
     ]
