@@ -336,11 +336,13 @@
   .separateur hr{border:none;border-top:1.5px solid rgba(184,201,224,0.5);margin-bottom:8px;}
   .separateur .label{font-size:11.5px;letter-spacing:0.12em;text-transform:uppercase;color:var(--gris);font-weight:800;}
 
-  /* ── Exercice niveau 1 ── */
+  /* ── Exercice — plusieurs questions empilées ── */
   .exercice{max-width:600px;margin:20px auto 0;padding:26px 24px;background:var(--beige-clair);
     border:1.5px solid var(--bleu-poudre);border-radius:20px;}
   .exercice-titre{font-family:"Patrick Hand",cursive;font-size:15px;font-weight:700;color:var(--bleu-fonce);
     text-transform:uppercase;letter-spacing:0.06em;text-align:center;margin-bottom:14px;}
+  .quiz-question{padding:16px 0;border-top:1.5px dashed rgba(122,155,191,0.35);}
+  .quiz-question:first-child{border-top:none;padding-top:0;}
   .qcm-question{font-size:16px;font-weight:700;text-align:center;margin-bottom:16px;}
   .qcm-options{display:flex;flex-direction:column;gap:10px;}
   .qcm-opt{background:var(--blanc);border:1.5px solid var(--bleu-poudre);border-radius:12px;
@@ -348,9 +350,32 @@
   .qcm-opt:hover{background:#EEF4FB;}
   .qcm-opt.correcte{background:var(--vert-clair);border-color:var(--vert-fonce);}
   .qcm-opt.incorrecte{background:var(--corail-clair);border-color:var(--corail);}
+  .qcm-texte-ligne{display:flex;gap:8px;}
+  .qcm-texte-input{flex:1;border:1.5px solid var(--bleu-poudre);border-radius:100px;
+    padding:10px 16px;font-family:"Nunito",sans-serif;font-size:15px;background:var(--blanc);}
+  .qcm-texte-input:focus{outline:none;border-color:var(--bleu-fonce);}
+  .qcm-texte-input:disabled{background:var(--vert-clair);border-color:var(--vert-fonce);color:var(--texte);}
+  .qcm-texte-btn{background:var(--bleu-fonce);color:#fff;border:none;border-radius:100px;
+    padding:10px 20px;font-family:"Patrick Hand",cursive;font-size:15px;cursor:pointer;transition:background 0.15s;}
+  .qcm-texte-btn:hover{background:#688aab;}
+  .qcm-texte-btn:disabled{opacity:0.5;cursor:default;}
   .qcm-feedback{margin-top:14px;text-align:center;font-family:"Patrick Hand",cursive;font-size:18px;min-height:24px;}
   .qcm-feedback.ok{color:var(--vert-fonce);}
   .qcm-feedback.retry{color:var(--corail);}
+
+  /* ── Résultat final du quiz — grande Kloé + encadré, une fois toutes les
+       questions réussies. Branche selon le nombre total d'erreurs commises
+       (une seule fois par question, peu importe le nombre de tentatives). ── */
+  .quiz-resultat{max-width:600px;margin:26px auto 0;padding:0 24px;display:flex;align-items:flex-end;gap:16px;
+    opacity:0;animation:apparaitre 0.5s ease forwards;}
+  .quiz-resultat-img{width:120px;flex-shrink:0;display:block;}
+  .quiz-resultat-boite{flex:1;background:var(--violet-clair);border:1.5px solid var(--violet);
+    border-radius:16px;padding:16px 18px;}
+  .quiz-resultat-texte{font-family:"Patrick Hand",cursive;font-size:16.5px;color:var(--violet-fonce);line-height:1.4;}
+  @media(max-width:480px){
+    .quiz-resultat{flex-direction:column;align-items:center;text-align:center;}
+    .quiz-resultat-img{width:100px;}
+  }
 
   /* ── Section avancée (repliée) ── */
   .avance{max-width:600px;margin:26px auto 0;padding:0 24px 10px;}
@@ -593,13 +618,19 @@
     <span class="repli-chevron">▾</span>
   </button>
   <div class="repli-corps" id="corpsQuestions" style="display:none;">
-    <!-- ── Exercice — Niveau 1 ── -->
+    <!-- ── Exercice — Niveau 1 (plusieurs questions, voir quizQuestions dans le JS) ── -->
     <section class="exercice" id="exerciceSection">
       <div class="exercice-titre">Quick check</div>
-      <div class="qcm-question">What does Bek say when she hands Keb his piece of cake?</div>
-      <div class="qcm-options" id="qcmOptions"></div>
-      <div class="qcm-feedback" id="qcmFeedback"></div>
+      <div id="quizContainer"></div>
     </section>
+
+    <!-- ── Résultat final du quiz — masqué jusqu'à ce que toutes les questions soient réussies ── -->
+    <div class="quiz-resultat" id="quizResultat" style="display:none;">
+      <img class="quiz-resultat-img" id="quizResultatImg" src="images/kloe_defi_01.png" alt="Kloé" onerror="this.style.display='none';">
+      <div class="quiz-resultat-boite">
+        <div class="quiz-resultat-texte" id="quizResultatTexte"></div>
+      </div>
+    </div>
 
     <!-- ── Section avancée ── -->
     <section class="avance" id="avanceSection">
@@ -776,7 +807,7 @@ var scenes = [
     narration: 'C\u2019est absolument d\u00e9licieux.',
     reflet: { qui:'keb', texte: 'C\u2019est absolument d\u00e9licieux. Il n\u2019a pas d\u00e9gust\u00e9 beaucoup de g\u00e2teaux dans sa vie, mais il est franchement impressionn\u00e9.' },
     bulles: [
-      { qui:'keb', minNiveau:1, texte: 'Miam\u00a0!' }
+      { qui:'keb', minNiveau:1, posX:75, texte: 'Miam\u00a0!' }
     ]
   }
 ];
@@ -1342,42 +1373,187 @@ function confirmerPurge() {
 }
 
 // ─────────────────────────────────────────────
-//  Exercice — Niveau 1 (QCM)
+//  Exercice — Niveau 1 (plusieurs questions : QCM + réponse texte)
+//  Chaque question compte au plus UNE erreur (peu importe le nombre de
+//  tentatives ratées avant de trouver la bonne réponse) — c'est ce total
+//  qui détermine le message final : 0-1 erreur → encouragé à essayer le
+//  chapitre suivant (plus difficile) ; 2+ erreurs → offre de continuer
+//  plutôt avec la deuxième histoire (plus accessible).
 // ─────────────────────────────────────────────
-var qcmOptions = [
-  { texte: 'Tiens !', correcte: true },
-  { texte: 'Attends !', correcte: false },
-  { texte: 'Ouvre !', correcte: false }
+function normaliserTexte(s) {
+  return s.toLowerCase()
+    .replace(/[’']/g, ' ')
+    .replace(/-/g, ' ')
+    .replace(/[!?.,;:]/g, '')
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+function verifierSalutCaVa(reponse) {
+  var norm = normaliserTexte(reponse);
+  if (!norm) return false;
+  var mots = norm.split(' ');
+  var premier = mots[0];
+  var reste = mots.slice(1).join(' ');
+  var salutOk = ['salut', 'bonjour', 'allo'].indexOf(premier) !== -1;
+  var caVaOk = ['ca va', 'comment ca va', 'comment vas tu'].indexOf(reste) !== -1;
+  return salutOk && caVaOk;
+}
+
+var quizQuestions = [
+  {
+    id: 'q1', type: 'mcq',
+    question: 'What does Bek say when she hands Keb his piece of cake?',
+    options: [
+      { texte: 'Tiens !', correcte: true },
+      { texte: 'Attends !', correcte: false },
+      { texte: 'Ouvre !', correcte: false }
+    ]
+  },
+  {
+    id: 'q2', type: 'texte',
+    question: 'How do you say "Hi! How are you?"',
+    placeholder: 'Write your answer…',
+    verifier: verifierSalutCaVa
+  },
+  {
+    id: 'q3', type: 'mcq',
+    question: 'What does "Attends !" mean?',
+    options: [
+      { texte: 'Attention!', correcte: false },
+      { texte: 'Wait!', correcte: true },
+      { texte: 'Look!', correcte: false }
+    ]
+  },
+  {
+    id: 'q4', type: 'texte',
+    question: 'What does Keb say because he finds the cake absolutely delicious?',
+    placeholder: 'Write your answer…',
+    verifier: function (r) { return normaliserTexte(r) === 'miam'; }
+  },
+  {
+    id: 'q5', type: 'texte',
+    question: 'What does Bek say when she wants Keb to eat?',
+    placeholder: 'Write your answer…',
+    verifier: function (r) { return normaliserTexte(r) === 'mange'; }
+  },
+  {
+    id: 'q6', type: 'mcq',
+    question: 'When Bek says "Ouvre !", what is she asking Keb to do?',
+    options: [
+      { texte: 'Open his mouth!', correcte: true },
+      { texte: 'Close his eyes!', correcte: false },
+      { texte: 'Give her a hug!', correcte: false }
+    ]
+  }
 ];
-function construireQCM() {
-  var zone = document.getElementById('qcmOptions');
+
+var quizEtat = {};
+quizQuestions.forEach(function (q) { quizEtat[q.id] = { reussie: false, erreur: false }; });
+
+function construireQuiz() {
+  var zone = document.getElementById('quizContainer');
   zone.innerHTML = '';
-  qcmOptions.forEach(function(opt) {
-    var bouton = document.createElement('button');
-    bouton.className = 'qcm-opt';
-    bouton.textContent = opt.texte;
-    bouton.onclick = function() { verifierQCM(opt, bouton); };
-    zone.appendChild(bouton);
+  quizQuestions.forEach(function (q, idx) {
+    var bloc = document.createElement('div');
+    bloc.className = 'quiz-question';
+    bloc.id = 'quizQ_' + q.id;
+    var html = '<div class="qcm-question">' + (idx + 1) + '. ' + q.question + '</div>';
+    if (q.type === 'mcq') {
+      html += '<div class="qcm-options" id="qcmOptions_' + q.id + '"></div>';
+    } else {
+      html += '<div class="qcm-texte-ligne">'
+        + '<input type="text" class="qcm-texte-input" id="qcmInput_' + q.id + '" placeholder="' + (q.placeholder || '') + '" autocomplete="off" autocorrect="off">'
+        + '<button class="qcm-texte-btn" id="qcmBtn_' + q.id + '">OK</button>'
+        + '</div>';
+    }
+    html += '<div class="qcm-feedback" id="qcmFeedback_' + q.id + '"></div>';
+    bloc.innerHTML = html;
+    zone.appendChild(bloc);
+
+    if (q.type === 'mcq') {
+      var optZone = bloc.querySelector('#qcmOptions_' + q.id);
+      q.options.forEach(function (opt) {
+        var bouton = document.createElement('button');
+        bouton.className = 'qcm-opt';
+        bouton.textContent = opt.texte;
+        bouton.onclick = function () { verifierMCQ(q.id, opt, bouton); };
+        optZone.appendChild(bouton);
+      });
+    } else {
+      var input = bloc.querySelector('#qcmInput_' + q.id);
+      var bouton = bloc.querySelector('#qcmBtn_' + q.id);
+      bouton.onclick = function () { verifierTexte(q.id); };
+      input.addEventListener('keydown', function (e) { if (e.key === 'Enter') verifierTexte(q.id); });
+    }
   });
 }
-function verifierQCM(opt, bouton) {
-  var feedback = document.getElementById('qcmFeedback');
-  var tousLesBoutons = document.querySelectorAll('.qcm-opt');
-  tousLesBoutons.forEach(function(b) { b.disabled = true; });
+
+function verifierMCQ(id, opt, bouton) {
+  var feedback = document.getElementById('qcmFeedback_' + id);
+  var tousLesBoutons = document.querySelectorAll('#quizQ_' + id + ' .qcm-opt');
+  tousLesBoutons.forEach(function (b) { b.disabled = true; });
   if (opt.correcte) {
     bouton.classList.add('correcte');
     feedback.textContent = 'Great job!';
     feedback.className = 'qcm-feedback ok';
+    marquerReussie(id);
   } else {
+    quizEtat[id].erreur = true;
     bouton.classList.add('incorrecte');
     feedback.textContent = 'Not quite — try again!';
     feedback.className = 'qcm-feedback retry';
-    setTimeout(function() {
+    setTimeout(function () {
       bouton.classList.remove('incorrecte');
-      tousLesBoutons.forEach(function(b) { b.disabled = false; });
+      tousLesBoutons.forEach(function (b) { b.disabled = false; });
       feedback.textContent = '';
     }, 1100);
   }
+}
+
+function verifierTexte(id) {
+  var q = quizQuestions.filter(function (x) { return x.id === id; })[0];
+  var input = document.getElementById('qcmInput_' + id);
+  var feedback = document.getElementById('qcmFeedback_' + id);
+  var val = input.value;
+  if (!val.trim()) return;
+  if (q.verifier(val)) {
+    input.disabled = true;
+    document.getElementById('qcmBtn_' + id).disabled = true;
+    feedback.textContent = 'Great job!';
+    feedback.className = 'qcm-feedback ok';
+    marquerReussie(id);
+  } else {
+    quizEtat[id].erreur = true;
+    feedback.textContent = 'Not quite — try again!';
+    feedback.className = 'qcm-feedback retry';
+  }
+}
+
+function marquerReussie(id) {
+  quizEtat[id].reussie = true;
+  verifierFinDuQuiz();
+}
+
+function verifierFinDuQuiz() {
+  var toutesReussies = quizQuestions.every(function (q) { return quizEtat[q.id].reussie; });
+  if (!toutesReussies) return;
+  var totalErreurs = quizQuestions.filter(function (q) { return quizEtat[q.id].erreur; }).length;
+  afficherResultatQuiz(totalErreurs);
+}
+
+function afficherResultatQuiz(totalErreurs) {
+  var zone = document.getElementById('quizResultat');
+  var texte = document.getElementById('quizResultatTexte');
+  if (totalErreurs <= 1) {
+    texte.innerHTML = 'Congratulations! Was that too easy for you? Let\u2019s see if you\u2019re ready to move on \u2014 '
+      + 'the next chapter is harder! <em>(Chapter 2 \u2014 coming soon.)</em>';
+  } else {
+    texte.innerHTML = 'Nice work getting through it! If you\u2019d rather keep practicing at a gentler pace first, '
+      + 'you can also continue with our second story instead \u2014 it\u2019s more approachable. <em>(Story 2 \u2014 coming soon.)</em>';
+  }
+  zone.style.display = 'flex';
+  zone.scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
 
 // ─────────────────────────────────────────────
@@ -1398,7 +1574,7 @@ function avanceReflechi() { document.getElementById('avanceNote').style.display 
 construirePile();
 rendre();
 rafraichirAffichage();
-construireQCM();
+construireQuiz();
 </script>
 
 </body>
