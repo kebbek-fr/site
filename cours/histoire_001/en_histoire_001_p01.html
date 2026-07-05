@@ -81,7 +81,94 @@
     /* ── Emplacement réservé — sera rempli plus tard, une fois les
          nouveautés (sélecteur de niveau, questions) stabilisées.
          Ne rien afficher tant que ce n'est pas prêt. ── */
-    .kloe-nouveautes { display:none; }
+    .kloe-nouveautes { display:flex; flex-direction:column; gap:0; width:100%; }
+
+    .demo-etiquette{
+      align-self:center; font-size:11px; font-weight:800; letter-spacing:0.06em; text-transform:uppercase;
+      color:var(--gris); background:var(--beige-clair); border:1px dashed var(--gris-clair);
+      border-radius:100px; padding:4px 12px; margin-bottom:14px;
+    }
+
+    .demo-fermer{
+      position:sticky; top:14px; align-self:flex-end; z-index:50;
+      width:34px; height:34px; border-radius:50%; border:1.5px solid var(--violet);
+      background:var(--beige-clair); color:var(--violet-fonce); cursor:pointer;
+      display:flex; align-items:center; justify-content:center;
+      box-shadow:0 3px 10px rgba(90,64,128,0.18); margin-bottom:8px;
+      transition:transform 0.15s ease, background 0.15s ease;
+    }
+    .demo-fermer:hover{ background:var(--corail-clair); transform:scale(1.06); }
+
+    .demo-niveaux{
+      max-width:420px; width:100%; margin:0 auto 26px; background:var(--beige-clair);
+      border:1.5px solid var(--violet); border-radius:18px; padding:16px 20px;
+      opacity:0; transform:translateY(-8px); transition:opacity 0.4s ease, transform 0.4s ease;
+    }
+    .demo-niveaux.visible{ opacity:1; transform:translateY(0); }
+    .demo-niveaux-titre{
+      font-family:"Patrick Hand",cursive; font-size:16px; color:var(--violet-fonce);
+      text-align:center; margin-bottom:10px;
+    }
+    .demo-diff-options{ display:flex; gap:8px; }
+    .demo-diff-opt{
+      flex:1; background:#fff; border:1.5px solid var(--bleu-poudre); border-radius:12px;
+      padding:9px 6px; text-align:center; cursor:pointer; font-size:12.5px; font-weight:700;
+      color:var(--gris); transition:background 0.15s, border-color 0.15s, color 0.15s, opacity 0.15s;
+    }
+    .demo-diff-opt .demo-diff-num{ display:block; font-family:"Patrick Hand",cursive; font-size:20px; line-height:1.1; }
+    .demo-diff-opt:hover{ background:#EEE9F7; }
+    .demo-diff-opt.actif{ background:var(--violet); border-color:var(--violet); color:#fff; }
+    .demo-diff-opt.verrouille{ opacity:0.4; cursor:default; pointer-events:none; }
+    .demo-niveaux-invite{ text-align:center; font-size:12px; color:var(--gris); font-style:italic; margin-top:9px; }
+
+    .demo-bulles-zone{
+      max-width:420px; width:100%; margin:0 auto;
+      opacity:0; transform:translateY(10px); transition:opacity 0.4s ease, transform 0.4s ease;
+    }
+    .demo-bulles-zone.visible{ opacity:1; transform:translateY(0); }
+
+    .demo-recit{ text-align:center; font-size:13px; font-style:italic; color:#6b6152; font-weight:600;
+      min-height:1.2em; margin-bottom:10px; opacity:0; transition:opacity 0.3s ease; }
+    .demo-recit.visible{ opacity:1; }
+    .demo-pensee{
+      max-width:280px; margin:0 auto 10px; background:var(--violet-clair,#EEE9F7); border:1.5px dashed var(--violet);
+      border-radius:14px; padding:8px 14px; text-align:center; font-size:13px; font-style:italic; color:var(--violet-fonce);
+      opacity:0; max-height:0; overflow:hidden; transition:opacity 0.3s ease, max-height 0.3s ease;
+    }
+    .demo-pensee.visible{ opacity:1; max-height:80px; }
+
+    .demo-bulle-item{
+      display:flex; align-items:flex-start; gap:10px; margin:9px 0;
+      opacity:0; transform:translateY(8px); transition:opacity 0.35s ease, transform 0.35s ease;
+    }
+    .demo-bulle-item.visible{ opacity:1; transform:translateY(0); }
+    .demo-bulle-avatar{
+      flex-shrink:0; width:30px; height:30px; border-radius:50%; background:#fff;
+      border:2px solid var(--c,var(--gris)); display:flex; align-items:center; justify-content:center;
+      font-family:"Patrick Hand",cursive; font-weight:700; font-size:13px; color:var(--c,var(--gris));
+    }
+    .demo-bulle-corps{ flex:1; padding-left:2px; }
+    .demo-bulle-nom{ display:block; font-size:9.5px; font-weight:800; letter-spacing:0.05em;
+      text-transform:uppercase; color:var(--c,var(--gris)); margin-bottom:1px; }
+    .demo-bulle-texte{ font-family:"Patrick Hand",cursive; font-size:18px; color:var(--texte); }
+    .demo-bulle-item.bek{ --c:var(--vert-fonce); }
+    .demo-bulle-item.keb{ --c:var(--bleu-fonce); }
+
+    .demo-question{
+      margin-top:16px; background:var(--beige-clair); border:1.5px dashed var(--bleu-fonce);
+      border-radius:14px; padding:14px 16px;
+      opacity:0; max-height:0; overflow:hidden; transition:opacity 0.35s ease, max-height 0.35s ease;
+    }
+    .demo-question.visible{ opacity:1; max-height:220px; }
+    .demo-question-texte{ font-size:14px; font-weight:700; margin-bottom:9px; }
+    .demo-input{
+      width:100%; padding:8px 11px; border:1.5px solid var(--bleu-poudre); border-radius:8px;
+      font-family:"Nunito",sans-serif; font-size:14px; outline:none;
+    }
+    .demo-input:focus{ border-color:var(--vert-fonce); }
+    .demo-input:disabled{ background:#fff; color:var(--vert-fonce); font-weight:700; }
+    .demo-feedback{ margin-top:7px; font-size:13px; font-weight:700; color:var(--corail); min-height:1.1em; }
+    .demo-feedback.ok{ color:var(--vert-fonce); }
   </style>
 </head>
 <body>
@@ -102,16 +189,34 @@
       <button class="btn-suite" id="btnSuite2">Continue &#9656;</button>
       <div class="bulle-kloe" id="bulle3"></div>
 
-      <!-- ────────────────────────────────────────────────────────
-           EMPLACEMENT RÉSERVÉ pour l'explication des nouveautés
-           (sélecteur de niveau en simulation cliquable, questions
-           en bas de page). Ne pas activer tant que ces mécanismes
-           ne sont pas stabilisés dans histoire_001_p02.
-      <div class="kloe-nouveautes" id="kloeNouveautes">
-        ...
-      </div>
-      ──────────────────────────────────────────────────────── -->
+      <div class="kloe-nouveautes" id="kloeNouveautes" style="display:none;">
+        <div class="demo-etiquette">Practice demo — not the real story yet</div>
+        <button class="demo-fermer" id="demoFermer" aria-label="Close demo" title="Skip ahead">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+        </button>
 
+        <div class="demo-niveaux" id="demoNiveaux">
+          <div class="demo-niveaux-titre">Miam ! · Level 1</div>
+          <div class="demo-diff-options" id="demoDiffOptions">
+            <div class="demo-diff-opt actif" data-niveau="1"><span class="demo-diff-num">1</span>Dialogue only</div>
+            <div class="demo-diff-opt" data-niveau="2" id="demoOpt2"><span class="demo-diff-num">2</span>+ actions</div>
+            <div class="demo-diff-opt verrouille" data-niveau="3" id="demoOpt3"><span class="demo-diff-num">3</span>+ thoughts</div>
+          </div>
+          <div class="demo-niveaux-invite" id="demoNiveauxInvite">Try clicking level 2!</div>
+        </div>
+
+        <div class="demo-bulles-zone" id="demoBullesZone">
+          <div class="demo-recit" id="demoRecit"></div>
+          <div class="demo-pensee" id="demoPensee"></div>
+          <div class="bulle-pile-demo" id="bullePileDemo"></div>
+
+          <div class="demo-question" id="demoQuestion">
+            <div class="demo-question-texte">What does Bek say to Keb?</div>
+            <input type="text" class="demo-input" id="demoInput" autocomplete="off" placeholder="Type your answer…">
+            <div class="demo-feedback" id="demoFeedback"></div>
+          </div>
+        </div>
+      </div>
       <div class="choix-zone" id="choixZone">
         <a href="en_histoire_001_p02.html" class="btn-histoire">&#9656; Start the story</a>
       </div>
@@ -159,19 +264,142 @@ function etape3() {
   var img = document.getElementById('kloeImg');
   img.style.opacity = '0';
   setTimeout(function(){
+    img.src = 'images/kloe_regarde_pointe_bas_01.png';
+    img.style.opacity = '1';
+
+    var b3 = document.getElementById('bulle3');
+    b3.textContent = "Two things are new here. First: every reply you and Bek exchange stays right on the page, piling up as you go \u2014 like this!";
+    b3.classList.add('visible');
+    b3.style.animation = 'apparaitre 0.45s ease forwards';
+
+    document.getElementById('kloeNouveautes').style.display = 'flex';
+    setTimeout(demarrerDemoBulles, 900);
+  }, 350);
+}
+document.getElementById('btnSuite2').addEventListener('click', etape3);
+
+// ─────────────────────────────────────────────
+//  Démo interactive — pile de bulles + question
+// ─────────────────────────────────────────────
+function normaliserDemo(s) {
+  return s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z ]/g, '').trim();
+}
+
+function demarrerDemoBulles() {
+  document.getElementById('demoBullesZone').classList.add('visible');
+  document.getElementById('demoBullesZone').scrollIntoView({behavior:'smooth', block:'center'});
+
+  var pile = document.getElementById('bullePileDemo');
+  var b1 = document.createElement('div');
+  b1.className = 'demo-bulle-item keb';
+  b1.innerHTML = '<div class="demo-bulle-avatar">K</div><div class="demo-bulle-corps"><span class="demo-bulle-nom">Keb</span><div class="demo-bulle-texte">Salut !</div></div>';
+  pile.appendChild(b1);
+  setTimeout(function(){ b1.classList.add('visible'); }, 100);
+
+  setTimeout(function() {
+    var b2 = document.createElement('div');
+    b2.className = 'demo-bulle-item bek';
+    b2.innerHTML = '<div class="demo-bulle-avatar">B</div><div class="demo-bulle-corps"><span class="demo-bulle-nom">Bek</span><div class="demo-bulle-texte">Salut !</div></div>';
+    pile.appendChild(b2);
+    setTimeout(function(){ b2.classList.add('visible'); }, 100);
+
+    setTimeout(function() {
+      document.getElementById('demoQuestion').classList.add('visible');
+      document.getElementById('demoInput').focus();
+    }, 900);
+  }, 900);
+}
+
+document.getElementById('demoInput').addEventListener('keydown', function(e) {
+  if (e.key !== 'Enter') return;
+  var val = normaliserDemo(this.value);
+  var fb = document.getElementById('demoFeedback');
+  if (val === '') return;
+
+  if (val === 'salut') {
+    fb.className = 'demo-feedback ok';
+    fb.textContent = 'Exactly!';
+    this.disabled = true;
+    setTimeout(passerADemoNiveaux, 700);
+  } else {
+    fb.className = 'demo-feedback';
+    fb.textContent = 'Not quite \u2014 try again!';
+  }
+});
+
+function passerADemoNiveaux() {
+  var img = document.getElementById('kloeImg');
+  img.style.opacity = '0';
+  setTimeout(function(){
+    img.src = 'images/kloe_regarde_pointe_haut_01.png';
+    img.style.opacity = '1';
+
+    var b3 = document.getElementById('bulle3');
+    b3.textContent = "Second: you can pick how much detail you want, up above \u2014 try it!";
+    b3.style.animation = 'apparaitre 0.45s ease forwards';
+
+    setTimeout(function() {
+      var demoNiveaux = document.getElementById('demoNiveaux');
+      demoNiveaux.classList.add('visible');
+      demoNiveaux.scrollIntoView({behavior:'smooth', block:'center'});
+    }, 500);
+  }, 350);
+}
+
+var demoNiveau2Essaye = false;
+
+document.querySelectorAll('.demo-diff-opt').forEach(function(opt) {
+  opt.addEventListener('click', function() {
+    if (opt.classList.contains('verrouille')) return;
+    document.querySelectorAll('.demo-diff-opt').forEach(function(o){ o.classList.remove('actif'); });
+    opt.classList.add('actif');
+    var niveau = parseInt(opt.dataset.niveau, 10);
+    document.querySelector('.demo-niveaux-titre').textContent = 'Miam ! · Level ' + niveau;
+
+    if (niveau === 2) {
+      demoNiveau2Essaye = true;
+      document.getElementById('demoOpt3').classList.remove('verrouille');
+      document.getElementById('demoNiveauxInvite').textContent = 'Nice! Now try level 3.';
+    }
+    if (niveau === 3) {
+      document.getElementById('demoNiveauxInvite').textContent = 'That\u2019s the idea \u2014 same story, your pace.';
+    }
+
+    majDemoBulleEvolutive(niveau);
+    document.getElementById('demoBullesZone').scrollIntoView({behavior:'smooth', block:'center'});
+  });
+});
+
+function majDemoBulleEvolutive(niveau) {
+  var recit = document.getElementById('demoRecit');
+  var pensee = document.getElementById('demoPensee');
+
+  recit.textContent = niveau >= 2 ? 'Keb waves first. Bek waves back.' : '';
+  recit.classList.toggle('visible', niveau >= 2);
+
+  pensee.textContent = niveau >= 3 ? '(Bek thinks: he looks happy today!)' : '';
+  pensee.classList.toggle('visible', niveau >= 3);
+}
+
+document.getElementById('demoFermer').addEventListener('click', function() {
+  document.getElementById('kloeNouveautes').style.display = 'none';
+
+  var img = document.getElementById('kloeImg');
+  img.style.opacity = '0';
+  setTimeout(function(){
     img.src = 'images/kloe_explique_01.png';
     img.style.opacity = '1';
 
     var b3 = document.getElementById('bulle3');
-    b3.textContent = "I'll walk you through a couple of new things around here soon \u2014 but they're not quite ready yet. Let's just dive into the story for now!";
+    b3.textContent = "That's it for now \u2014 ready to meet Bek and Keb?";
     b3.classList.add('visible');
     b3.style.animation = 'apparaitre 0.45s ease forwards';
 
     document.getElementById('choixZone').style.display = 'flex';
     document.getElementById('choixZone').style.animation = 'apparaitre 0.5s ease 0.3s forwards';
+    document.getElementById('choixZone').scrollIntoView({behavior:'smooth', block:'center'});
   }, 350);
-}
-document.getElementById('btnSuite2').addEventListener('click', etape3);
+});
 
 (function(){
   var b1 = document.getElementById('bulle1');
