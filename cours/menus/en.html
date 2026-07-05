@@ -162,6 +162,10 @@
     font-family: "Nunito", sans-serif; font-weight: 700; font-size: 15px;
     color: var(--violet-fonce);
   }
+  .btn-histoire-traduction {
+    font-family: "Nunito", sans-serif; font-style: italic; font-size: 11.5px;
+    color: var(--gris); font-weight: 400; margin-top: 1px;
+  }
 
   /* Histoires à venir — visibles dans la grille, mais non cliquables */
   .btn-histoire.a-venir {
@@ -241,8 +245,11 @@
 <script>
 // Story 1 est prête ; les 59 suivantes sont des emplacements réservés,
 // à mettre à jour ici au fur et à mesure qu'elles sont publiées.
+// Les titres d'histoire sont d'abord en français (« titre »), avec une
+// traduction optionnelle plus petite (« traduction ») pour les versions
+// en langue étrangère — règle canonique depuis la session 131.
 var histoires = [
-  { titre: 'Miam!', pret: true }
+  { titre: 'Le gâteau au chocolat', traduction: 'The Chocolate Cake', pret: true }
 ];
 for (var i = 2; i <= 60; i++) {
   histoires.push({ titre: 'Coming soon', pret: false });
@@ -284,7 +291,8 @@ function construireGrille(direction) {
     el.style.setProperty('--ordre', ordre);
     el.style.setProperty('--glisse-x', glisseX + 'px');
     el.innerHTML = '<span class="btn-histoire-num">Story ' + numero + '</span>'
-      + '<span class="btn-histoire-titre">' + h.titre + '</span>';
+      + '<span class="btn-histoire-titre">' + h.titre + '</span>'
+      + (h.traduction ? '<span class="btn-histoire-traduction">' + h.traduction + '</span>' : '');
     elGrille.appendChild(el);
   }
 }
