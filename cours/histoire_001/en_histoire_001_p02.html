@@ -116,7 +116,7 @@
     color:var(--gris);letter-spacing:0.02em;margin-bottom:6px;}
 
   .stage-wrap{max-width:640px;margin:0 auto;padding:36px 24px 6px;}
-  .perso-ligne{display:flex;align-items:flex-end;justify-content:center;gap:36px;flex-wrap:wrap;width:100%;min-height:340px;}
+  .perso-ligne{display:flex;align-items:flex-end;justify-content:center;gap:36px;flex-wrap:wrap;width:100%;min-height:420px;}
   /* Espace réservé au-dessus de la rangée quand une bulle BD (ancrée à la tête
      d'un personnage) sera affichée cette scène — évite qu'elle empiète sur le
      compteur au-dessus. Appliqué seulement si la scène a une bulle-stage
@@ -129,7 +129,7 @@
      rétrécissaient d'une scène à l'autre alors que rien n'avait changé dans
      le contenu. Hauteur fixe = tous les personnages gardent la même taille
      apparente, peu importe le format (portrait serré ou composition large). */
-  .perso-zone{position:relative;height:340px;max-width:480px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;
+  .perso-zone{position:relative;height:420px;max-width:560px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;
     opacity:0;transform:scale(0.94);transition:opacity 0.3s ease,transform 0.3s ease;}
   .perso-zone.in{opacity:1;transform:scale(1);}
   .perso-zone::after{
@@ -381,10 +381,11 @@
   .btn-nav.indisponible{background:var(--beige-clair);color:var(--gris);border:1.5px dashed var(--gris-clair);opacity:0.55;}
 
   @media(max-width:640px){
-    .perso-ligne{gap:18px;}
-    .perso-zone{height:170px;max-width:220px;}
-    .bulle-texte{font-size:18px;}
-    #bulle-flottante{width:190px;}
+    .stage-wrap{padding:36px 12px 6px;}
+    .perso-ligne{gap:18px;min-height:270px;}
+    .perso-zone{height:270px;max-width:320px;}
+    .bulle-texte{font-size:20px;}
+    #bulle-flottante{width:210px;}
   }
 </style>
 </head>
