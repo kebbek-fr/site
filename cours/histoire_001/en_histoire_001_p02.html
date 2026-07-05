@@ -641,19 +641,27 @@ var scenes = [
     ]
   },
   { // 8
-    persos: ['bek_neutre_01.png'],
-    narration: 'Bek part… puis revient avec une fourchette.',
-    reflet: { qui:'bek', texte: 'Bek part en courant, puis revient avec une fourchette \u2014 elle a tout compris !' },
+    persos: ['bek_part_keb_attend.png'],
+    narration: 'Bek part vers la cuisine. Keb attend, toujours avec l\u2019assiette dans les mains.',
+    reflet: { qui:'keb', texte: 'Bek part en courant vers la cuisine. Keb attend, un peu perplexe, toujours avec l\u2019assiette entre les mains.' },
     bulles: []
   },
   { // 9
+    persos: ['bek_neutre_01.png'],
+    narration: 'Bek revient avec une fourchette.',
+    reflet: { qui:'bek', texte: 'Bek revient en courant, fourchette en main, fi\u00e8re d\u2019avoir trouv\u00e9 la solution.' },
+    bulles: [
+      { qui:'bek', minNiveau:1, texte: 'Tadam !' }
+    ]
+  },
+  { // 10
     persos: ['bek_neutre_01.png'],
     narration: 'Bek plonge la fourchette dans le gâteau.',
     bulles: [
       { qui:'bek', minNiveau:1, texte: vocab('Ouvre', '<em>open!</em> — Bek is asking Keb to open his mouth.') + '.' }
     ]
   },
-  { // 10
+  { // 11
     persos: ['keb_neutre_01.png'],
     narration: 'Keb ouvre la bouche. Bek lui donne la bouchée.',
     bulles: [
