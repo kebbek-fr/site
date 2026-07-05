@@ -885,7 +885,19 @@ function rendre() {
 
   var classePerso = scene.persos.length === 1 ? 'perso-zone seul' : 'perso-zone';
   elPersos.innerHTML = scene.persos.map(function(p) {
-    var perso = p.indexOf('bek') === 0 ? 'bek' : 'keb';
+    var perso;
+    if (scene.persos.length === 1) {
+      // Image combinée (un seul fichier, ex. bek_keb_miam_01.png) : le nom de
+      // fichier seul ne suffit pas à savoir qui doit recevoir la bulle ancrée
+      // à la tête — on priorise le personnage qui parle réellement dans cette
+      // scène (bulle, puis reflet), et on ne retombe sur le préfixe du nom de
+      // fichier que si la scène ne précise personne.
+      perso = (scene.bulles && scene.bulles[0] && scene.bulles[0].qui)
+        || (scene.reflet && scene.reflet.qui)
+        || (p.indexOf('bek') === 0 ? 'bek' : 'keb');
+    } else {
+      perso = p.indexOf('bek') === 0 ? 'bek' : 'keb';
+    }
     var nom = perso === 'bek' ? 'Bek' : 'Keb';
     var src = 'images/' + p;
     return '<div class="' + classePerso + '" data-perso="' + perso + '"><img src="' + src + '" alt="' + nom + '"></div>';
