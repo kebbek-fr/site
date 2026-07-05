@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Story 1 — Le français avec Keb &amp; Bek</title>
-<link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,400i&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Patrick+Hand&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,400i&display=swap" rel="stylesheet">
 <style>
   *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
   :root{
@@ -382,6 +382,56 @@
     .bulle-texte{font-size:20px;}
     #bulle-flottante{width:210px;}
   }
+  /* ── Écran de titre de chapitre — même esprit visuel que l'accueil du
+       cours (index.html) : titre manuscrit "écrit" à l'animation, plume
+       qui se déplace, soulignement tracé. Affiché avant le début de
+       l'histoire, masque le reste du contenu jusqu'au clic sur Commencer. ── */
+  .ecran-titre-chapitre{
+    min-height:80vh;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    padding:60px 24px;text-align:center;
+  }
+  .titre-histoire-eyebrow{
+    font-family:"Nunito",sans-serif;font-weight:700;font-size:13px;letter-spacing:0.06em;text-transform:uppercase;
+    color:var(--ambre-fonce);background:var(--ambre-clair);border:1.5px dashed rgba(212,162,78,0.5);
+    border-radius:100px;padding:6px 16px;margin-bottom:24px;display:inline-block;
+    max-width:90vw;
+  }
+  .titre-chapitre-wrap{position:relative;margin-bottom:10px;max-width:92vw;}
+  .titre-chapitre{
+    font-family:"Caveat",cursive;font-weight:700;font-size:clamp(34px,7.5vw,68px);color:var(--violet-fonce);line-height:1.15;
+    display:inline-block;clip-path:inset(0 100% -0.3em 0);max-width:100%;
+    animation:ecrireChapitre 1.6s cubic-bezier(0.65,0,0.35,1) forwards;
+  }
+  @keyframes ecrireChapitre{ to{ clip-path:inset(0 0% -0.3em 0); } }
+  .pointe-stylo-chapitre{
+    position:absolute;top:50%;left:0;width:14px;height:14px;transform:translateY(-50%);opacity:0;
+    animation:deplacerPointeChapitre 1.6s cubic-bezier(0.65,0,0.35,1) forwards;
+  }
+  @keyframes deplacerPointeChapitre{ 0%{left:0%;opacity:1;} 92%{left:98%;opacity:1;} 100%{left:100%;opacity:0;} }
+  .pointe-stylo-chapitre svg{width:100%;height:100%;}
+  .soulignement-chapitre{width:clamp(170px,42vw,300px);height:12px;margin:2px auto 0;}
+  .soulignement-chapitre path{
+    fill:none;stroke:var(--ambre);stroke-width:3;stroke-linecap:round;
+    stroke-dasharray:360;stroke-dashoffset:360;
+    animation:tracerSoulignementChapitre 0.6s ease 1.5s forwards;
+  }
+  @keyframes tracerSoulignementChapitre{ to{ stroke-dashoffset:0; } }
+  .titre-chapitre-traduction{
+    font-family:"Nunito",sans-serif;font-style:italic;font-size:clamp(13px,2vw,15px);color:var(--gris);
+    margin:6px 0 18px;opacity:0;max-width:90vw;
+    animation:apparaitreTraductionChapitre 0.6s ease 1.9s forwards;
+  }
+  @keyframes apparaitreTraductionChapitre{ from{opacity:0;transform:translateY(4px);} to{opacity:0.9;transform:translateY(0);} }
+  .btn-commencer-chapitre{
+    margin-top:10px;font-family:"Patrick Hand",cursive;font-size:clamp(17px,2.3vw,20px);
+    padding:13px 34px;border-radius:100px;border:none;background:var(--violet-fonce);color:var(--blanc);cursor:pointer;
+    box-shadow:0 5px 20px rgba(90,64,128,0.35);
+    transition:transform 0.2s cubic-bezier(0.34,1.56,0.64,1),box-shadow 0.2s ease;
+    opacity:0;animation:apparaitreBoutonChapitre 0.6s ease 2.1s forwards;
+  }
+  @keyframes apparaitreBoutonChapitre{ from{opacity:0;transform:translateY(10px);} to{opacity:1;transform:translateY(0);} }
+  .btn-commencer-chapitre:hover{ transform:translateY(-3px) scale(1.05); box-shadow:0 8px 26px rgba(90,64,128,0.45); }
+
 </style>
 </head>
 <body>
@@ -390,6 +440,30 @@
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M5 12L11 6M5 12L11 18"/></svg>
   Back
 </a>
+
+<!-- ── Écran de titre de chapitre ── -->
+<section class="ecran-titre-chapitre" id="ecranTitreChapitre">
+  <div class="titre-histoire-eyebrow">Le gâteau au chocolat</div>
+  <div class="titre-chapitre-wrap">
+    <span class="titre-chapitre">Chapitre 1 — Miam !</span>
+    <div class="pointe-stylo-chapitre">
+      <svg viewBox="0 0 24 24" fill="none">
+        <path d="M4 20 L16 8 L19 11 L7 23 Z" fill="#5A4080"/>
+        <path d="M16 8 L19 5 L22 8 L19 11 Z" fill="#D4A24E"/>
+        <path d="M4 20 L2 22 L5 21 Z" fill="#2A2422"/>
+      </svg>
+    </div>
+    <div class="soulignement-chapitre">
+      <svg viewBox="0 0 300 12" xmlns="http://www.w3.org/2000/svg">
+        <path d="M4 6 Q 80 1 150 7 Q 220 12 296 5"/>
+      </svg>
+    </div>
+  </div>
+  <div class="titre-chapitre-traduction">Chapter 1 — Yum!</div>
+  <button class="btn-commencer-chapitre" id="btnCommencerChapitre">Start</button>
+</section>
+
+<div id="contenuHistoire" style="display:none;">
 
 <!-- ── Boîte de vocabulaire flottante ── -->
 <div id="bulle-flottante">
@@ -551,7 +625,18 @@
   <span class="btn-nav indisponible">Next ›</span>
 </nav>
 
+</div>
+
 <script>
+
+// ─────────────────────────────────────────────
+//  Écran de titre de chapitre — révèle le contenu de l'histoire au clic
+// ─────────────────────────────────────────────
+document.getElementById('btnCommencerChapitre').addEventListener('click', function() {
+  document.getElementById('ecranTitreChapitre').style.display = 'none';
+  document.getElementById('contenuHistoire').style.display = 'block';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
 
 // ─────────────────────────────────────────────
 //  Vignette Kloé qui explique — rotation kloe_explique_01..12,
