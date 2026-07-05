@@ -132,11 +132,6 @@
   .perso-zone{position:relative;height:420px;max-width:560px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;
     opacity:0;transform:scale(0.94);transition:opacity 0.3s ease,transform 0.3s ease;}
   .perso-zone.in{opacity:1;transform:scale(1);}
-  .perso-zone::after{
-    content:"";display:block;width:200px;height:14px;margin:-6px auto 0;
-    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 170 14'%3E%3Cpath d='M6 8 C 30 3, 55 11, 85 7 C 115 3, 140 10, 164 6' fill='none' stroke='%237A9BBF' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E");
-    background-repeat:no-repeat;background-position:center;background-size:contain;opacity:0.5;
-  }
   .perso-zone img{height:100%;width:auto;max-width:100%;object-fit:contain;display:block;}
 
   /* ── Fondu au bord gauche, pour les images où Bek sort volontairement du
@@ -157,8 +152,8 @@
        beige de la page. ── */
   .perso-zone img[src*="bek_coupe_morceau_keb"],
   .perso-zone img[src*="bek_ouvre_keb_01"]{
-    -webkit-mask-image:radial-gradient(ellipse 88% 88% at center, black 55%, rgba(0,0,0,0.6) 75%, transparent 100%);
-    mask-image:radial-gradient(ellipse 88% 88% at center, black 55%, rgba(0,0,0,0.6) 75%, transparent 100%);
+    -webkit-mask-image:radial-gradient(ellipse farthest-corner at center, black 30%, rgba(0,0,0,0.45) 58%, transparent 90%);
+    mask-image:radial-gradient(ellipse farthest-corner at center, black 30%, rgba(0,0,0,0.45) 58%, transparent 90%);
   }
 
   /* ── Bulle BD ancrée à la tête du personnage qui parle (en plus de la pile du bas) ── */
@@ -500,29 +495,29 @@
     </button>
   </div>
 
-  <div class="bulle-pile" id="bullePile"></div>
-</section>
-
-<!-- ── Encadré Kloé — clin d'œil personnel, apparaît à partir de la scène 6 ── -->
-<div class="kloe-aside" id="kloeAside" style="display:none;">
-  <div class="kloe-aside-ligne">
-    <img class="kloe-aside-img" id="kloeAsideImg" src="images/kloe_soucieuse_01.png" alt="Kloé" onerror="this.style.display='none';">
-    <div class="kloe-aside-corps">
-      <div class="kloe-aside-bulle">
-        <div class="kloe-aside-question">Toi, ça va ?</div>
-        <div class="kloe-aside-ligne-saisie" id="caVaZone1">
-          <input type="text" class="kloe-aside-input" id="caVaInput1" autocomplete="off">
-          <button class="kloe-aside-btn" id="caVaBtn1">→</button>
+  <!-- ── Encadré Kloé — clin d'œil personnel, apparaît à partir de la scène 6 ── -->
+  <div class="kloe-aside" id="kloeAside" style="display:none;">
+    <div class="kloe-aside-ligne">
+      <img class="kloe-aside-img" id="kloeAsideImg" src="images/kloe_soucieuse_01.png" alt="Kloé" onerror="this.style.display='none';">
+      <div class="kloe-aside-corps">
+        <div class="kloe-aside-bulle">
+          <div class="kloe-aside-question">Toi, ça va ?</div>
+          <div class="kloe-aside-ligne-saisie" id="caVaZone1">
+            <input type="text" class="kloe-aside-input" id="caVaInput1" autocomplete="off">
+            <button class="kloe-aside-btn" id="caVaBtn1">→</button>
+          </div>
         </div>
+        <div class="kloe-aside-retour" id="caVaRetour1" style="display:none;"></div>
+        <div class="kloe-aside-ligne-saisie" id="caVaZone2" style="display:none;">
+          <input type="text" class="kloe-aside-input" id="caVaInput2" autocomplete="off">
+        </div>
+        <div class="kloe-aside-retour" id="caVaRetour2" style="display:none;"></div>
       </div>
-      <div class="kloe-aside-retour" id="caVaRetour1" style="display:none;"></div>
-      <div class="kloe-aside-ligne-saisie" id="caVaZone2" style="display:none;">
-        <input type="text" class="kloe-aside-input" id="caVaInput2" autocomplete="off">
-      </div>
-      <div class="kloe-aside-retour" id="caVaRetour2" style="display:none;"></div>
     </div>
   </div>
-</div>
+
+  <div class="bulle-pile" id="bullePile"></div>
+</section>
 
 <!-- ── Vocabulaire à cocher ── -->
 <div class="section-cocher" id="sectionCocher">
