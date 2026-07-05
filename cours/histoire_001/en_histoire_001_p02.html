@@ -122,16 +122,33 @@
      compteur au-dessus. Appliqué seulement si la scène a une bulle-stage
      (voir rendre()), pour ne pas ajouter d'espace inutile aux scènes muettes. */
   .perso-ligne.a-bulle-scene{margin-top:64px;}
-  .perso-zone{position:relative;width:280px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;
+  /* Modèle de taille : hauteur fixe, largeur libre (object-fit:contain).
+     Avant (largeur fixe, hauteur libre) : une image combinée plus large qu'une
+     autre (ex. une scène avec du flou de mouvement latéral) finissait avec une
+     hauteur RENDUE plus petite — donnant l'impression que les personnages
+     rétrécissaient d'une scène à l'autre alors que rien n'avait changé dans
+     le contenu. Hauteur fixe = tous les personnages gardent la même taille
+     apparente, peu importe le format (portrait serré ou composition large). */
+  .perso-zone{position:relative;height:340px;max-width:480px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;
     opacity:0;transform:scale(0.94);transition:opacity 0.3s ease,transform 0.3s ease;}
-  .perso-zone.seul{width:340px;}
   .perso-zone.in{opacity:1;transform:scale(1);}
   .perso-zone::after{
     content:"";display:block;width:200px;height:14px;margin:-6px auto 0;
     background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 170 14'%3E%3Cpath d='M6 8 C 30 3, 55 11, 85 7 C 115 3, 140 10, 164 6' fill='none' stroke='%237A9BBF' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E");
     background-repeat:no-repeat;background-position:center;background-size:contain;opacity:0.5;
   }
-  .perso-zone img{width:100%;display:block;}
+  .perso-zone img{height:100%;width:auto;max-width:100%;object-fit:contain;display:block;}
+
+  /* ── Fondu au bord gauche, pour les images où Bek sort volontairement du
+       cadre en courant (ex. scène 8) — sans ce fondu, le bord de l'image
+       coupe son visage à vif et donne l'impression d'une image tronquée
+       plutôt que d'un personnage qui quitte la scène. Ciblé UNIQUEMENT sur
+       ce fichier précis via le sélecteur d'attribut [src*=...], donc aucun
+       effet sur les autres images. ── */
+  .perso-zone img[src*="bek_part_keb_attend"]{
+    -webkit-mask-image:linear-gradient(to right, transparent 0%, rgba(0,0,0,0.55) 6%, black 14%, black 100%);
+    mask-image:linear-gradient(to right, transparent 0%, rgba(0,0,0,0.55) 6%, black 14%, black 100%);
+  }
 
   /* ── Bulle BD ancrée à la tête du personnage qui parle (en plus de la pile du bas) ── */
   .bulle-stage{
@@ -365,7 +382,7 @@
 
   @media(max-width:640px){
     .perso-ligne{gap:18px;}
-    .perso-zone{width:110px;}
+    .perso-zone{height:170px;max-width:220px;}
     .bulle-texte{font-size:18px;}
     #bulle-flottante{width:190px;}
   }
