@@ -216,7 +216,6 @@
         <div class="demo-diff-opt verrouille" data-niveau="3" id="demoOpt3"><span class="demo-diff-num">3</span>+ thoughts</div>
       </div>
       <div class="demo-niveaux-invite" id="demoNiveauxInvite">Try clicking level 2!</div>
-      <button class="btn-suite" id="btnSuiteDemo" style="align-self:center; margin-top:14px;">Continue &#9656;</button>
     </div>
 
     <!-- Exceptionnellement placé juste sous le sélecteur de niveaux (et non
@@ -385,6 +384,7 @@ function passerADemoNiveaux() {
   setTimeout(function(){
     img.src = 'images/kloe_regarde_pointe_haut_01.png';
     img.style.opacity = '1';
+    document.getElementById('bulle3').classList.remove('visible');
 
     setTimeout(function() {
       var demoNiveaux = document.getElementById('demoNiveaux');
@@ -411,22 +411,43 @@ document.querySelectorAll('.demo-diff-opt').forEach(function(opt) {
     var niveau = parseInt(opt.dataset.niveau, 10);
     document.querySelector('.demo-niveaux-titre').textContent = 'Miam ! · Level ' + niveau;
 
+    // Changements immédiats : tout ce qui reste visible près du sélecteur
+    // (l'élève vient de cliquer ici, pas besoin d'attendre le défilement).
     if (niveau === 2) {
       demoNiveau2Essaye = true;
       document.getElementById('demoOpt3').classList.remove('verrouille');
       document.getElementById('demoNiveauxInvite').textContent = 'Nice! Now try level 3.';
-      document.getElementById('btnVersNiveau3').classList.add('visible');
     }
     if (niveau === 3) {
       document.getElementById('demoNiveauxInvite').textContent = 'That\u2019s the idea \u2014 same story, your pace.';
-      document.getElementById('btnVersNiveau3').classList.remove('visible');
-      setTimeout(function(){
-        document.getElementById('btnSuiteDemo').classList.add('visible');
-      }, 900);
+      document.getElementById('bulleSousNiveaux').classList.remove('visible');
     }
 
-    majDemoBulleEvolutive(niveau);
+    // Le défilement démarre tout de suite...
     document.getElementById('demoBullesZone').scrollIntoView({behavior:'smooth', block:'center'});
+
+    // ...mais tout ce qui se trouve DANS la zone de bulles (hors champ tant
+    // que le défilement n'est pas terminé) n'apparaît/ne change qu'une fois
+    // l'élève arrivé en bas — pour qu'il voie le changement se produire
+    // sous ses yeux plutôt que de le découvrir déjà fait.
+    setTimeout(function() {
+      if (niveau === 2) {
+        var btn3 = document.getElementById('btnVersNiveau3');
+        btn3.classList.add('visible');
+        btn3.dataset.mode = 'monter';
+        btn3.innerHTML = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg> Try level 3';
+      }
+      if (niveau === 3) {
+        setTimeout(function(){
+          var btn3 = document.getElementById('btnVersNiveau3');
+          btn3.classList.add('visible');
+          btn3.dataset.mode = 'continuer';
+          btn3.innerHTML = 'Continue <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>';
+        }, 900);
+      }
+
+      majDemoBulleEvolutive(niveau);
+    }, 650);
   });
 });
 
@@ -469,6 +490,10 @@ function majDemoBulleEvolutive(niveau) {
 function terminerDemo() {
   document.getElementById('kloeNouveautes').style.display = 'none';
 
+  var demoNiveaux = document.getElementById('demoNiveaux');
+  demoNiveaux.classList.remove('visible');
+  setTimeout(function(){ demoNiveaux.style.display = 'none'; }, 400);
+
   var img = document.getElementById('kloeImg');
   img.style.opacity = '0';
   setTimeout(function(){
@@ -486,11 +511,14 @@ function terminerDemo() {
   }, 350);
 }
 document.getElementById('btnVersNiveau3').addEventListener('click', function() {
-  document.getElementById('demoNiveaux').scrollIntoView({behavior:'smooth', block:'center'});
+  if (this.dataset.mode === 'continuer') {
+    terminerDemo();
+  } else {
+    document.getElementById('demoNiveaux').scrollIntoView({behavior:'smooth', block:'center'});
+  }
 });
 
 document.getElementById('demoFermer').addEventListener('click', terminerDemo);
-document.getElementById('btnSuiteDemo').addEventListener('click', terminerDemo);
 
 (function(){
   var b1 = document.getElementById('bulle1');
