@@ -100,11 +100,12 @@
     .demo-fermer:hover{ background:var(--corail-clair); transform:scale(1.06); }
 
     .demo-niveaux{
-      max-width:420px; width:100%; margin:0 auto 26px; background:var(--beige-clair);
+      display:none;
+      max-width:420px; width:100%; margin:0 auto 22px; background:var(--beige-clair);
       border:1.5px solid var(--violet); border-radius:18px; padding:16px 20px;
       opacity:0; transform:translateY(-8px); transition:opacity 0.4s ease, transform 0.4s ease;
     }
-    .demo-niveaux.visible{ opacity:1; transform:translateY(0); }
+    .demo-niveaux.visible{ display:block; opacity:1; transform:translateY(0); }
     .demo-niveaux-titre{
       font-family:"Patrick Hand",cursive; font-size:16px; color:var(--violet-fonce);
       text-align:center; margin-bottom:10px;
@@ -127,32 +128,42 @@
     }
     .demo-bulles-zone.visible{ opacity:1; transform:translateY(0); }
 
-    .demo-recit{ text-align:center; font-size:13px; font-style:italic; color:#6b6152; font-weight:600;
-      min-height:1.2em; margin-bottom:10px; opacity:0; transition:opacity 0.3s ease; }
-    .demo-recit.visible{ opacity:1; }
-    .demo-pensee{
-      max-width:280px; margin:0 auto 10px; background:var(--violet-clair,#EEE9F7); border:1.5px dashed var(--violet);
-      border-radius:14px; padding:8px 14px; text-align:center; font-size:13px; font-style:italic; color:var(--violet-fonce);
-      opacity:0; max-height:0; overflow:hidden; transition:opacity 0.3s ease, max-height 0.3s ease;
+    /* Reproduction fidèle du système de bulles de p02 — même classes, même
+       comportement (récit/pensée = une bulle qui évolue en place dans la pile,
+       pas un texte séparé), pour que la démo prévisualise vraiment le résultat. */
+    .bulle-item{
+      display:flex; align-items:flex-start; gap:10px;
+      opacity:0; max-height:0; overflow:hidden;
+      transition:opacity 0.35s ease, max-height 0.35s ease, margin 0.35s ease;
     }
-    .demo-pensee.visible{ opacity:1; max-height:80px; }
-
-    .demo-bulle-item{
-      display:flex; align-items:flex-start; gap:10px; margin:9px 0;
-      opacity:0; transform:translateY(8px); transition:opacity 0.35s ease, transform 0.35s ease;
-    }
-    .demo-bulle-item.visible{ opacity:1; transform:translateY(0); }
-    .demo-bulle-avatar{
+    .bulle-item.in{ opacity:1; max-height:120px; margin:9px 0; overflow:visible; }
+    .bulle-avatar{
       flex-shrink:0; width:30px; height:30px; border-radius:50%; background:#fff;
       border:2px solid var(--c,var(--gris)); display:flex; align-items:center; justify-content:center;
       font-family:"Patrick Hand",cursive; font-weight:700; font-size:13px; color:var(--c,var(--gris));
     }
-    .demo-bulle-corps{ flex:1; padding-left:2px; }
-    .demo-bulle-nom{ display:block; font-size:9.5px; font-weight:800; letter-spacing:0.05em;
+    .bulle-item:not(.recit):not(.pensee) .bulle-avatar{ background:var(--c,var(--gris)); border:none; color:#fff; }
+    .bulle-corps{ flex:1; padding-left:10px; border-left:2px solid var(--c,var(--gris)); }
+    .bulle-qui{ display:block; font-size:9.5px; font-weight:800; letter-spacing:0.05em;
       text-transform:uppercase; color:var(--c,var(--gris)); margin-bottom:1px; }
-    .demo-bulle-texte{ font-family:"Patrick Hand",cursive; font-size:18px; color:var(--texte); }
-    .demo-bulle-item.bek{ --c:var(--vert-fonce); }
-    .demo-bulle-item.keb{ --c:var(--bleu-fonce); }
+    .bulle-texte{ font-family:"Patrick Hand",cursive; font-size:18px; color:var(--texte); }
+    .bulle-item.pensee .bulle-avatar{ border-style:dashed; }
+    .bulle-item.pensee .bulle-corps{ border-left-style:dashed; }
+    .bulle-item.pensee .bulle-texte{ font-family:"Nunito",sans-serif; font-style:italic; font-size:13px;
+      font-weight:600; color:var(--gris); }
+    .bulle-item.recit .bulle-avatar{ border-color:var(--gris-clair); color:var(--gris); }
+    .bulle-item.recit .bulle-corps{ border-left-color:var(--gris-clair); }
+    .bulle-item.recit .bulle-texte{ font-family:"Nunito",sans-serif; font-style:italic; font-size:13.5px;
+      font-weight:600; color:#6b6152; }
+    .bulle-bek{ --c:var(--vert-fonce); }
+    .bulle-keb{ --c:var(--bleu-fonce); }
+
+    .demo-narration{
+      text-align:center; margin:10px 0 4px; font-size:13px; color:#6b6152;
+      font-style:italic; font-weight:600; min-height:1.3em;
+      opacity:0; transition:opacity 0.3s ease;
+    }
+    .demo-narration.visible{ opacity:1; }
 
     .demo-question{
       margin-top:16px; background:var(--beige-clair); border:1.5px dashed var(--bleu-fonce);
@@ -180,6 +191,17 @@
 
 <section class="ecran-principal">
   <div class="kloe-colonne">
+    <div class="demo-niveaux" id="demoNiveaux">
+      <div class="demo-niveaux-titre">Miam ! · Level 1</div>
+      <div class="demo-diff-options" id="demoDiffOptions">
+        <div class="demo-diff-opt actif" data-niveau="1"><span class="demo-diff-num">1</span>Dialogue only</div>
+        <div class="demo-diff-opt" data-niveau="2" id="demoOpt2"><span class="demo-diff-num">2</span>+ actions</div>
+        <div class="demo-diff-opt verrouille" data-niveau="3" id="demoOpt3"><span class="demo-diff-num">3</span>+ thoughts</div>
+      </div>
+      <div class="demo-niveaux-invite" id="demoNiveauxInvite">Try clicking level 2!</div>
+      <button class="btn-suite" id="btnSuiteDemo" style="align-self:center; margin-top:14px;">Continue &#9656;</button>
+    </div>
+
     <img class="kloe-img-grande" id="kloeImg" alt="Kloé" src="images/kloe_salue_01.png" onerror="this.style.display='none';">
 
     <div class="kloe-bulles" id="kloeBulles">
@@ -195,20 +217,20 @@
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
         </button>
 
-        <div class="demo-niveaux" id="demoNiveaux">
-          <div class="demo-niveaux-titre">Miam ! · Level 1</div>
-          <div class="demo-diff-options" id="demoDiffOptions">
-            <div class="demo-diff-opt actif" data-niveau="1"><span class="demo-diff-num">1</span>Dialogue only</div>
-            <div class="demo-diff-opt" data-niveau="2" id="demoOpt2"><span class="demo-diff-num">2</span>+ actions</div>
-            <div class="demo-diff-opt verrouille" data-niveau="3" id="demoOpt3"><span class="demo-diff-num">3</span>+ thoughts</div>
-          </div>
-          <div class="demo-niveaux-invite" id="demoNiveauxInvite">Try clicking level 2!</div>
-        </div>
-
         <div class="demo-bulles-zone" id="demoBullesZone">
-          <div class="demo-recit" id="demoRecit"></div>
-          <div class="demo-pensee" id="demoPensee"></div>
-          <div class="bulle-pile-demo" id="bullePileDemo"></div>
+          <div class="perso-zone-demo">
+            <img class="demo-perso-img" id="demoPersoImg" src="images/bek_keb_se_saluent_01.png" alt="Bek and Keb waving" onerror="this.style.display='none';">
+          </div>
+          <div class="demo-narration" id="demoNarration"></div>
+          <div class="bulle-pile-demo" id="bullePileDemo">
+            <div class="bulle-item" id="demoBulleEvolutive"
+                 data-qui="bek"
+                 data-texte-niveau2="Keb waves first. Bek waves back."
+                 data-texte-niveau3="Keb waves first, and Bek waves back — she thinks he looks happy today!">
+              <div class="bulle-avatar"></div>
+              <div class="bulle-corps"></div>
+            </div>
+          </div>
 
           <div class="demo-question" id="demoQuestion">
             <div class="demo-question-texte">What does Bek say to Keb?</div>
@@ -291,17 +313,17 @@ function demarrerDemoBulles() {
 
   var pile = document.getElementById('bullePileDemo');
   var b1 = document.createElement('div');
-  b1.className = 'demo-bulle-item keb';
-  b1.innerHTML = '<div class="demo-bulle-avatar">K</div><div class="demo-bulle-corps"><span class="demo-bulle-nom">Keb</span><div class="demo-bulle-texte">Salut !</div></div>';
+  b1.className = 'bulle-item bulle-keb';
+  b1.innerHTML = '<div class="bulle-avatar">K</div><div class="bulle-corps"><span class="bulle-qui">Keb</span><div class="bulle-texte">Salut !</div></div>';
   pile.appendChild(b1);
-  setTimeout(function(){ b1.classList.add('visible'); }, 100);
+  setTimeout(function(){ b1.classList.add('in'); }, 100);
 
   setTimeout(function() {
     var b2 = document.createElement('div');
-    b2.className = 'demo-bulle-item bek';
-    b2.innerHTML = '<div class="demo-bulle-avatar">B</div><div class="demo-bulle-corps"><span class="demo-bulle-nom">Bek</span><div class="demo-bulle-texte">Salut !</div></div>';
+    b2.className = 'bulle-item bulle-bek';
+    b2.innerHTML = '<div class="bulle-avatar">B</div><div class="bulle-corps"><span class="bulle-qui">Bek</span><div class="bulle-texte">Salut !</div></div>';
     pile.appendChild(b2);
-    setTimeout(function(){ b2.classList.add('visible'); }, 100);
+    setTimeout(function(){ b2.classList.add('in'); }, 100);
 
     setTimeout(function() {
       document.getElementById('demoQuestion').classList.add('visible');
@@ -340,6 +362,8 @@ function passerADemoNiveaux() {
 
     setTimeout(function() {
       var demoNiveaux = document.getElementById('demoNiveaux');
+      demoNiveaux.style.display = 'block';
+      void demoNiveaux.offsetWidth;
       demoNiveaux.classList.add('visible');
       demoNiveaux.scrollIntoView({behavior:'smooth', block:'center'});
     }, 500);
@@ -363,6 +387,9 @@ document.querySelectorAll('.demo-diff-opt').forEach(function(opt) {
     }
     if (niveau === 3) {
       document.getElementById('demoNiveauxInvite').textContent = 'That\u2019s the idea \u2014 same story, your pace.';
+      setTimeout(function(){
+        document.getElementById('btnSuiteDemo').classList.add('visible');
+      }, 900);
     }
 
     majDemoBulleEvolutive(niveau);
@@ -371,17 +398,42 @@ document.querySelectorAll('.demo-diff-opt').forEach(function(opt) {
 });
 
 function majDemoBulleEvolutive(niveau) {
-  var recit = document.getElementById('demoRecit');
-  var pensee = document.getElementById('demoPensee');
+  var div = document.getElementById('demoBulleEvolutive');
+  var narrationEl = document.getElementById('demoNarration');
+  var qui = div.dataset.qui;
+  var t2 = div.dataset.texteNiveau2;
+  var t3 = div.dataset.texteNiveau3;
+  var enReflet = (niveau >= 3);
+  var texteActuel = enReflet ? t3 : t2;
 
-  recit.textContent = niveau >= 2 ? 'Keb waves first. Bek waves back.' : '';
-  recit.classList.toggle('visible', niveau >= 2);
+  function appliquerContenu() {
+    div.classList.toggle('recit', !enReflet);
+    div.classList.toggle('pensee', !!enReflet);
+    div.classList.remove('bulle-bek', 'bulle-keb');
+    div.classList.add('bulle-' + qui);
+    var avatarEl = div.querySelector('.bulle-avatar');
+    var corpsEl  = div.querySelector('.bulle-corps');
+    avatarEl.textContent = (qui === 'bek' ? 'B' : 'K');
+    var nomHTML = '<span class="bulle-qui">' + (qui === 'bek' ? 'Bek' : 'Keb') + '</span>';
+    corpsEl.innerHTML = nomHTML + '<div class="bulle-texte">' + texteActuel + '</div>';
+    narrationEl.textContent = texteActuel;
+    narrationEl.classList.add('visible');
+  }
 
-  pensee.textContent = niveau >= 3 ? '(Bek thinks: he looks happy today!)' : '';
-  pensee.classList.toggle('visible', niveau >= 3);
+  if (niveau >= 2) {
+    if (!div.classList.contains('in')) {
+      appliquerContenu();
+      setTimeout(function(){ div.classList.add('in'); }, 400);
+    } else {
+      appliquerContenu();
+    }
+  } else {
+    div.classList.remove('in');
+    narrationEl.classList.remove('visible');
+  }
 }
 
-document.getElementById('demoFermer').addEventListener('click', function() {
+function terminerDemo() {
   document.getElementById('kloeNouveautes').style.display = 'none';
 
   var img = document.getElementById('kloeImg');
@@ -391,7 +443,7 @@ document.getElementById('demoFermer').addEventListener('click', function() {
     img.style.opacity = '1';
 
     var b3 = document.getElementById('bulle3');
-    b3.textContent = "That's it for now \u2014 ready to meet Bek and Keb?";
+    b3.textContent = "That's it for now \u2014 ready for the first story?";
     b3.classList.add('visible');
     b3.style.animation = 'apparaitre 0.45s ease forwards';
 
@@ -399,7 +451,9 @@ document.getElementById('demoFermer').addEventListener('click', function() {
     document.getElementById('choixZone').style.animation = 'apparaitre 0.5s ease 0.3s forwards';
     document.getElementById('choixZone').scrollIntoView({behavior:'smooth', block:'center'});
   }, 350);
-});
+}
+document.getElementById('demoFermer').addEventListener('click', terminerDemo);
+document.getElementById('btnSuiteDemo').addEventListener('click', terminerDemo);
 
 (function(){
   var b1 = document.getElementById('bulle1');
