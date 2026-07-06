@@ -168,6 +168,20 @@
     }
     .demo-narration.visible{ opacity:1; }
 
+    .bulle-pile-ligne{ display:flex; align-items:flex-start; gap:8px; }
+    .bulle-pile-demo{ flex:1; min-width:0; }
+    .btn-vers-niveau3{
+      flex-shrink:0; display:none; align-items:center; gap:4px;
+      margin-top:9px; padding:6px 10px; border-radius:100px;
+      background:var(--violet); color:#fff; border:none;
+      font-family:"Nunito",sans-serif; font-size:11px; font-weight:700; line-height:1.15;
+      cursor:pointer; white-space:nowrap;
+      box-shadow:0 3px 10px rgba(123,94,168,0.3);
+      transition:background 0.15s, transform 0.15s;
+    }
+    .btn-vers-niveau3.visible{ display:inline-flex; animation:apparaitre 0.4s ease forwards; }
+    .btn-vers-niveau3:hover{ background:var(--violet-fonce); transform:translateY(-1px); }
+
     .demo-question{
       margin-top:16px; background:var(--beige-clair); border:1.5px dashed var(--bleu-fonce);
       border-radius:14px; padding:14px 16px;
@@ -205,6 +219,13 @@
       <button class="btn-suite" id="btnSuiteDemo" style="align-self:center; margin-top:14px;">Continue &#9656;</button>
     </div>
 
+    <!-- Exceptionnellement placé juste sous le sélecteur de niveaux (et non
+         sous Kloé comme les autres bulles) : au moment où ce message
+         apparaît, la page défile vers le sélecteur, qui se retrouve loin
+         au-dessus de Kloé et hors champ — ce message doit rester visible
+         juste à côté de ce dont il parle. -->
+    <div class="bulle-kloe" id="bulleSousNiveaux"></div>
+
     <img class="kloe-img-grande" id="kloeImg" alt="Kloé" src="images/kloe_salue_01.png" onerror="this.style.display='none';">
 
     <div class="kloe-bulles" id="kloeBulles">
@@ -225,13 +246,19 @@
             <img class="demo-perso-img" id="demoPersoImg" src="images/bek_keb_se_saluent_01.png" alt="Bek and Keb waving" onerror="this.style.display='none';">
           </div>
           <div class="demo-narration" id="demoNarration"></div>
-          <div class="bulle-pile-demo" id="bullePileDemo">
-            <div class="bulle-item" id="demoBulleEvolutive"
-                 data-qui="bek"
-                 data-texte-niveau2="Keb waves first. Bek waves back."
-                 data-texte-niveau3="Keb waves first, and Bek waves back — she thinks he looks happy today!">
-              <div class="bulle-avatar"></div>
-              <div class="bulle-corps"></div>
+          <div class="bulle-pile-ligne">
+            <button class="btn-vers-niveau3" id="btnVersNiveau3" title="Scroll up and try level 3" aria-label="Scroll up and try level 3">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+              Try level 3
+            </button>
+            <div class="bulle-pile-demo" id="bullePileDemo">
+              <div class="bulle-item" id="demoBulleEvolutive"
+                   data-qui="bek"
+                   data-texte-niveau2="Keb waves first. Bek waves back."
+                   data-texte-niveau3="Keb waves first, and Bek waves back — she thinks he looks happy today!">
+                <div class="bulle-avatar"></div>
+                <div class="bulle-corps"></div>
+              </div>
             </div>
           </div>
 
@@ -359,16 +386,17 @@ function passerADemoNiveaux() {
     img.src = 'images/kloe_regarde_pointe_haut_01.png';
     img.style.opacity = '1';
 
-    var b3 = document.getElementById('bulle3');
-    b3.textContent = "Second: you can pick how much detail you want, up above \u2014 try it!";
-    b3.style.animation = 'apparaitre 0.45s ease forwards';
-
     setTimeout(function() {
       var demoNiveaux = document.getElementById('demoNiveaux');
       demoNiveaux.style.display = 'block';
       void demoNiveaux.offsetWidth;
       demoNiveaux.classList.add('visible');
       demoNiveaux.scrollIntoView({behavior:'smooth', block:'center'});
+
+      var msg = document.getElementById('bulleSousNiveaux');
+      msg.textContent = "Second: you can pick how much detail you want, up above \u2014 try it!";
+      msg.classList.add('visible');
+      msg.style.animation = 'apparaitre 0.45s ease forwards';
     }, 500);
   }, 350);
 }
@@ -387,9 +415,11 @@ document.querySelectorAll('.demo-diff-opt').forEach(function(opt) {
       demoNiveau2Essaye = true;
       document.getElementById('demoOpt3').classList.remove('verrouille');
       document.getElementById('demoNiveauxInvite').textContent = 'Nice! Now try level 3.';
+      document.getElementById('btnVersNiveau3').classList.add('visible');
     }
     if (niveau === 3) {
       document.getElementById('demoNiveauxInvite').textContent = 'That\u2019s the idea \u2014 same story, your pace.';
+      document.getElementById('btnVersNiveau3').classList.remove('visible');
       setTimeout(function(){
         document.getElementById('btnSuiteDemo').classList.add('visible');
       }, 900);
@@ -455,6 +485,10 @@ function terminerDemo() {
     document.getElementById('choixZone').scrollIntoView({behavior:'smooth', block:'center'});
   }, 350);
 }
+document.getElementById('btnVersNiveau3').addEventListener('click', function() {
+  document.getElementById('demoNiveaux').scrollIntoView({behavior:'smooth', block:'center'});
+});
+
 document.getElementById('demoFermer').addEventListener('click', terminerDemo);
 document.getElementById('btnSuiteDemo').addEventListener('click', terminerDemo);
 
