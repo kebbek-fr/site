@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Historia 1 — Introducción — Le français avec Keb &amp; Bek</title>
+  <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    :root{
+      --beige:#F2EDE3; --beige-clair:#FDF8F2; --bleu-poudre:#B8C9E0; --bleu-fonce:#7A9BBF;
+      --vert:#7FA86E; --vert-clair:#EAF3DE; --vert-fonce:#4A7A36; --texte:#2A2422;
+      --gris:#8A8480; --blanc:#ffffff; --ombre:rgba(42,36,34,0.14);
+      --corail:#E0593C; --corail-clair:#FBEAE6;
+      --violet:#7B5EA8; --violet-fonce:#5A4080; --gris-clair:#C9C2BC;
+    }
+    html { scroll-behavior:smooth; }
+    body { min-height:100vh; background:var(--beige); font-family:"Nunito",sans-serif; color:var(--texte); display:flex; flex-direction:column; }
+
+    /* ── Bouton passer l'intro — toujours disponible ── */
+    .btn-passer {
+      position:fixed; top:16px; right:16px; z-index:200;
+      display:inline-flex; align-items:center; gap:6px;
+      padding:8px 16px; border-radius:100px;
+      background:var(--beige-clair); border:1.5px solid var(--gris-clair);
+      color:var(--gris); font-size:13px; font-weight:700;
+      text-decoration:none; cursor:pointer;
+      transition:background 0.15s, border-color 0.15s, color 0.15s;
+      box-shadow:0 2px 8px var(--ombre);
+    }
+    .btn-passer:hover { background:#fff; border-color:var(--violet); color:var(--violet-fonce); }
+
+    /* ── Écran principal : Kloé seule, centrée ── */
+    .ecran-principal {
+      flex:1; min-height:100vh;
+      display:flex; align-items:center; justify-content:center;
+      padding:clamp(90px,10vw,110px) clamp(20px,5vw,60px) 60px;
+    }
+    .kloe-colonne {
+      display:flex; flex-direction:column; align-items:center; gap:20px;
+      max-width:520px; width:100%;
+    }
+    .kloe-img-grande { width:clamp(220px,32vw,340px); object-fit:contain; transition:opacity 0.4s ease; }
+    .kloe-bulles { display:flex; flex-direction:column; gap:10px; width:100%; }
+    .bulle-kloe {
+      background:#fff; border:2px solid var(--corail);
+      border-radius:18px 18px 18px 4px;
+      padding:14px 18px; font-size:clamp(14px,1.7vw,16px);
+      line-height:1.6; color:var(--texte); text-align:left;
+      opacity:0; display:none;
+    }
+    .bulle-kloe.visible { display:block; }
+    @keyframes apparaitre { from{opacity:0;transform:translateY(12px);} to{opacity:1;transform:translateY(0);} }
+
+    .btn-suite {
+      align-self:flex-end; margin-top:2px;
+      display:inline-flex; align-items:center; gap:5px;
+      padding:7px 16px; border-radius:100px;
+      background:var(--corail); color:#fff; border:none;
+      font-size:13px; font-weight:700; cursor:pointer;
+      box-shadow:0 3px 10px rgba(224,89,60,0.3);
+      transition:background 0.15s, transform 0.15s;
+      opacity:0; display:none;
+    }
+    .btn-suite.visible { display:inline-flex; animation:apparaitre 0.4s ease forwards; }
+    .btn-suite:hover { background:#c8482e; transform:translateY(-1px); }
+
+    .choix-zone {
+      display:none; gap:10px; flex-wrap:wrap; justify-content:center; margin-top:10px; width:100%;
+    }
+    .btn-histoire {
+      padding:11px 22px; border-radius:100px;
+      background:var(--vert-fonce); color:#fff; border:none;
+      font-size:14px; font-weight:700; cursor:pointer;
+      text-decoration:none; display:inline-flex; align-items:center; gap:6px;
+      box-shadow:0 4px 14px rgba(74,122,54,0.3);
+      transition:background 0.15s, transform 0.15s;
+    }
+    .btn-histoire:hover { background:#3d6a28; transform:translateY(-2px); }
+
+    /* ── Emplacement réservé — sera rempli plus tard, une fois les
+         nouveautés (sélecteur de niveau, questions) stabilisées.
+         Ne rien afficher tant que ce n'est pas prêt. ── */
+    .kloe-nouveautes { display:flex; flex-direction:column; gap:0; width:100%; }
+
+    .demo-etiquette{
+      align-self:center; font-size:11px; font-weight:800; letter-spacing:0.06em; text-transform:uppercase;
+      color:var(--gris); background:var(--beige-clair); border:1px dashed var(--gris-clair);
+      border-radius:100px; padding:4px 12px; margin-bottom:14px;
+    }
+
+    .demo-fermer{
+      position:sticky; top:14px; align-self:flex-end; z-index:50;
+      width:34px; height:34px; border-radius:50%; border:1.5px solid var(--violet);
+      background:var(--beige-clair); color:var(--violet-fonce); cursor:pointer;
+      display:flex; align-items:center; justify-content:center;
+      box-shadow:0 3px 10px rgba(90,64,128,0.18); margin-bottom:8px;
+      transition:transform 0.15s ease, background 0.15s ease;
+    }
+    .demo-fermer:hover{ background:var(--corail-clair); transform:scale(1.06); }
+
+    .demo-niveaux{
+      display:none;
+      max-width:420px; width:100%; margin:0 auto 22px; background:var(--beige-clair);
+      border:1.5px solid var(--violet); border-radius:18px; padding:16px 20px;
+      opacity:0; transform:translateY(-8px); transition:opacity 0.4s ease, transform 0.4s ease;
+    }
+    .demo-niveaux.visible{ display:block; opacity:1; transform:translateY(0); }
+    .demo-niveaux-titre{
+      font-family:"Patrick Hand",cursive; font-size:16px; color:var(--violet-fonce);
+      text-align:center; margin-bottom:10px;
+    }
+    .demo-diff-options{ display:flex; gap:8px; }
+    .demo-diff-opt{
+      flex:1; background:#fff; border:1.5px solid var(--bleu-poudre); border-radius:12px;
+      padding:9px 6px; text-align:center; cursor:pointer; font-size:12.5px; font-weight:700;
+      color:var(--gris); transition:background 0.15s, border-color 0.15s, color 0.15s, opacity 0.15s;
+    }
+    .demo-diff-opt .demo-diff-num{ display:block; font-family:"Patrick Hand",cursive; font-size:20px; line-height:1.1; }
+    .demo-diff-opt:hover{ background:#EEE9F7; }
+    .demo-diff-opt.actif{ background:var(--violet); border-color:var(--violet); color:#fff; }
+    .demo-diff-opt.verrouille{ opacity:0.4; cursor:default; pointer-events:none; }
+    .demo-niveaux-invite{ text-align:center; font-size:12px; color:var(--gris); font-style:italic; margin-top:9px; }
+
+    .demo-bulles-zone{
+      max-width:420px; width:100%; margin:0 auto;
+      opacity:0; transform:translateY(10px); transition:opacity 0.4s ease, transform 0.4s ease;
+    }
+    .demo-bulles-zone.visible{ opacity:1; transform:translateY(0); }
+
+    .perso-zone-demo{ display:flex; justify-content:center; margin-bottom:6px; }
+    .demo-perso-img{ width:clamp(160px,26vw,220px); object-fit:contain; }
+
+    /* Reproduction fidèle du système de bulles de p02 — même classes, même
+       comportement (récit/pensée = une bulle qui évolue en place dans la pile,
+       pas un texte séparé), pour que la démo prévisualise vraiment le résultat. */
+    .bulle-item{
+      display:flex; align-items:flex-start; gap:10px;
+      opacity:0; max-height:0; overflow:hidden;
+      transition:opacity 0.35s ease, max-height 0.35s ease, margin 0.35s ease;
+    }
+    .bulle-item.in{ opacity:1; max-height:120px; margin:9px 0; overflow:visible; }
+    .bulle-avatar{
+      flex-shrink:0; width:30px; height:30px; border-radius:50%; background:#fff;
+      border:2px solid var(--c,var(--gris)); display:flex; align-items:center; justify-content:center;
+      font-family:"Patrick Hand",cursive; font-weight:700; font-size:13px; color:var(--c,var(--gris));
+    }
+    .bulle-item:not(.recit):not(.pensee) .bulle-avatar{ background:var(--c,var(--gris)); border:none; color:#fff; }
+    .bulle-corps{ flex:1; padding-left:10px; border-left:2px solid var(--c,var(--gris)); }
+    .bulle-qui{ display:block; font-size:9.5px; font-weight:800; letter-spacing:0.05em;
+      text-transform:uppercase; color:var(--c,var(--gris)); margin-bottom:1px; }
+    .bulle-texte{ font-family:"Patrick Hand",cursive; font-size:18px; color:var(--texte); }
+    .bulle-item.pensee .bulle-avatar{ border-style:dashed; }
+    .bulle-item.pensee .bulle-corps{ border-left-style:dashed; }
+    .bulle-item.pensee .bulle-texte{ font-family:"Nunito",sans-serif; font-style:italic; font-size:13px;
+      font-weight:600; color:var(--gris); }
+    .bulle-item.recit .bulle-avatar{ border-color:var(--gris-clair); color:var(--gris); }
+    .bulle-item.recit .bulle-corps{ border-left-color:var(--gris-clair); }
+    .bulle-item.recit .bulle-texte{ font-family:"Nunito",sans-serif; font-style:italic; font-size:13.5px;
+      font-weight:600; color:#6b6152; }
+    .bulle-bek{ --c:var(--vert-fonce); }
+    .bulle-keb{ --c:var(--bleu-fonce); }
+
+    .demo-narration{
+      text-align:center; margin:10px 0 4px; font-size:13px; color:#6b6152;
+      font-style:italic; font-weight:600; min-height:1.3em;
+      opacity:0; transition:opacity 0.3s ease;
+    }
+    .demo-narration.visible{ opacity:1; }
+
+    .bulle-pile-ligne{ display:flex; align-items:flex-start; gap:8px; }
+    .bulle-pile-demo{ flex:1; min-width:0; }
+    .btn-vers-niveau3{
+      flex-shrink:0; display:none; align-items:center; gap:4px;
+      margin-top:9px; padding:6px 10px; border-radius:100px;
+      background:var(--violet); color:#fff; border:none;
+      font-family:"Nunito",sans-serif; font-size:11px; font-weight:700; line-height:1.15;
+      cursor:pointer; white-space:nowrap;
+      box-shadow:0 3px 10px rgba(123,94,168,0.3);
+      transition:background 0.15s, transform 0.15s;
+    }
+    .btn-vers-niveau3.visible{ display:inline-flex; animation:apparaitre 0.4s ease forwards; }
+    .btn-vers-niveau3:hover{ background:var(--violet-fonce); transform:translateY(-1px); }
+
+    .demo-question{
+      margin-top:16px; background:var(--beige-clair); border:1.5px dashed var(--bleu-fonce);
+      border-radius:14px; padding:14px 16px;
+      opacity:0; max-height:0; overflow:hidden; transition:opacity 0.35s ease, max-height 0.35s ease;
+    }
+    .demo-question.visible{ opacity:1; max-height:220px; }
+    .demo-question-texte{ font-size:14px; font-weight:700; margin-bottom:9px; }
+    .demo-input{
+      width:100%; padding:8px 11px; border:1.5px solid var(--bleu-poudre); border-radius:8px;
+      font-family:"Nunito",sans-serif; font-size:14px; outline:none;
+    }
+    .demo-input:focus{ border-color:var(--vert-fonce); }
+    .demo-input:disabled{ background:#fff; color:var(--vert-fonce); font-weight:700; }
+    .demo-feedback{ margin-top:7px; font-size:13px; font-weight:700; color:var(--corail); min-height:1.1em; }
+    .demo-feedback.ok{ color:var(--vert-fonce); }
+  </style>
+</head>
+<body>
+
+<a href="#" class="btn-passer" id="btnPasser">
+  Saltar la intro
+  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg>
+</a>
+
+<section class="ecran-principal">
+  <div class="kloe-colonne">
+    <div class="demo-niveaux" id="demoNiveaux">
+      <div class="demo-niveaux-titre">¡Qué rico! · Nivel 1</div>
+      <div class="demo-diff-options" id="demoDiffOptions">
+        <div class="demo-diff-opt actif" data-niveau="1"><span class="demo-diff-num">1</span>Solo diálogo</div>
+        <div class="demo-diff-opt" data-niveau="2" id="demoOpt2"><span class="demo-diff-num">2</span>+ acciones</div>
+        <div class="demo-diff-opt verrouille" data-niveau="3" id="demoOpt3"><span class="demo-diff-num">3</span>+ pensamientos</div>
+      </div>
+      <div class="demo-niveaux-invite" id="demoNiveauxInvite">¡Prueba a hacer clic en el nivel 2!</div>
+    </div>
+
+    <!-- Exceptionnellement placé juste sous le sélecteur de niveaux (et non
+         sous Kloé comme les autres bulles) : au moment où ce message
+         apparaît, la page défile vers le sélecteur, qui se retrouve loin
+         au-dessus de Kloé et hors champ — ce message doit rester visible
+         juste à côté de ce dont il parle. -->
+    <div class="bulle-kloe" id="bulleSousNiveaux"></div>
+
+    <img class="kloe-img-grande" id="kloeImg" alt="Kloé" src="images/kloe_salue_01.png" onerror="this.style.display='none';">
+
+    <div class="kloe-bulles" id="kloeBulles">
+      <div class="bulle-kloe" id="bulle1"></div>
+      <button class="btn-suite" id="btnSuite1">Continuar &#9656;</button>
+      <div class="bulle-kloe" id="bulle2"></div>
+      <button class="btn-suite" id="btnSuite2">Continuar &#9656;</button>
+      <div class="bulle-kloe" id="bulle3"></div>
+
+      <div class="kloe-nouveautes" id="kloeNouveautes" style="display:none;">
+        <div class="demo-etiquette">Demo de práctica — todavía no es la historia real</div>
+        <button class="demo-fermer" id="demoFermer" aria-label="Cerrar demo" title="Saltar adelante">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+        </button>
+
+        <div class="demo-bulles-zone" id="demoBullesZone">
+          <div class="perso-zone-demo">
+            <img class="demo-perso-img" id="demoPersoImg" src="images/bek_keb_se_saluent_01.png" alt="Bek y Keb saludándose" onerror="this.style.display='none';">
+          </div>
+          <div class="demo-narration" id="demoNarration"></div>
+          <div class="bulle-pile-ligne">
+            <button class="btn-vers-niveau3" id="btnVersNiveau3" title="Sube y prueba el nivel 3" aria-label="Sube y prueba el nivel 3">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+              Prueba el nivel 3
+            </button>
+            <div class="bulle-pile-demo" id="bullePileDemo">
+              <div class="bulle-item" id="demoBulleEvolutive"
+                   data-qui="bek"
+                   data-texte-niveau2="Keb saluda primero. Bek le devuelve el saludo."
+                   data-texte-niveau3="Keb saluda primero, y Bek le devuelve el saludo — ¡piensa que hoy se le ve feliz!">
+                <div class="bulle-avatar"></div>
+                <div class="bulle-corps"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="demo-question" id="demoQuestion">
+            <div class="demo-question-texte">¿Qué le dice Bek a Keb?</div>
+            <input type="text" class="demo-input" id="demoInput" autocomplete="off" placeholder="Escribe tu respuesta…">
+            <div class="demo-feedback" id="demoFeedback"></div>
+          </div>
+        </div>
+      </div>
+      <div class="choix-zone" id="choixZone">
+        <a href="es_histoire_001_p02.html" class="btn-histoire">&#9656; Empezar la historia</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+function passerIntro() {
+  window.location.href = 'es_histoire_001_p02.html';
+}
+document.getElementById('btnPasser').addEventListener('click', function(e){
+  e.preventDefault();
+  passerIntro();
+});
+
+function etape2() {
+  document.getElementById('btnSuite1').classList.remove('visible');
+  var b1 = document.getElementById('bulle1');
+  b1.classList.remove('visible');
+
+  var img = document.getElementById('kloeImg');
+  img.style.opacity = '0';
+  setTimeout(function(){
+    img.src = 'images/kloe_se_presente_01.png';
+    img.style.opacity = '1';
+
+    var b2 = document.getElementById('bulle2');
+    b2.innerHTML = "Soy la mejor amiga de Bek \u2014 y la ayud\u00e9 a preparar las versiones en ingl\u00e9s, espa\u00f1ol y portugu\u00e9s de este curso.";
+    b2.classList.add('visible');
+    b2.style.animation = 'apparaitre 0.45s ease forwards';
+
+    setTimeout(function(){
+      document.getElementById('btnSuite2').classList.add('visible');
+    }, 1300);
+  }, 350);
+}
+document.getElementById('btnSuite1').addEventListener('click', etape2);
+
+function etape3() {
+  document.getElementById('btnSuite2').classList.remove('visible');
+  var b2 = document.getElementById('bulle2');
+  b2.classList.remove('visible');
+
+  var img = document.getElementById('kloeImg');
+  img.style.opacity = '0';
+  setTimeout(function(){
+    img.src = 'images/kloe_regarde_pointe_bas_01.png';
+    img.style.opacity = '1';
+
+    var b3 = document.getElementById('bulle3');
+    b3.textContent = "Aqu\u00ed hay dos cosas nuevas. Primero: cada respuesta que t\u00fa y Bek intercambien se queda ah\u00ed en la p\u00e1gina, acumul\u00e1ndose a medida que avanzas \u2014 \u00a1as\u00ed!";
+    b3.classList.add('visible');
+    b3.style.animation = 'apparaitre 0.45s ease forwards';
+
+    document.getElementById('kloeNouveautes').style.display = 'flex';
+    setTimeout(demarrerDemoBulles, 900);
+  }, 350);
+}
+document.getElementById('btnSuite2').addEventListener('click', etape3);
+
+// ─────────────────────────────────────────────
+//  Démo interactive — pile de bulles + question
+// ─────────────────────────────────────────────
+function normaliserDemo(s) {
+  return s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z ]/g, '').trim();
+}
+
+function demarrerDemoBulles() {
+  document.getElementById('demoBullesZone').classList.add('visible');
+  document.getElementById('demoBullesZone').scrollIntoView({behavior:'smooth', block:'center'});
+
+  var pile = document.getElementById('bullePileDemo');
+  var b1 = document.createElement('div');
+  b1.className = 'bulle-item bulle-keb';
+  b1.innerHTML = '<div class="bulle-avatar">K</div><div class="bulle-corps"><span class="bulle-qui">Keb</span><div class="bulle-texte">Salut !</div></div>';
+  pile.appendChild(b1);
+  setTimeout(function(){ b1.classList.add('in'); }, 100);
+
+  setTimeout(function() {
+    var b2 = document.createElement('div');
+    b2.className = 'bulle-item bulle-bek';
+    b2.innerHTML = '<div class="bulle-avatar">B</div><div class="bulle-corps"><span class="bulle-qui">Bek</span><div class="bulle-texte">Salut !</div></div>';
+    pile.appendChild(b2);
+    setTimeout(function(){ b2.classList.add('in'); }, 100);
+
+    setTimeout(function() {
+      document.getElementById('demoQuestion').classList.add('visible');
+      document.getElementById('demoInput').focus();
+    }, 900);
+  }, 900);
+}
+
+document.getElementById('demoInput').addEventListener('keydown', function(e) {
+  if (e.key !== 'Enter') return;
+  var val = normaliserDemo(this.value);
+  var fb = document.getElementById('demoFeedback');
+  if (val === '') return;
+
+  if (val === 'salut') {
+    fb.className = 'demo-feedback ok';
+    fb.textContent = '\u00a1Muy bien!';
+    this.disabled = true;
+    setTimeout(passerADemoNiveaux, 700);
+  } else {
+    fb.className = 'demo-feedback';
+    fb.textContent = 'No es as\u00ed \u2014 \u00a1int\u00e9ntalo de nuevo!';
+  }
+});
+
+function passerADemoNiveaux() {
+  var img = document.getElementById('kloeImg');
+  img.style.opacity = '0';
+  setTimeout(function(){
+    img.src = 'images/kloe_regarde_pointe_haut_01.png';
+    img.style.opacity = '1';
+    document.getElementById('bulle3').classList.remove('visible');
+
+    setTimeout(function() {
+      var demoNiveaux = document.getElementById('demoNiveaux');
+      demoNiveaux.style.display = 'block';
+      void demoNiveaux.offsetWidth;
+      demoNiveaux.classList.add('visible');
+      demoNiveaux.scrollIntoView({behavior:'smooth', block:'center'});
+
+      var msg = document.getElementById('bulleSousNiveaux');
+      msg.textContent = "Segundo: puedes elegir cu\u00e1nto detalle quieres, m\u00e1s arriba \u2014 \u00a1pru\u00e9balo!";
+      msg.classList.add('visible');
+      msg.style.animation = 'apparaitre 0.45s ease forwards';
+    }, 500);
+  }, 350);
+}
+
+var demoNiveau2Essaye = false;
+
+document.querySelectorAll('.demo-diff-opt').forEach(function(opt) {
+  opt.addEventListener('click', function() {
+    if (opt.classList.contains('verrouille')) return;
+    document.querySelectorAll('.demo-diff-opt').forEach(function(o){ o.classList.remove('actif'); });
+    opt.classList.add('actif');
+    var niveau = parseInt(opt.dataset.niveau, 10);
+    document.querySelector('.demo-niveaux-titre').textContent = '\u00a1Qu\u00e9 rico! \u00b7 Nivel ' + niveau;
+
+    // Changements immédiats : tout ce qui reste visible près du sélecteur
+    // (l'élève vient de cliquer ici, pas besoin d'attendre le défilement).
+    if (niveau === 2) {
+      demoNiveau2Essaye = true;
+      document.getElementById('demoOpt3').classList.remove('verrouille');
+      document.getElementById('demoNiveauxInvite').textContent = '\u00a1Muy bien! Ahora prueba el nivel 3.';
+    }
+    if (niveau === 3) {
+      document.getElementById('demoNiveauxInvite').textContent = 'Esa es la idea \u2014 la misma historia, a tu ritmo.';
+      document.getElementById('bulleSousNiveaux').classList.remove('visible');
+    }
+
+    // Le défilement démarre tout de suite...
+    document.getElementById('demoBullesZone').scrollIntoView({behavior:'smooth', block:'center'});
+
+    // ...mais tout ce qui se trouve DANS la zone de bulles (hors champ tant
+    // que le défilement n'est pas terminé) n'apparaît/ne change qu'une fois
+    // l'élève arrivé en bas — pour qu'il voie le changement se produire
+    // sous ses yeux plutôt que de le découvrir déjà fait.
+    setTimeout(function() {
+      if (niveau === 2) {
+        var btn3 = document.getElementById('btnVersNiveau3');
+        btn3.classList.add('visible');
+        btn3.dataset.mode = 'monter';
+        btn3.innerHTML = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg> Prueba el nivel 3';
+      }
+      if (niveau === 3) {
+        setTimeout(function(){
+          var btn3 = document.getElementById('btnVersNiveau3');
+          btn3.classList.add('visible');
+          btn3.dataset.mode = 'continuer';
+          btn3.innerHTML = 'Continuar <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>';
+        }, 900);
+      }
+
+      majDemoBulleEvolutive(niveau);
+    }, 650);
+  });
+});
+
+function majDemoBulleEvolutive(niveau) {
+  var div = document.getElementById('demoBulleEvolutive');
+  var narrationEl = document.getElementById('demoNarration');
+  var qui = div.dataset.qui;
+  var t2 = div.dataset.texteNiveau2;
+  var t3 = div.dataset.texteNiveau3;
+  var enReflet = (niveau >= 3);
+  var texteActuel = enReflet ? t3 : t2;
+
+  function appliquerContenu() {
+    div.classList.toggle('recit', !enReflet);
+    div.classList.toggle('pensee', !!enReflet);
+    div.classList.remove('bulle-bek', 'bulle-keb');
+    div.classList.add('bulle-' + qui);
+    var avatarEl = div.querySelector('.bulle-avatar');
+    var corpsEl  = div.querySelector('.bulle-corps');
+    avatarEl.textContent = (qui === 'bek' ? 'B' : 'K');
+    var nomHTML = '<span class="bulle-qui">' + (qui === 'bek' ? 'Bek' : 'Keb') + '</span>';
+    corpsEl.innerHTML = nomHTML + '<div class="bulle-texte">' + texteActuel + '</div>';
+    narrationEl.textContent = texteActuel;
+    narrationEl.classList.add('visible');
+  }
+
+  if (niveau >= 2) {
+    if (!div.classList.contains('in')) {
+      appliquerContenu();
+      setTimeout(function(){ div.classList.add('in'); }, 400);
+    } else {
+      appliquerContenu();
+    }
+  } else {
+    div.classList.remove('in');
+    narrationEl.classList.remove('visible');
+  }
+}
+
+function terminerDemo() {
+  document.getElementById('kloeNouveautes').style.display = 'none';
+
+  var demoNiveaux = document.getElementById('demoNiveaux');
+  demoNiveaux.classList.remove('visible');
+  setTimeout(function(){ demoNiveaux.style.display = 'none'; }, 400);
+
+  var img = document.getElementById('kloeImg');
+  img.style.opacity = '0';
+  setTimeout(function(){
+    img.src = 'images/kloe_explique_01.png';
+    img.style.opacity = '1';
+
+    var b3 = document.getElementById('bulle3');
+    b3.textContent = "Eso es todo por ahora \u2014 \u00bflisto para la primera historia?";
+    b3.classList.add('visible');
+    b3.style.animation = 'apparaitre 0.45s ease forwards';
+
+    document.getElementById('choixZone').style.display = 'flex';
+    document.getElementById('choixZone').style.animation = 'apparaitre 0.5s ease 0.3s forwards';
+    document.getElementById('choixZone').scrollIntoView({behavior:'smooth', block:'center'});
+  }, 350);
+}
+document.getElementById('btnVersNiveau3').addEventListener('click', function() {
+  if (this.dataset.mode === 'continuer') {
+    terminerDemo();
+  } else {
+    document.getElementById('demoNiveaux').scrollIntoView({behavior:'smooth', block:'center'});
+  }
+});
+
+document.getElementById('demoFermer').addEventListener('click', terminerDemo);
+
+(function(){
+  var b1 = document.getElementById('bulle1');
+  b1.innerHTML = "\u00a1Hola de nuevo! Si ya pasaste por el tutorial, ya nos conocimos \u2014 soy Klo\u00e9.";
+  b1.classList.add('visible');
+  b1.style.animation = 'apparaitre 0.5s ease 0.4s forwards';
+
+  setTimeout(function(){
+    document.getElementById('btnSuite1').classList.add('visible');
+  }, 1300);
+})();
+</script>
+
+</body>
+</html>
