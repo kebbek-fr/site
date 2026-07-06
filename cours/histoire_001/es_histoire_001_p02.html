@@ -1,0 +1,1588 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Historia 1 — Le français avec Keb &amp; Bek</title>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Patrick+Hand&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,400i&display=swap" rel="stylesheet">
+<style>
+  *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+  :root{
+    --beige:#F2EDE3; --beige-clair:#FDF8F2; --bleu-poudre:#B8C9E0; --bleu-fonce:#7A9BBF;
+    --vert:#7FA86E; --vert-clair:#EAF3DE; --vert-fonce:#4A7A36; --texte:#2A2422;
+    --gris:#8A8480; --blanc:#ffffff; --ombre:rgba(42,36,34,0.14);
+    --corail:#E0593C; --corail-clair:#FBEAE6;
+    --rouge:#C0392B; --rouge-clair:#FDECEA;
+    --ambre:#D4A24E; --ambre-clair:#FAEEDA; --ambre-fonce:#854F0B;
+    --violet:#7B5EA8; --violet-fonce:#5A4080; --violet-clair:#EEE9F7; --gris-clair:#C9C2BC;
+  }
+  html{scroll-behavior:smooth;}
+  body{background:var(--beige);font-family:"Nunito",sans-serif;color:var(--texte);padding-bottom:60px;}
+
+  /* ── Back button (canonique) ── */
+  #btn-retour{
+    position:fixed;top:18px;left:18px;z-index:200;
+    display:flex;align-items:center;gap:7px;
+    font-family:"Patrick Hand",cursive;font-size:15px;
+    color:var(--violet-fonce);text-decoration:none;
+    background:var(--beige-clair);border:1.5px solid var(--violet);
+    border-radius:100px;padding:7px 16px 7px 11px;
+    box-shadow:0 3px 10px rgba(90,64,128,0.15);
+    transition:transform 0.18s ease,box-shadow 0.18s ease;
+  }
+  #btn-retour:hover{transform:translateX(-3px);box-shadow:0 5px 16px rgba(90,64,128,0.25);}
+
+  /* ── Boîte de vocabulaire flottante (canonique) ── */
+  #bulle-flottante{
+    position:fixed;top:16px;right:16px;z-index:200;width:240px;
+    background:var(--beige-clair);border:1.5px solid var(--bleu-poudre);border-radius:16px;
+    box-shadow:0 6px 20px var(--ombre);overflow:hidden;
+    transition:width 0.25s ease,opacity 0.25s ease;
+  }
+  #bulle-flottante.minimisee{width:46px;border-radius:50%;}
+  #bulle-flottante.minimisee .bf-corps,
+  #bulle-flottante.minimisee .bf-footer,
+  #bulle-flottante.minimisee .bf-titre-texte,
+  #bulle-flottante.minimisee .bf-compteur,
+  #bulle-flottante.minimisee .bf-chevron{display:none;}
+  #bulle-flottante.minimisee .bf-header{padding:0;width:46px;height:46px;justify-content:center;border-radius:50%;}
+  #bulle-flottante.minimisee .bf-icone-seule{display:flex;}
+  .bf-icone-seule{display:none;width:100%;height:100%;align-items:center;justify-content:center;position:relative;}
+  .bf-icone-seule .bf-mini-compteur{position:absolute;top:-2px;right:-2px;background:var(--vert-fonce);color:#fff;border-radius:50%;width:16px;height:16px;font-size:9px;display:flex;align-items:center;justify-content:center;font-weight:800;}
+  .bf-header{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 14px;background:var(--vert-clair);cursor:pointer;user-select:none;}
+  .bf-titre{font-size:12.5px;font-weight:800;color:var(--vert-fonce);text-transform:uppercase;letter-spacing:0.04em;display:flex;align-items:center;gap:6px;}
+  .bf-icone-svg{flex-shrink:0;}
+  .bf-compteur{background:var(--vert-fonce);color:#fff;border-radius:100px;font-size:11px;padding:1px 7px;font-weight:700;}
+  .bf-actions-header{display:flex;align-items:center;gap:6px;}
+  .bf-btn-min{background:none;border:none;cursor:pointer;color:var(--vert-fonce);width:20px;height:20px;display:flex;align-items:center;justify-content:center;border-radius:50%;transition:background 0.15s;flex-shrink:0;}
+  .bf-btn-min:hover{background:rgba(74,122,54,0.15);}
+  .bf-chevron{font-size:11px;color:var(--vert-fonce);transition:transform 0.25s;}
+  #bulle-flottante.repliee .bf-chevron{transform:rotate(-90deg);}
+  .bf-corps{max-height:220px;overflow-y:auto;padding:10px 14px;}
+  #bulle-flottante.repliee .bf-corps,#bulle-flottante.repliee .bf-footer{display:none;}
+  .bf-item{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:13px;padding:5px 0;border-bottom:1px dotted rgba(138,128,115,0.3);}
+  .bf-item:last-child{border-bottom:none;}
+  .bf-vide{font-size:12px;color:var(--gris);font-style:italic;text-align:center;padding:8px 0;}
+  .bf-footer{padding:8px 14px;border-top:1px solid rgba(184,201,224,0.4);display:flex;gap:6px;}
+  .bf-btn-footer{flex:1;background:none;border:1.5px solid var(--bleu-fonce);color:var(--bleu-fonce);border-radius:8px;padding:6px;font-size:11.5px;font-weight:700;cursor:pointer;transition:background 0.15s;display:flex;align-items:center;justify-content:center;gap:5px;}
+  .bf-btn-footer:hover{background:#EEF4FB;}
+  .bf-btn-footer.copie{background:var(--vert-fonce);border-color:var(--vert-fonce);color:#fff;}
+  .bf-purger{flex:1;background:none;border:1.5px solid var(--rouge);color:var(--rouge);border-radius:8px;padding:6px;font-size:11.5px;font-weight:700;cursor:pointer;transition:background 0.15s;display:flex;align-items:center;justify-content:center;gap:5px;}
+  .bf-purger:hover{background:var(--rouge-clair);}
+
+  #confirm-overlay{position:fixed;inset:0;background:rgba(42,36,34,0.4);z-index:300;display:none;align-items:center;justify-content:center;}
+  #confirm-overlay.actif{display:flex;}
+  .confirm-boite{background:var(--blanc);border-radius:16px;padding:24px;max-width:300px;text-align:center;box-shadow:0 12px 36px rgba(0,0,0,0.25);}
+  .confirm-boite p{font-size:14px;margin-bottom:16px;line-height:1.5;}
+  .confirm-btns{display:flex;gap:10px;justify-content:center;}
+  .confirm-btns button{padding:8px 16px;border-radius:8px;border:none;font-size:13px;font-weight:700;cursor:pointer;}
+  .btn-annuler{background:var(--beige);color:var(--texte);}
+  .btn-confirmer{background:var(--rouge);color:#fff;}
+
+  /* ── Panneaux repliables (haut et questions) ── */
+  .repli-groupe{max-width:480px;margin:0 auto;padding:0 20px;}
+  .repli-barre{
+    width:100%;background:var(--beige-clair);border:1.5px solid var(--violet);border-radius:100px;
+    padding:12px 20px;display:flex;align-items:center;justify-content:center;gap:10px;cursor:pointer;
+    font-family:"Patrick Hand",cursive;font-size:18px;font-weight:700;color:var(--violet-fonce);
+    transition:background 0.15s;box-shadow:0 3px 10px rgba(90,64,128,0.1);
+  }
+  .repli-barre:hover{background:var(--violet-clair);}
+  .repli-chevron{font-size:13px;transition:transform 0.25s ease;flex-shrink:0;}
+  .repli-groupe.ouvert .repli-chevron{transform:rotate(180deg);}
+  .repli-corps{padding-top:4px;}
+  .icone-etincelle{vertical-align:-2px;color:var(--ambre-fonce);}
+
+  .entete{max-width:640px;margin:0 auto;padding:22px 20px 0;text-align:center;}
+  .entete-eyebrow{font-size:12.5px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:var(--violet-fonce);}
+  .entete-titre{font-family:"Patrick Hand",cursive;font-size:38px;color:var(--texte);margin-top:4px;transform:rotate(-0.6deg);}
+  .entete-sub{font-size:13.5px;color:var(--gris);font-style:italic;margin-top:6px;}
+
+  /* ── Sélecteur de difficulté ── */
+  .diff-boite{max-width:460px;margin:26px auto 0;background:var(--beige-clair);border:1.5px solid var(--violet);
+    border-radius:18px;padding:16px 20px;}
+  .diff-titre{font-family:"Patrick Hand",cursive;font-size:16px;color:var(--violet-fonce);text-align:center;margin-bottom:10px;}
+  .diff-options{display:flex;gap:8px;}
+  .diff-opt{flex:1;background:var(--blanc);border:1.5px solid var(--bleu-poudre);border-radius:12px;
+    padding:9px 6px;text-align:center;cursor:pointer;font-size:12.5px;font-weight:700;color:var(--gris);
+    transition:background 0.15s,border-color 0.15s,color 0.15s;}
+  .diff-opt .diff-num{display:block;font-family:"Patrick Hand",cursive;font-size:20px;line-height:1.1;}
+  .diff-opt:hover{background:var(--violet-clair);}
+  .diff-opt.actif{background:var(--violet);border-color:var(--violet);color:#fff;}
+  .diff-desc{text-align:center;font-size:12px;color:var(--gris);margin-top:9px;font-style:italic;min-height:16px;}
+
+  /* ── Scène unique + compteur ── */
+  .stage-compteur{text-align:center;font-family:"Patrick Hand",cursive;font-size:14px;font-weight:700;
+    color:var(--gris);letter-spacing:0.02em;margin-bottom:6px;}
+
+  .stage-wrap{max-width:640px;margin:0 auto;padding:36px 24px 6px;}
+  .perso-ligne{display:flex;align-items:flex-end;justify-content:center;gap:36px;flex-wrap:wrap;width:100%;min-height:420px;}
+  /* Espace réservé au-dessus de la rangée quand une bulle BD (ancrée à la tête
+     d'un personnage) sera affichée cette scène — évite qu'elle empiète sur le
+     compteur au-dessus. Appliqué seulement si la scène a une bulle-stage
+     (voir rendre()), pour ne pas ajouter d'espace inutile aux scènes muettes. */
+  .perso-ligne.a-bulle-scene{margin-top:64px;}
+  /* Modèle de taille : hauteur fixe, largeur libre (object-fit:contain).
+     Avant (largeur fixe, hauteur libre) : une image combinée plus large qu'une
+     autre (ex. une scène avec du flou de mouvement latéral) finissait avec une
+     hauteur RENDUE plus petite — donnant l'impression que les personnages
+     rétrécissaient d'une scène à l'autre alors que rien n'avait changé dans
+     le contenu. Hauteur fixe = tous les personnages gardent la même taille
+     apparente, peu importe le format (portrait serré ou composition large). */
+  .perso-zone{position:relative;height:420px;max-width:560px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;
+    opacity:0;transform:scale(0.94);transition:opacity 0.3s ease,transform 0.3s ease;}
+  .perso-zone.in{opacity:1;transform:scale(1);}
+  .perso-zone img{height:100%;width:auto;max-width:100%;object-fit:contain;display:block;}
+
+  /* ── Fondu au bord gauche, pour les images où Bek sort volontairement du
+       cadre en courant (ex. scène 8) — sans ce fondu, le bord de l'image
+       coupe son visage à vif et donne l'impression d'une image tronquée
+       plutôt que d'un personnage qui quitte la scène. Ciblé UNIQUEMENT sur
+       ce fichier précis via le sélecteur d'attribut [src*=...], donc aucun
+       effet sur les autres images. ── */
+  .perso-zone img[src*="bek_part_keb_attend"]{
+    -webkit-mask-image:linear-gradient(to right, transparent 0%, rgba(0,0,0,0.55) 6%, black 14%, black 100%);
+    mask-image:linear-gradient(to right, transparent 0%, rgba(0,0,0,0.55) 6%, black 14%, black 100%);
+  }
+
+  /* ── Bulle BD ancrée à la tête du personnage qui parle (en plus de la pile du bas) ── */
+  .bulle-stage{
+    position:absolute; top:0; left:50%; transform:translate(-50%,-100%) scale(0.85);
+    transform-origin:center bottom; z-index:5;
+    background:var(--blanc); border:2.5px solid var(--c,var(--gris));
+    border-radius:100px; padding:9px 20px; margin-top:-8px;
+    max-width:230px; white-space:nowrap;
+    box-shadow:0 5px 16px rgba(42,36,34,0.14);
+    opacity:0; transition:opacity 0.25s ease, transform 0.25s cubic-bezier(0.34,1.56,0.64,1);
+  }
+  .bulle-stage.in{ opacity:1; transform:translate(-50%,-100%) scale(1); }
+  .bulle-stage::before{
+    content:""; position:absolute; top:100%; left:50%; transform:translateX(-50%);
+    width:0; height:0; border:11px solid transparent; border-top-color:var(--c,var(--gris));
+    margin-top:0px;
+  }
+  .bulle-stage::after{
+    content:""; position:absolute; top:100%; left:50%; transform:translateX(-50%);
+    width:0; height:0; border:8px solid transparent; border-top-color:var(--blanc);
+    margin-top:-3px;
+  }
+  .bulle-stage-texte{
+    font-family:"Patrick Hand",cursive; font-size:19px; line-height:1.25;
+    color:var(--texte); text-align:center;
+  }
+
+  /* ── Bulle d'invitation à répondre, affichée à droite des personnages ── */
+  .bulle-invite{
+    width:270px; flex-shrink:0; align-self:center;
+    background:var(--beige-clair); border:2px solid var(--violet);
+    border-radius:20px; padding:16px 18px;
+    display:flex; flex-direction:column; gap:10px;
+    opacity:0; transform:translateY(10px) scale(0.96);
+    transition:opacity 0.3s ease, transform 0.3s ease;
+    box-shadow:0 6px 18px rgba(90,64,128,0.12);
+  }
+  .bulle-invite.in{ opacity:1; transform:translateY(0) scale(1); }
+  .bi-question{font-family:"Patrick Hand",cursive;font-size:16.5px;color:var(--violet-fonce);line-height:1.35;}
+  .bi-input-row{display:flex;gap:7px;}
+  .bi-input{
+    flex:1; min-width:0; padding:8px 12px; border-radius:100px;
+    border:1.5px solid var(--gris-clair); font-family:"Nunito",sans-serif; font-size:13.5px;
+    background:var(--blanc); color:var(--texte);
+  }
+  .bi-input:focus{outline:none;border-color:var(--violet);}
+  .bi-btn{
+    padding:8px 15px;border-radius:100px;border:none;
+    background:var(--violet-fonce);color:#fff;font-family:"Patrick Hand",cursive;
+    font-size:13.5px;cursor:pointer;transition:background 0.15s ease;
+  }
+  .bi-btn:hover{background:var(--violet);}
+  .bi-feedback{font-family:"Nunito",sans-serif;font-weight:700;font-size:13px;min-height:1.2em;}
+  .bi-feedback.ok{color:var(--vert-fonce);}
+  .bi-feedback.retry{color:var(--corail);}
+
+  .bi-recompense{
+    margin-top:2px;background:var(--ambre-clair);border:1.5px dashed var(--ambre);
+    border-radius:14px;padding:11px 13px;display:flex;flex-direction:column;gap:6px;
+  }
+  .bi-recompense-titre{font-family:"Patrick Hand",cursive;font-size:14.5px;color:var(--ambre-fonce);font-weight:700;}
+  .bi-code-row{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;}
+  .bi-code{
+    font-family:"Nunito",monospace;font-weight:700;font-size:13px;color:var(--texte);
+    background:var(--blanc);padding:4px 10px;border-radius:8px;border:1px solid var(--gris-clair);
+  }
+  .bi-copier-btn{
+    padding:4px 12px;border-radius:100px;border:1.5px solid var(--ambre-fonce);
+    background:transparent;color:var(--ambre-fonce);font-size:11.5px;font-weight:700;cursor:pointer;
+  }
+  .bi-mdp-note{font-size:11.5px;color:var(--gris);font-style:italic;}
+  .bi-bravo-lien{
+    display:inline-flex;align-items:center;gap:6px;align-self:flex-start;margin-top:2px;
+    font-family:"Nunito",sans-serif;font-weight:700;font-size:12.5px;color:var(--ambre-fonce);
+    background:var(--blanc);border:1.5px solid var(--ambre-fonce);border-radius:100px;
+    padding:6px 14px;text-decoration:none;cursor:pointer;
+  }
+  .bi-bravo-lien:hover{background:var(--ambre-clair);}
+  .bi-bravo-lien svg{width:12px;height:12px;flex-shrink:0;}
+
+  .stage-narration{text-align:center;font-size:14px;font-style:italic;color:#6b6152;font-weight:600;
+    min-height:1.3em;margin-top:6px;}
+
+  /* ── Pile de bulles — s'accumule au fil des clics ── */
+  .bulle-pile{display:flex;flex-direction:column;gap:2px;margin-top:20px;}
+  .bulle-item{
+    display:flex;align-items:flex-start;gap:12px;
+    opacity:0;max-height:0;overflow:hidden;
+    transition:opacity 0.35s ease,max-height 0.35s ease,margin 0.35s ease;
+  }
+  .bulle-item.in{opacity:1;max-height:140px;margin:9px 0;overflow:visible;}
+  .bulle-avatar{
+    flex-shrink:0;width:36px;height:36px;border-radius:50%;background:var(--blanc);
+    border:2.5px solid var(--c,var(--gris));display:flex;align-items:center;justify-content:center;
+    font-family:"Patrick Hand",cursive;font-weight:700;font-size:16px;color:var(--c,var(--gris));
+  }
+  /* Niveau 1 (dialogue simple, ni récit ni pensée) : cercle plein coloré, sans bordure — le style le plus sobre des trois. */
+  .bulle-item:not(.recit):not(.pensee) .bulle-avatar{
+    background:var(--c,var(--gris));border:none;color:var(--blanc);
+  }
+  .bulle-corps{flex:1;padding:1px 0 1px 12px;border-left:2.5px solid var(--c,var(--gris));}
+  .bulle-qui{display:block;font-family:"Nunito",sans-serif;font-weight:800;font-size:10.5px;
+    letter-spacing:0.06em;text-transform:uppercase;color:var(--c,var(--gris));margin-bottom:2px;}
+  .bulle-texte{font-family:"Patrick Hand",cursive;font-size:22px;line-height:1.3;color:var(--texte);}
+  .bulle-item.pensee .bulle-avatar{border-style:dashed;}
+  .bulle-item.pensee .bulle-corps{border-left-style:dashed;}
+  .bulle-item.pensee .bulle-texte{font-family:"Nunito",sans-serif;font-style:italic;font-size:14px;
+    font-weight:600;color:var(--gris);}
+  .bulle-item.recit .bulle-avatar{border-color:var(--gris-clair);color:var(--gris);}
+  .bulle-item.recit .bulle-corps{border-left-color:var(--gris-clair);}
+  .bulle-item.recit .bulle-texte{font-family:"Nunito",sans-serif;font-style:italic;font-size:14.5px;
+    font-weight:600;color:#6b6152;}
+  .bulle-bek{--c:var(--vert-fonce);}
+  .bulle-keb{--c:var(--bleu-fonce);}
+
+  /* Mot expliqué par Kloé — pointillé ambre, tooltip corail */
+  .vocab-mot{position:relative;border-bottom:2.5px dashed var(--ambre-fonce);cursor:pointer;font-weight:800;color:inherit;padding-bottom:1px;}
+  .vocab-tooltip{
+    display:none;position:absolute;left:50%;bottom:100%;transform:translateX(-50%) translateY(-6px);
+    background:var(--blanc);border:2px solid var(--corail);border-radius:14px;
+    padding:12px 14px;width:260px;box-shadow:0 8px 22px rgba(42,36,34,0.2);z-index:15;
+    font-family:"Nunito",sans-serif;font-weight:400;text-align:left;font-size:12.5px;line-height:1.5;color:var(--texte);
+    white-space:normal; align-items:flex-end;gap:10px;
+  }
+  .vocab-tooltip .vt-texte{flex:1;min-width:0;}
+  .vocab-tooltip .vt-img{width:64px;height:auto;max-height:74px;object-fit:contain;flex-shrink:0;align-self:flex-end;}
+  .vocab-tooltip .vt-nom{font-family:"Patrick Hand",cursive;font-weight:700;font-size:13px;color:var(--corail);margin-bottom:3px;display:block;}
+  .vocab-tooltip::after{content:"";position:absolute;top:100%;left:50%;transform:translateX(-50%);border:7px solid transparent;border-top-color:var(--corail);}
+  .vocab-mot:hover .vocab-tooltip,.vocab-mot.active .vocab-tooltip{display:flex;}
+
+  /* ── Contrôles de navigation de la scène ── */
+  .stage-nav{display:flex;align-items:center;justify-content:center;gap:14px;margin-top:26px;}
+  .btn-etape-retour{
+    width:38px;height:38px;border-radius:50%;border:1.5px solid var(--violet);background:var(--beige-clair);
+    color:var(--violet-fonce);display:flex;align-items:center;justify-content:center;cursor:pointer;
+    transition:opacity 0.2s ease,background 0.15s ease;
+  }
+  .btn-etape-retour:hover{background:var(--violet-clair);}
+  .btn-etape-retour[disabled]{opacity:0.35;cursor:default;pointer-events:none;}
+  .btn-continuer{
+    display:inline-flex;align-items:center;gap:7px;background:var(--vert-fonce);color:#fff;border:none;
+    border-radius:100px;padding:10px 24px;font-family:"Patrick Hand",cursive;font-size:18px;cursor:pointer;
+    box-shadow:0 4px 14px rgba(74,122,54,0.35);
+    transition:transform 0.18s cubic-bezier(0.34,1.56,0.64,1),box-shadow 0.18s;
+  }
+  .btn-continuer:hover{transform:translateY(-2px) scale(1.03);box-shadow:0 7px 20px rgba(74,122,54,0.45);}
+
+  /* ── Encadré Kloé — clin d'œil personnel (Ça va / Chantal) ── */
+  .kloe-aside{max-width:600px;margin:38px auto 0;padding:0 24px;animation:apparaitre 0.5s ease forwards;}
+  .kloe-aside-ligne{display:flex;align-items:flex-start;gap:14px;}
+  .kloe-aside-img{width:64px;flex-shrink:0;border-radius:50%;}
+  .kloe-aside-corps{flex:1;display:flex;flex-direction:column;gap:8px;}
+  .kloe-aside-bulle{
+    background:var(--blanc);border:2px solid var(--corail);border-radius:18px 18px 18px 4px;
+    padding:13px 16px;
+  }
+  .kloe-aside-question{font-family:"Patrick Hand",cursive;font-size:19px;color:var(--texte);margin-bottom:8px;}
+  .kloe-aside-ligne-saisie{display:flex;gap:8px;}
+  .kloe-aside-input{
+    flex:1;border:1.5px solid var(--bleu-poudre);border-radius:8px;padding:8px 11px;
+    font-family:"Nunito",sans-serif;font-size:14px;background:var(--beige-clair);
+  }
+  .kloe-aside-input:focus{outline:none;border-color:var(--corail);}
+  .kloe-aside-btn{
+    background:var(--corail);color:#fff;border:none;border-radius:8px;padding:8px 16px;
+    font-weight:800;cursor:pointer;transition:background 0.15s;
+  }
+  .kloe-aside-btn:hover{background:#c8482e;}
+  .kloe-aside-retour{
+    background:var(--corail-clair);border-left:3px solid var(--corail);border-radius:10px;
+    padding:10px 14px;font-size:14px;line-height:1.5;color:#7a3626;
+  }
+  /* ── Vocabulaire à cocher ── */
+  .section-cocher{
+    display:none;max-width:640px;margin:44px auto 0;
+    background:var(--beige-clair);border:1.5px solid rgba(184,201,224,0.5);
+    border-radius:18px;padding:20px 24px;box-shadow:0 4px 16px var(--ombre);
+  }
+  .sc-titre{font-family:"Patrick Hand",cursive;font-size:20px;color:var(--vert-fonce);margin-bottom:12px;}
+  .sc-item{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:10px;transition:background 0.15s;cursor:pointer;}
+  .sc-item:hover{background:var(--vert-clair);}
+  .sc-item input{width:18px;height:18px;accent-color:var(--vert-fonce);cursor:pointer;}
+  .sc-item label{font-size:14px;cursor:pointer;flex:1;}
+  .sc-item .sc-trad{color:var(--gris);font-size:12.5px;}
+  .sc-item-nouveau{animation:apparaitre 0.5s ease forwards;}
+  @keyframes apparaitre{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+
+  /* ── Séparateur avant les questions ── */
+  .separateur{max-width:600px;margin:46px auto 0;padding:0 24px;}
+  .separateur hr{border:none;border-top:1.5px solid rgba(184,201,224,0.5);margin-bottom:8px;}
+  .separateur .label{font-size:11.5px;letter-spacing:0.12em;text-transform:uppercase;color:var(--gris);font-weight:800;}
+
+  /* ── Exercice — plusieurs questions empilées ── */
+  .exercice{max-width:600px;margin:20px auto 0;padding:26px 24px;background:var(--beige-clair);
+    border:1.5px solid var(--bleu-poudre);border-radius:20px;}
+  .exercice-titre{font-family:"Patrick Hand",cursive;font-size:15px;font-weight:700;color:var(--bleu-fonce);
+    text-transform:uppercase;letter-spacing:0.06em;text-align:center;margin-bottom:14px;}
+  .quiz-question{padding:16px 0;border-top:1.5px dashed rgba(122,155,191,0.35);}
+  .quiz-question:first-child{border-top:none;padding-top:0;}
+  .qcm-question{font-size:16px;font-weight:700;text-align:center;margin-bottom:16px;}
+  .qcm-options{display:flex;flex-direction:column;gap:10px;}
+  .qcm-opt{background:var(--blanc);border:1.5px solid var(--bleu-poudre);border-radius:12px;
+    padding:11px 16px;font-size:15px;cursor:pointer;text-align:left;transition:background 0.15s,border-color 0.15s;}
+  .qcm-opt:hover{background:#EEF4FB;}
+  .qcm-opt.correcte{background:var(--vert-clair);border-color:var(--vert-fonce);}
+  .qcm-opt.incorrecte{background:var(--corail-clair);border-color:var(--corail);}
+  .qcm-texte-ligne{display:flex;gap:8px;}
+  .qcm-texte-input{flex:1;border:1.5px solid var(--bleu-poudre);border-radius:100px;
+    padding:10px 16px;font-family:"Nunito",sans-serif;font-size:15px;background:var(--blanc);}
+  .qcm-texte-input:focus{outline:none;border-color:var(--bleu-fonce);}
+  .qcm-texte-input:disabled{background:var(--vert-clair);border-color:var(--vert-fonce);color:var(--texte);}
+  .qcm-texte-btn{background:var(--bleu-fonce);color:#fff;border:none;border-radius:100px;
+    padding:10px 20px;font-family:"Patrick Hand",cursive;font-size:15px;cursor:pointer;transition:background 0.15s;}
+  .qcm-texte-btn:hover{background:#688aab;}
+  .qcm-texte-btn:disabled{opacity:0.5;cursor:default;}
+  .qcm-feedback{margin-top:14px;text-align:center;font-family:"Patrick Hand",cursive;font-size:18px;min-height:24px;}
+  .qcm-feedback.ok{color:var(--vert-fonce);}
+  .qcm-feedback.retry{color:var(--corail);}
+
+  /* ── Résultat final du quiz — grande Kloé + encadré, une fois toutes les
+       questions réussies. Branche selon le nombre total d'erreurs commises
+       (une seule fois par question, peu importe le nombre de tentatives). ── */
+  .quiz-resultat{max-width:600px;margin:26px auto 0;padding:0 24px;display:flex;align-items:flex-end;gap:16px;
+    opacity:0;animation:apparaitre 0.5s ease forwards;}
+  .quiz-resultat-img{width:120px;flex-shrink:0;display:block;}
+  .quiz-resultat-boite{flex:1;background:var(--violet-clair);border:1.5px solid var(--violet);
+    border-radius:16px;padding:16px 18px;}
+  .quiz-resultat-texte{font-family:"Patrick Hand",cursive;font-size:16.5px;color:var(--violet-fonce);line-height:1.4;}
+  @media(max-width:480px){
+    .quiz-resultat{flex-direction:column;align-items:center;text-align:center;}
+    .quiz-resultat-img{width:100px;}
+  }
+
+  /* ── Section avancée (repliée) ── */
+  .avance{max-width:600px;margin:26px auto 0;padding:0 24px 10px;}
+  .avance-toggle{width:100%;background:none;border:1.5px dashed var(--violet);color:var(--violet-fonce);
+    border-radius:14px;padding:11px 16px;font-family:"Patrick Hand",cursive;font-size:16px;
+    cursor:pointer;text-align:left;display:flex;align-items:center;justify-content:space-between;transition:background 0.15s;}
+  .avance-toggle:hover{background:var(--violet-clair);}
+  .avance-corps{padding:18px 4px 4px;display:flex;flex-direction:column;gap:16px;}
+  .avance-question{font-size:14.5px;font-weight:700;}
+  .avance-texte{width:100%;min-height:70px;border:1.5px solid var(--bleu-poudre);border-radius:12px;
+    padding:10px 12px;font-family:"Nunito",sans-serif;font-size:14px;resize:vertical;background:var(--blanc);}
+  .avance-btn{align-self:flex-start;background:var(--violet);color:#fff;border:none;border-radius:100px;
+    padding:9px 20px;font-family:"Patrick Hand",cursive;font-size:16px;cursor:pointer;transition:background 0.15s;}
+  .avance-btn:hover{background:var(--violet-fonce);}
+  .avance-note{background:var(--violet-clair);border-left:3px solid var(--violet);
+    padding:11px 14px;border-radius:10px;font-size:13.5px;line-height:1.5;color:var(--violet-fonce);}
+
+  /* ── Nav pages (canonique) ── */
+  .nav-pages{max-width:600px;margin:36px auto 0;padding-top:24px;display:flex;justify-content:space-between;
+    align-items:center;width:100%;padding-left:20px;padding-right:20px;}
+  .btn-nav{display:flex;align-items:center;gap:7px;font-family:"Patrick Hand",cursive;font-size:16px;
+    padding:10px 22px;border-radius:100px;border:none;text-decoration:none;}
+  .btn-nav.indisponible{background:var(--beige-clair);color:var(--gris);border:1.5px dashed var(--gris-clair);opacity:0.55;}
+
+  @media(max-width:640px){
+    .stage-wrap{padding:36px 12px 6px;}
+    .perso-ligne{gap:18px;min-height:270px;}
+    .perso-zone{height:270px;max-width:320px;}
+    .bulle-texte{font-size:20px;}
+    #bulle-flottante{width:210px;}
+  }
+  /* ── Écran de titre de chapitre — même esprit visuel que l'accueil du
+       cours (index.html) : titre manuscrit "écrit" à l'animation, plume
+       qui se déplace, soulignement tracé. Affiché avant le début de
+       l'histoire, masque le reste du contenu jusqu'au clic sur Commencer. ── */
+  .ecran-titre-chapitre{
+    min-height:80vh;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    padding:60px 24px;text-align:center;
+  }
+  .titre-histoire-eyebrow{
+    font-family:"Nunito",sans-serif;font-weight:700;font-size:13px;letter-spacing:0.06em;text-transform:uppercase;
+    color:var(--ambre-fonce);background:var(--ambre-clair);border:1.5px dashed rgba(212,162,78,0.5);
+    border-radius:100px;padding:6px 16px;margin-bottom:24px;display:inline-block;
+    max-width:90vw;
+  }
+  .titre-chapitre-wrap{position:relative;margin-bottom:10px;max-width:92vw;}
+  .titre-chapitre{
+    font-family:"Caveat",cursive;font-weight:700;font-size:clamp(34px,7.5vw,68px);color:var(--violet-fonce);line-height:1.15;
+    display:inline-block;clip-path:inset(-0.5em 100% -0.5em 0);max-width:100%;
+    animation:ecrireChapitre 1.6s cubic-bezier(0.65,0,0.35,1) forwards;
+  }
+  /* Le vrai problème n'était pas la largeur (bord droit) mais la hauteur :
+     le point du « ! » de Caveat pend bien plus bas que les descendantes
+     normales (p, g) et se faisait rogner par le bas de la boîte, même
+     avec la petite marge de -0.3em essayée précédemment. Correctif :
+     marge verticale généreuse et FIXE (-0.5em en haut ET en bas, présente
+     dès le départ, ne fait pas partie de l'animation) — seul le bord
+     droit continue d'animer pour l'effet d'écriture progressive. */
+  @keyframes ecrireChapitre{ to{ clip-path:inset(-0.5em -0.2em -0.5em 0); } }
+  .pointe-stylo-chapitre{
+    position:absolute;top:50%;left:0;width:14px;height:14px;transform:translateY(-50%);opacity:0;
+    animation:deplacerPointeChapitre 1.6s cubic-bezier(0.65,0,0.35,1) forwards;
+  }
+  @keyframes deplacerPointeChapitre{ 0%{left:0%;opacity:1;} 92%{left:98%;opacity:1;} 100%{left:100%;opacity:0;} }
+  .pointe-stylo-chapitre svg{width:100%;height:100%;}
+  .soulignement-chapitre{width:clamp(170px,42vw,300px);height:12px;margin:2px auto 0;}
+  .soulignement-chapitre path{
+    fill:none;stroke:var(--ambre);stroke-width:3;stroke-linecap:round;
+    stroke-dasharray:360;stroke-dashoffset:360;
+    animation:tracerSoulignementChapitre 0.6s ease 1.5s forwards;
+  }
+  @keyframes tracerSoulignementChapitre{ to{ stroke-dashoffset:0; } }
+  .titre-chapitre-traduction{
+    font-family:"Nunito",sans-serif;font-style:italic;font-size:clamp(13px,2vw,15px);color:var(--gris);
+    margin:6px 0 18px;opacity:0;max-width:90vw;
+    animation:apparaitreTraductionChapitre 0.6s ease 1.9s forwards;
+  }
+  @keyframes apparaitreTraductionChapitre{ from{opacity:0;transform:translateY(4px);} to{opacity:0.9;transform:translateY(0);} }
+  .btn-commencer-chapitre{
+    margin-top:10px;font-family:"Patrick Hand",cursive;font-size:clamp(17px,2.3vw,20px);
+    padding:13px 34px;border-radius:100px;border:none;background:var(--violet-fonce);color:var(--blanc);cursor:pointer;
+    box-shadow:0 5px 20px rgba(90,64,128,0.35);
+    transition:transform 0.2s cubic-bezier(0.34,1.56,0.64,1),box-shadow 0.2s ease;
+    opacity:0;animation:apparaitreBoutonChapitre 0.6s ease 2.1s forwards;
+  }
+  @keyframes apparaitreBoutonChapitre{ from{opacity:0;transform:translateY(10px);} to{opacity:1;transform:translateY(0);} }
+  .btn-commencer-chapitre:hover{ transform:translateY(-3px) scale(1.05); box-shadow:0 8px 26px rgba(90,64,128,0.45); }
+
+</style>
+</head>
+<body>
+
+<a href="../menus/es.html" id="btn-retour">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M5 12L11 6M5 12L11 18"/></svg>
+  Volver
+</a>
+
+<!-- ── Écran de titre de chapitre ── -->
+<section class="ecran-titre-chapitre" id="ecranTitreChapitre">
+  <div class="titre-histoire-eyebrow">Le gâteau au chocolat</div>
+  <div class="titre-chapitre-wrap">
+    <span class="titre-chapitre">Chapitre 1 — Miam !</span>
+    <div class="pointe-stylo-chapitre">
+      <svg viewBox="0 0 24 24" fill="none">
+        <path d="M4 20 L16 8 L19 11 L7 23 Z" fill="#5A4080"/>
+        <path d="M16 8 L19 5 L22 8 L19 11 Z" fill="#D4A24E"/>
+        <path d="M4 20 L2 22 L5 21 Z" fill="#2A2422"/>
+      </svg>
+    </div>
+    <div class="soulignement-chapitre">
+      <svg viewBox="0 0 300 12" xmlns="http://www.w3.org/2000/svg">
+        <path d="M4 6 Q 80 1 150 7 Q 220 12 296 5"/>
+      </svg>
+    </div>
+  </div>
+  <div class="titre-chapitre-traduction">Capítulo 1 — ¡Qué rico!</div>
+  <button class="btn-commencer-chapitre" id="btnCommencerChapitre">Comenzar</button>
+</section>
+
+<div id="contenuHistoire" style="display:none;">
+
+<!-- ── Boîte de vocabulaire flottante ── -->
+<div id="bulle-flottante">
+  <div class="bf-header" onclick="toggleBulle(event)">
+    <span class="bf-titre">
+      <svg class="bf-icone-svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M7 3.5C6 3.5 5.5 4 5.5 5V20C5.5 21 6 21.5 7 21.5H17C18 21.5 18.5 21 18.5 20V8L14 3.5Z"/>
+        <path d="M14 3.5V8H18.5"/><path d="M8.5 12.5H15.5"/><path d="M8.5 15.5H15.5"/><path d="M8.5 18H13"/>
+      </svg>
+      <span class="bf-titre-texte">Mis palabras</span>
+      <span class="bf-compteur" id="bfCompteur">0</span>
+    </span>
+    <div class="bf-actions-header">
+      <button class="bf-btn-min" onclick="toggleMinimise(event)" title="Minimizar">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14"/></svg>
+      </button>
+      <span class="bf-chevron">&#9660;</span>
+    </div>
+    <span class="bf-icone-seule">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M7 3.5C6 3.5 5.5 4 5.5 5V20C5.5 21 6 21.5 7 21.5H17C18 21.5 18.5 21 18.5 20V8L14 3.5Z"/><path d="M14 3.5V8H18.5"/>
+      </svg>
+      <span class="bf-mini-compteur" id="bfMiniCompteur">0</span>
+    </span>
+  </div>
+  <div class="bf-corps" id="bfCorps"><div class="bf-vide">Marca las palabras de abajo para guardarlas aquí.</div></div>
+  <div class="bf-footer">
+    <button class="bf-btn-footer" id="bfCopiar" onclick="copierListe()">
+      <svg class="bf-icone-svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <rect x="8.5" y="7" width="11.5" height="14" rx="1.6"/><path d="M5.5 16.5H4.5C3.9 16.5 3.5 16 3.5 15.5V4.5C3.5 3.9 3.9 3.5 4.5 3.5H14.5C15 3.5 15.5 3.9 15.5 4.5V5.5"/>
+      </svg>
+      <span id="bfCopierTexte">Copiar</span>
+    </button>
+    <button class="bf-purger" onclick="demanderPurge()">
+      <svg class="bf-icone-svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M5 7H19"/><path d="M9 7V4.8C9 4.4 9.4 4 9.8 4H14.2C14.6 4 15 4.4 15 4.8V7"/>
+        <path d="M7 7L7.8 20C7.85 20.6 8.35 21 8.9 21H15.1C15.65 21 16.15 20.6 16.2 20L17 7"/>
+        <path d="M10.3 11V17"/><path d="M13.7 11V17"/>
+      </svg>
+      Borrar
+    </button>
+  </div>
+</div>
+
+<div id="confirm-overlay">
+  <div class="confirm-boite">
+    <p>¿Borrar toda tu lista de palabras? Esto no se puede deshacer.</p>
+    <div class="confirm-btns">
+      <button class="btn-annuler" onclick="annulerPurge()">Cancelar</button>
+      <button class="btn-confirmer" onclick="confirmerPurge()">Borrar</button>
+    </div>
+  </div>
+</div>
+
+<div class="repli-groupe ouvert" id="groupeHaut" style="padding-top:56px;">
+  <button class="repli-barre" onclick="toggleRepli('groupeHaut')">
+    <span id="groupeHautLabel"><svg class="icone-etincelle" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 C13 8 14 9 20 11 C14 13 13 14 12 20 C11 14 10 13 4 11 C10 9 11 8 12 3 Z"/></svg> Miam ! · Nivel 1</span>
+    <span class="repli-chevron">▾</span>
+  </button>
+  <div class="repli-corps" id="corpsHaut">
+    <header class="entete">
+      <div class="entete-eyebrow">Historia 1</div>
+      <div class="entete-titre"><span class="vocab-mot" data-mot="Miam" data-trad="una exclamación que equivale a «¡qué rico!» — se dice cuando la comida se ve o sabe deliciosa.">Miam<span class="vocab-tooltip"><span class="vt-texte"><span class="vt-nom">Kloé</span>una exclamación que equivale a «¡qué rico!» — se dice cuando la comida se ve o sabe deliciosa.</span><img class="vt-img" id="vtImgMiam" alt=""></span></span>&nbsp;!</div>
+      <div class="entete-sub">Una página del diario de Bek</div>
+    </header>
+
+    <!-- ── Sélecteur de difficulté ── -->
+    <div class="diff-boite">
+      <div class="diff-titre"><svg class="icone-etincelle" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 C13 8 14 9 20 11 C14 13 13 14 12 20 C11 14 10 13 4 11 C10 9 11 8 12 3 Z"/></svg> Elige tu nivel <svg class="icone-etincelle" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 C13 8 14 9 20 11 C14 13 13 14 12 20 C11 14 10 13 4 11 C10 9 11 8 12 3 Z"/></svg></div>
+      <div class="diff-options" id="diffOptions">
+        <div class="diff-opt actif" data-niveau="1"><span class="diff-num">1</span>Solo diálogo</div>
+        <div class="diff-opt" data-niveau="2"><span class="diff-num">2</span>+ acciones</div>
+        <div class="diff-opt" data-niveau="3"><span class="diff-num">3</span>+ pensamientos</div>
+      </div>
+      <div class="diff-desc" id="diffDesc">Solo lo que Bek y Keb se dicen.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ── Scène unique + pile de bulles ── -->
+<section class="stage-wrap">
+  <div class="stage-compteur" id="stageCompteur">1 / 7</div>
+  <div class="perso-ligne" id="stagePersos"></div>
+  <p class="stage-narration" id="stageNarration"></p>
+
+  <div class="stage-nav">
+    <button class="btn-etape-retour" id="btnEtapeRetour" disabled aria-label="Paso anterior">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg>
+    </button>
+    <button class="btn-continuer" id="btnContinuer">Continuar
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg>
+    </button>
+  </div>
+
+  <!-- ── Encadré Kloé — clin d'œil personnel, apparaît à partir de la scène 6 ── -->
+  <div class="kloe-aside" id="kloeAside" style="display:none;">
+    <div class="kloe-aside-ligne">
+      <img class="kloe-aside-img" id="kloeAsideImg" src="images/kloe_soucieuse_01.png" alt="Kloé" onerror="this.style.display='none';">
+      <div class="kloe-aside-corps">
+        <div class="kloe-aside-bulle">
+          <div class="kloe-aside-question">Toi, ça va ?</div>
+          <div class="kloe-aside-ligne-saisie" id="caVaZone1">
+            <input type="text" class="kloe-aside-input" id="caVaInput1" autocomplete="off">
+            <button class="kloe-aside-btn" id="caVaBtn1">→</button>
+          </div>
+        </div>
+        <div class="kloe-aside-retour" id="caVaRetour1" style="display:none;"></div>
+        <div class="kloe-aside-ligne-saisie" id="caVaZone2" style="display:none;">
+          <input type="text" class="kloe-aside-input" id="caVaInput2" autocomplete="off">
+        </div>
+        <div class="kloe-aside-retour" id="caVaRetour2" style="display:none;"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bulle-pile" id="bullePile"></div>
+</section>
+
+<!-- ── Vocabulaire à cocher ── -->
+<div class="section-cocher" id="sectionCocher">
+  <div class="sc-titre">Palabras nuevas en esta historia</div>
+</div>
+
+<div class="repli-groupe" id="groupeQuestions" style="margin-top:36px;">
+  <button class="repli-barre" onclick="toggleRepli('groupeQuestions')">
+    <span><svg class="icone-etincelle" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 C13 8 14 9 20 11 C14 13 13 14 12 20 C11 14 10 13 4 11 C10 9 11 8 12 3 Z"/></svg> Preguntas</span>
+    <span class="repli-chevron">▾</span>
+  </button>
+  <div class="repli-corps" id="corpsQuestions" style="display:none;">
+    <!-- ── Exercice — Niveau 1 (plusieurs questions, voir quizQuestions dans le JS) ── -->
+    <section class="exercice" id="exerciceSection">
+      <div class="exercice-titre">Repaso rápido</div>
+      <div id="quizContainer"></div>
+    </section>
+
+    <!-- ── Résultat final du quiz — masqué jusqu'à ce que toutes les questions soient réussies ── -->
+    <div class="quiz-resultat" id="quizResultat" style="display:none;">
+      <img class="quiz-resultat-img" id="quizResultatImg" src="images/kloe_defi_01.png" alt="Kloé" onerror="this.style.display='none';">
+      <div class="quiz-resultat-boite">
+        <div class="quiz-resultat-texte" id="quizResultatTexte"></div>
+      </div>
+    </div>
+
+    <!-- ── Section avancée ── -->
+    <section class="avance" id="avanceSection">
+      <button class="avance-toggle" onclick="toggleAvance()"><span id="avanceToggleTexte">&#9656; Profundizar (opcional)</span></button>
+      <div class="avance-corps" id="avanceCorps" style="display:none;">
+        <div>
+          <div class="avance-question">1. ¿Por qué crees que Keb no come el pastel de inmediato?</div>
+          <textarea class="avance-texte" id="avanceReponse1" placeholder="Escribe algunas palabras, en español o en francés…"></textarea>
+        </div>
+        <div>
+          <div class="avance-question">2. ¿Alguna vez un amigo adivinó lo que necesitabas sin que tuvieras que pedírselo? Describe el momento — ¡en francés si puedes!</div>
+          <textarea class="avance-texte" id="avanceReponse2" placeholder="Escribe algunas palabras, en español o en francés…"></textarea>
+        </div>
+        <button class="avance-btn" onclick="avanceReflechi()">¡Ya lo pensé!</button>
+        <div class="avance-note" id="avanceNote" style="display:none;">Aquí no hay respuesta correcta ni incorrecta — es solo un momento para reflexionar en francés. Kloé no te está calificando, ¡solo se alegra de que lo hayas pensado!</div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<nav class="nav-pages">
+  <span class="btn-nav indisponible">‹ Anterior</span>
+  <span class="btn-nav indisponible">Siguiente ›</span>
+</nav>
+
+</div>
+
+<script>
+
+// ─────────────────────────────────────────────
+//  Écran de titre de chapitre — révèle le contenu de l'histoire au clic
+// ─────────────────────────────────────────────
+document.getElementById('btnCommencerChapitre').addEventListener('click', function() {
+  document.getElementById('ecranTitreChapitre').style.display = 'none';
+  document.getElementById('contenuHistoire').style.display = 'block';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+
+// ─────────────────────────────────────────────
+//  Vignette Kloé qui explique — rotation kloe_explique_01..12,
+//  compteur persistant par appareil (localStorage), partagé avec
+//  les autres pages du cours (même clé kbkKloeExpliqueN partout).
+// ─────────────────────────────────────────────
+function prochaineImageExplique() {
+  var n = parseInt(localStorage.getItem('kbkKloeExpliqueN') || '0', 10);
+  if (isNaN(n) || n < 1 || n > 12) n = 0;
+  n = (n % 12) + 1;
+  localStorage.setItem('kbkKloeExpliqueN', n);
+  var num = (n < 10 ? '0' : '') + n;
+  return '../images/kloe/kloe_explique_' + num + '.png';
+}
+
+// ─────────────────────────────────────────────
+//  Mot expliqué par Kloé — génère le span cliquable + sa bulle
+// ─────────────────────────────────────────────
+function vocab(mot, explication) {
+  return '<span class="vocab-mot" data-mot="' + mot + '">' + mot
+    + '<span class="vocab-tooltip"><span class="vt-texte"><span class="vt-nom">Kloé</span>' + explication + '</span><img class="vt-img" src="' + prochaineImageExplique() + '" alt=""></span></span>';
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  var vtImgMiam = document.getElementById('vtImgMiam');
+  if (vtImgMiam) vtImgMiam.src = prochaineImageExplique();
+});
+
+// ─────────────────────────────────────────────
+//  Normalisation d'une réponse tapée par l'élève — identique au canon
+//  déjà utilisé dans en_histoire_000_p01.html (minuscules, lettres et
+//  accents français seulement, espaces retirés).
+// ─────────────────────────────────────────────
+function normaliser(s) {
+  return (s || '').toLowerCase()
+    .replace(/[^a-z\u00e0-\u00ff]/g, '')
+    .trim();
+}
+
+// ─────────────────────────────────────────────
+//  Données des 7 scènes
+//  narration : légende sous l'image, remplacée à chaque étape (niveau ≥ 2)
+//  bulles    : s'accumulent dans la pile, restent visibles (niveau ≥ minNiveau)
+// ─────────────────────────────────────────────
+var scenes = [
+  { // 1
+    persos: ['keb_ennuie_01.png'],
+    narration: 'Keb attend, tout seul. Il joue avec son chapeau.',
+    reflet: { qui:'keb', texte: 'Keb attend tout seul. Il joue avec son chapeau d\u2019anniversaire, car il s\u2019ennuie un peu.' },
+    bulles: []
+  },
+  { // 2
+    persos: ['bek_marche_gateau_01.png'],
+    narration: 'Bek marche rapidement vers Keb avec une grosse part de gâteau.',
+    reflet: { qui:'bek', texte: 'Bek marche rapidement vers Keb avec une grosse part de g\u00e2teau. Elle a tr\u00e8s h\u00e2te de le lui donner. Elle l\u2019appelle par son surnom pour attirer son attention.' },
+    bulles: [
+      { qui:'bek', minNiveau:1, posX:37, texte: 'Keb !' }
+    ]
+  },
+  { // 3
+    persos: ['bek_tiens_keb_surpris_01.png'],
+    narration: 'Bek tend l’assiette avec le gâteau à Keb.',
+    reflet: { qui:'keb', texte: 'Bek tend l\u2019assiette avec le g\u00e2teau \u00e0 Keb. Keb est surpris par la taille de la part \u2014 c\u2019est tr\u00e8s g\u00e9n\u00e9reux !' },
+    bulles: [
+      { qui:'bek', minNiveau:1, posX:26, texte: vocab('Tiens', 'literalmente <em>\u201c\u00a1Sostén!\u201d</em> — una orden que le dar\u00edas a un amigo, del verbo <em>tenir</em>, pero aqu\u00ed simplemente significa <em>\u201c\u00a1toma!\u201d</em> — se dice al entregarle algo a alguien.') + ' !' }
+    ],
+    inviteReponse: {
+      question: '\u00bfQu\u00e9 dices si alguien te ofrece algo?',
+      placeholder: 'Escribe tu respuesta\u2026'
+    }
+  },
+  { // 4
+    persos: ['keb_prend_gateau_bek_01.png'],
+    narration: 'Keb regarde le gâteau.',
+    reflet: { qui:'keb', texte: 'Keb regarde le g\u00e2teau. Il pense\u00a0: \u00ab\u00a0Comment est-ce que je mange \u00e7a\u00a0? Je n\u2019ai m\u00eame pas de fourchette\u2026\u00a0\u00bb' },
+    bulles: []
+  },
+  { // 5
+    persos: ['bek_mange_keb_01.png'],
+    narration: 'Bek invite Keb à manger, mais il ne bouge pas.',
+    reflet: { qui:'bek', texte: 'Bek ne comprend pas ce qui se passe. Le g\u00e2teau a l\u2019air d\u00e9licieux\u00a0! Elle le mangerait bien\u00a0!' },
+    bulles: [
+      { qui:'bek', minNiveau:1, texte: vocab('Mange', '<em>\u00a1come!</em> — una orden que le dar\u00edas a un amigo (muy parecido al espa\u00f1ol, \u00bfverdad?).') + ' !' }
+    ]
+  },
+  { // 6
+    persos: ['bek_ca_va_keb_01.png'],
+    narration: 'Bek demande s\u2019il y a un probl\u00e8me. Keb l\u00e8ve les yeux vers Bek.',
+    reflet: { qui:'keb', texte: 'Bek demande s\u2019il y a un probl\u00e8me. Keb l\u00e8ve les yeux vers Bek. Il pense\u00a0: \u00ab\u00a0Est-ce que chez eux ils mangent sans fourchettes\u00a0? C\u2019est salissant\u00a0!\u00a0\u00bb' },
+    bulles: [
+      { qui:'bek', minNiveau:1, texte: vocab('\u00c7a va', 'una expresi\u00f3n para preguntar c\u00f3mo est\u00e1 alguien — como <em>\u201c\u00bfEst\u00e1s bien?\u201d</em> o <em>\u201c\u00bfC\u00f3mo te va?\u201d</em> Puedes responder con <em>\u201coui\u201d</em> (s\u00ed), <em>\u201cnon\u201d</em> (no), o de forma m\u00e1s completa con <em>\u201coui, \u00e7a va\u201d</em> (s\u00ed, estoy bien).') + '\u00a0?' }
+    ]
+  },
+  { // 7
+    persos: ['bek_attends_keb_01.png'],
+    narration: 'Bek l\u00e8ve le doigt. Elle doit retourner dans la cuisine.',
+    reflet: { qui:'bek', texte: 'Elle sait exactement ce dont Keb a besoin\u00a0! Une fourchette\u00a0!' },
+    bulles: [
+      { qui:'bek', minNiveau:1, texte: 'Oh ! ' + vocab('Attends', '<em>\u00a1espera!</em>') + '.' }
+    ]
+  },
+  { // 8
+    persos: ['bek_part_keb_attend.png'],
+    narration: 'Bek part en courant.',
+    reflet: { qui:'keb', texte: 'Bek part en courant. Il pense\u00a0: \u00ab\u00a0Mais qu\u2019est-ce qu\u2019elle fait maintenant\u00a0?\u00a0\u00bb' },
+    bulles: []
+  },
+  { // 9
+    persos: ['bek_tadam_keb_01.png'],
+    narration: 'Elle revient avec la fourchette ! Quelle belle fourchette, en plus !',
+    reflet: { qui:'keb', texte: 'Elle revient avec la fourchette\u00a0! Quelle belle fourchette, en plus\u00a0! Keb est ravi\u00a0: elle a devin\u00e9 ce qu\u2019il voulait. G\u00e9nial\u00a0!' },
+    bulles: [
+      { qui:'bek', minNiveau:1, posX:34, texte: 'Tadam !' }
+    ]
+  },
+  { // 10
+    persos: ['bek_tranche_morceau_keb_01.png'],
+    narration: 'Elle tranche un petit morceau du gâteau.',
+    reflet: { qui:'keb', texte: 'Elle tranche un petit morceau du g\u00e2teau. Le gar\u00e7on regarde attentivement la sc\u00e8ne pour voir ce qu\u2019elle compte faire.' },
+    bulles: []
+  },
+  { // 11
+    persos: ['bek_ouvre_keb_01.png'],
+    narration: 'Bek apporte le morceau tranch\u00e9 pr\u00e8s de sa bouche.',
+    bulles: [
+      { qui:'bek', minNiveau:1, texte: vocab('Ouvre', '<em>\u00a1abre!</em> — Bek le est\u00e1 pidiendo a Keb que abra la boca.') + ' !' }
+    ]
+  },
+  { // 12
+    persos: ['bek_keb_savoure_01.png'],
+    narration: 'Bek regarde Keb qui savoure sa bouch\u00e9e.',
+    reflet: { qui:'bek', texte: 'Bek regarde Keb qui savoure sa bouch\u00e9e. Elle attend avec impatience sa r\u00e9action, mais elle est d\u00e9j\u00e0 s\u00fbre qu\u2019il va adorer.' },
+    bulles: []
+  },
+  { // 13
+    persos: ['bek_keb_miam_01.png'],
+    narration: 'C\u2019est absolument d\u00e9licieux.',
+    reflet: { qui:'keb', texte: 'C\u2019est absolument d\u00e9licieux. Il n\u2019a pas d\u00e9gust\u00e9 beaucoup de g\u00e2teaux dans sa vie, mais il est franchement impressionn\u00e9.' },
+    bulles: [
+      { qui:'keb', minNiveau:1, posX:75, texte: 'Miam\u00a0!' }
+    ]
+  }
+];
+
+var step = 0;
+var niveauActuel = 1;
+
+var elPersos     = document.getElementById('stagePersos');
+var elNarration  = document.getElementById('stageNarration');
+var elCompteur   = document.getElementById('stageCompteur');
+var elPile       = document.getElementById('bullePile');
+var btnRetour    = document.getElementById('btnEtapeRetour');
+var btnContinuer = document.getElementById('btnContinuer');
+
+// ─────────────────────────────────────────────
+//  Construction de la pile de bulles (une fois par changement de niveau)
+// ─────────────────────────────────────────────
+// ─────────────────────────────────────────────
+//  Le texte "récit" d'une scène évolue avec le niveau :
+//  niveau 2 → narration neutre ; niveau 3 → réflexion du personnage (si prévue)
+//  Utilisé à la fois pour la légende sous l'image ET la bulle de la pile,
+//  pour qu'elles restent toujours identiques.
+// ─────────────────────────────────────────────
+function recitPourNiveau(scene, niveau) {
+  if (niveau >= 3 && scene.reflet) {
+    return { texte: scene.reflet.texte, qui: scene.reflet.qui, pensee: true };
+  }
+  if (niveau >= 2 && scene.narration) {
+    return { texte: scene.narration, pensee: false };
+  }
+  return null;
+}
+
+// ─────────────────────────────────────────────
+//  Bascule une bulle évolutive entre son état "récit" (niveau 2, neutre,
+//  sans personnage) et son état "réflexion" (niveau 3, attribuée, pointillée)
+// ─────────────────────────────────────────────
+function majBulleEvolutive(div, niveau) {
+  var qui = div.dataset.qui;
+  var t3 = div.dataset.texteNiveau3;
+  var t2 = div.dataset.texteNiveau2;
+  var enReflet = (niveau >= 3 && t3 && qui);
+
+  div.classList.toggle('recit', !enReflet);
+  div.classList.toggle('pensee', !!enReflet);
+  div.classList.remove('bulle-bek', 'bulle-keb');
+  // La couleur et la lettre du personnage restent affichées dans les deux
+  // états (récit neutre ET pensée) dès qu'on connaît le "qui" — seul le
+  // style (plein/pointillé, ton neutre/attribué) change avec le niveau.
+  if (qui) { div.classList.add('bulle-' + qui); }
+
+  var avatarEl = div.querySelector('.bulle-avatar');
+  var corpsEl  = div.querySelector('.bulle-corps');
+  avatarEl.textContent = qui ? (qui === 'bek' ? 'B' : 'K') : '';
+  var nomHTML = qui ? '<span class="bulle-qui">' + (qui === 'bek' ? 'Bek' : 'Keb') + '</span>' : '';
+  corpsEl.innerHTML = nomHTML + '<div class="bulle-texte">' + (enReflet ? t3 : t2) + '</div>';
+}
+
+// ─────────────────────────────────────────────
+//  Bulle d'invitation à répondre — affichée à droite des personnages
+//  pour les scènes qui définissent scene.inviteReponse. Reconstruite à
+//  chaque rendu (avant/suivant), donc toujours remise à zéro comme le
+//  reste de la scène.
+// ─────────────────────────────────────────────
+function ajouterInvite(scene) {
+  if (!scene.inviteReponse) return;
+  var inv = scene.inviteReponse;
+  var div = document.createElement('div');
+  div.className = 'bulle-invite';
+  div.innerHTML =
+    '<div class="bi-question">' + inv.question + '</div>'
+    + '<div class="bi-input-row">'
+    +   '<input type="text" class="bi-input" id="biInput" placeholder="' + inv.placeholder + '">'
+    +   '<button class="bi-btn" id="biBtn">Verificar</button>'
+    + '</div>'
+    + '<div class="bi-feedback" id="biFeedback"></div>'
+    + '<div id="biRecompense"></div>';
+  elPersos.appendChild(div);
+
+  var input = div.querySelector('#biInput');
+  var btn   = div.querySelector('#biBtn');
+  var fb    = div.querySelector('#biFeedback');
+  var rec   = div.querySelector('#biRecompense');
+
+  function verifierInvite() {
+    var val = normaliser(input.value);
+    if (val === '') return;
+
+    if (val === 'mercibeaucoup') {
+      fb.className = 'bi-feedback ok';
+      fb.textContent = '\u00a1Muy bien!';
+      if (!rec.dataset.affiche) {
+        rec.dataset.affiche = '1';
+        rec.innerHTML =
+          '<div class="bi-recompense">'
+          +   '<div class="bi-recompense-titre">\u00a1Logro desbloqueado \u2014 Tr\u00e8s poli!</div>'
+          +   '<div class="bi-code-row">'
+          +     '<span class="bi-code" id="biCode">sv-m3rc1m38</span>'
+          +     '<button class="bi-copier-btn" onclick="copierBiCode(this)">Copiar</button>'
+          +   '</div>'
+          +   '<div class="bi-mdp-note">Pregúntale a tu profe la contraseña para desbloquearlo en Bravo!</div>'
+          +   '<a class="bi-bravo-lien" href="../bravo/index.html" target="_blank" rel="noopener">Ir a Bravo <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7 M9 7h8v8"/></svg></a>'
+          + '</div>';
+      }
+      return;
+    }
+    if (val === 'merci') {
+      fb.className = 'bi-feedback ok';
+      fb.textContent = '\u00a1Muy bien!';
+      return;
+    }
+    fb.className = 'bi-feedback retry';
+    fb.textContent = '\u00a1Int\u00e9ntalo de nuevo!';
+  }
+
+  btn.addEventListener('click', verifierInvite);
+  input.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') { e.preventDefault(); verifierInvite(); }
+  });
+}
+
+function copierBiCode(btn) {
+  var code = btn.previousElementSibling.textContent;
+  var fini = function() {
+    var original = btn.textContent;
+    btn.textContent = '\u00a1Copiado!';
+    setTimeout(function() { btn.textContent = original; }, 1500);
+  };
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(code).then(fini, fini);
+  } else {
+    fini();
+  }
+}
+
+function construirePile() {
+  elPile.innerHTML = '';
+  scenes.forEach(function(scene, i) {
+    var bullesScene = [];
+
+    // une seule bulle "récit" par scène — son contenu et son style évoluent
+    // avec le niveau (voir recitPourNiveau / mettreAJourBullesEvolutives),
+    // au lieu d'empiler récit + pensée comme deux bulles séparées
+    if (scene.narration || scene.reflet) {
+      var quiDeduit = scene.reflet ? scene.reflet.qui
+        : (scene.persos.length === 1 ? (scene.persos[0].indexOf('bek') === 0 ? 'bek' : 'keb') : null);
+      bullesScene.push({
+        recit: true,
+        minNiveau: 2,
+        texteNiveau2: scene.narration || '',
+        texteNiveau3: scene.reflet ? scene.reflet.texte : null,
+        qui: quiDeduit,
+        texte: scene.narration || (scene.reflet ? scene.reflet.texte : '')
+      });
+    }
+
+    bullesScene = bullesScene.concat(scene.bulles);
+
+    bullesScene.forEach(function(b, j) {
+      var div = document.createElement('div');
+      var classes = 'bulle-item';
+      if (b.recit) { classes += ' recit'; }
+      if (b.pensee) { classes += ' pensee'; }
+      if (b.qui) { classes += ' bulle-' + b.qui; }
+      div.className = classes;
+      div.dataset.scene = i;
+      div.dataset.minNiveau = b.minNiveau;
+      if (b.texteNiveau2 !== undefined) {
+        // bulle de récit évolutive : on mémorise les deux versions pour pouvoir
+        // basculer sans reconstruire toute la pile au changement de niveau
+        div.dataset.evolutif = '1';
+        div.dataset.texteNiveau2 = b.texteNiveau2 || '';
+        div.dataset.texteNiveau3 = b.texteNiveau3 || '';
+        div.dataset.qui = b.qui || '';
+      }
+      var avatar = b.qui ? (b.qui === 'bek' ? 'B' : 'K') : '';
+      var nom = b.qui ? '<span class="bulle-qui">' + (b.qui === 'bek' ? 'Bek' : 'Keb') + '</span>' : '';
+      div.innerHTML = '<div class="bulle-avatar">' + avatar + '</div>'
+        + '<div class="bulle-corps">' + nom + '<div class="bulle-texte">' + b.texte + '</div></div>';
+      elPile.appendChild(div);
+    });
+  });
+}
+
+// ─────────────────────────────────────────────
+//  Rendu de l'étape courante
+// ─────────────────────────────────────────────
+function rendre() {
+  var scene = scenes[step];
+  elCompteur.textContent = (step + 1) + ' / ' + scenes.length;
+
+  var classePerso = scene.persos.length === 1 ? 'perso-zone seul' : 'perso-zone';
+  elPersos.innerHTML = scene.persos.map(function(p) {
+    var perso;
+    if (scene.persos.length === 1) {
+      // Image combinée (un seul fichier, ex. bek_keb_miam_01.png) : le nom de
+      // fichier seul ne suffit pas à savoir qui doit recevoir la bulle ancrée
+      // à la tête — on priorise le personnage qui parle réellement dans cette
+      // scène (bulle, puis reflet), et on ne retombe sur le préfixe du nom de
+      // fichier que si la scène ne précise personne.
+      perso = (scene.bulles && scene.bulles[0] && scene.bulles[0].qui)
+        || (scene.reflet && scene.reflet.qui)
+        || (p.indexOf('bek') === 0 ? 'bek' : 'keb');
+    } else {
+      perso = p.indexOf('bek') === 0 ? 'bek' : 'keb';
+    }
+    var nom = perso === 'bek' ? 'Bek' : 'Keb';
+    var src = 'images/' + p;
+    return '<div class="' + classePerso + '" data-perso="' + perso + '"><img src="' + src + '" alt="' + nom + '"></div>';
+  }).join('');
+
+  // Bulle BD ancrée à la tête du personnage qui parle dans cette scène
+  // (en plus de la pile du bas, qui elle reste toujours affichée)
+  var aBulleScene = false;
+  (scene.bulles || []).forEach(function(b) {
+    if (niveauActuel < b.minNiveau) return;
+    var zone = elPersos.querySelector('.perso-zone[data-perso="' + b.qui + '"]');
+    if (!zone) return;
+    aBulleScene = true;
+    var bulle = document.createElement('div');
+    bulle.className = 'bulle-stage bulle-' + b.qui;
+    // posX : décalage horizontal optionnel (en %), utile quand l'image
+    // combine plusieurs personnages dans un seul fichier (zone "seul")
+    // et que la bulle doit pointer vers la tête du bon personnage plutôt
+    // que rester centrée sur l'ensemble de l'illustration.
+    if (typeof b.posX === 'number') { bulle.style.left = b.posX + '%'; }
+    bulle.innerHTML = '<div class="bulle-stage-texte">' + b.texte + '</div>';
+    zone.appendChild(bulle);
+  });
+  elPersos.classList.toggle('a-bulle-scene', aBulleScene);
+
+  // Bulle d'invitation à répondre, à droite des personnages (scènes qui le prévoient)
+  ajouterInvite(scene);
+
+  setTimeout(function() {
+    elPersos.querySelectorAll('.perso-zone').forEach(function(z){ z.classList.add('in'); });
+    elPersos.querySelectorAll('.bulle-stage').forEach(function(bs){ bs.classList.add('in'); });
+    elPersos.querySelectorAll('.bulle-invite').forEach(function(bi){ bi.classList.add('in'); });
+  }, 20);
+
+  var r = recitPourNiveau(scene, niveauActuel);
+  elNarration.textContent = r ? r.texte : '';
+
+  // les bulles évolutives (récit → réflexion) basculent de contenu/style
+  // selon le niveau courant, avant qu'on ne recalcule leur visibilité
+  elPile.querySelectorAll('.bulle-item[data-evolutif="1"]').forEach(function(item) {
+    majBulleEvolutive(item, niveauActuel);
+  });
+
+  // la pile : visible si (scène atteinte) ET (niveau suffisant)
+  elPile.querySelectorAll('.bulle-item').forEach(function(item) {
+    var visible = (parseInt(item.dataset.scene, 10) <= step) && (niveauActuel >= parseInt(item.dataset.minNiveau, 10));
+    item.classList.toggle('in', visible);
+  });
+
+  btnRetour.disabled = (step === 0);
+  btnContinuer.innerHTML = (step === scenes.length - 1)
+    ? 'Ver las preguntas <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>'
+    : 'Continuar <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg>';
+
+  var kloeAsideVisible = (step === 5);
+  document.getElementById('kloeAside').style.display = kloeAsideVisible ? 'block' : 'none';
+  reinitialiserCaVa();
+
+  synchroniserVocabulaire();
+}
+
+// ─────────────────────────────────────────────
+//  Encadré Kloé — Ça va / Chantal (clin d'œil personnel, jamais gating)
+//  Exclusivement en français, quelle que soit la langue d'interface.
+// ─────────────────────────────────────────────
+function normaliserCaVa(s) {
+  return s.toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/['\u2019]/g, '')
+    .replace(/[^a-z ]/g, ' ').replace(/\s+/g, ' ').trim();
+}
+
+// Remet l'encadré Kloé à zéro — appelé à chaque navigation (avant/suivant)
+// pour qu'il ne garde jamais l'état d'une visite précédente de la scène 6.
+function reinitialiserCaVa() {
+  var input1  = document.getElementById('caVaInput1');
+  var btn1    = document.getElementById('caVaBtn1');
+  var retour1 = document.getElementById('caVaRetour1');
+  var zone2   = document.getElementById('caVaZone2');
+  var input2  = document.getElementById('caVaInput2');
+  var retour2 = document.getElementById('caVaRetour2');
+  var img     = document.getElementById('kloeAsideImg');
+
+  img.src = 'images/kloe_soucieuse_01.png';
+  input1.value = '';
+  input1.disabled = false;
+  btn1.disabled = false;
+  retour1.style.display = 'none';
+  retour1.textContent = '';
+  zone2.style.display = 'none';
+  input2.value = '';
+  input2.disabled = false;
+  retour2.style.display = 'none';
+  retour2.innerHTML = '';
+}
+
+document.getElementById('caVaBtn1').addEventListener('click', repondreCaVa1);
+document.getElementById('caVaInput1').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') repondreCaVa1();
+});
+
+function repondreCaVa1() {
+  var champ = document.getElementById('caVaInput1');
+  var val = normaliserCaVa(champ.value);
+  if (!val) return;
+
+  var negatif = /\bnon\b/.test(val) || /\bmal\b/.test(val);
+  var affirmatif = !negatif && (/\boui\b/.test(val) || /ca ?va/.test(val));
+
+  var retour = document.getElementById('caVaRetour1');
+  if (negatif) {
+    retour.textContent = 'Oh, je suis d\u00e9sol\u00e9e de l\u2019apprendre. Veux-tu parler avec Chantal\u00a0? Elle est psychologue. Elle peut t\u2019aider.';
+  } else if (affirmatif) {
+    retour.textContent = 'Je suis contente de l\u2019apprendre\u00a0!';
+  } else {
+    retour.textContent = 'Merci de me le dire.';
+  }
+  retour.style.display = 'block';
+
+  champ.disabled = true;
+  document.getElementById('caVaBtn1').disabled = true;
+  if (negatif) {
+    document.getElementById('caVaZone2').style.display = 'flex';
+    document.getElementById('caVaInput2').focus();
+  }
+}
+
+document.getElementById('caVaInput2').addEventListener('keydown', function(e) {
+  if (e.key !== 'Enter') return;
+  var val = normaliserCaVa(this.value);
+  if (!val) return;
+
+  var chantal = (val === 'qui est chantal') || (val === 'chantal cest qui') || (val === 'chantal est qui')
+    || (val === 'cest qui') || (val === 'qui est ce') || (val === 'c est qui') || (val === 'qui cest');
+  var retour2 = document.getElementById('caVaRetour2');
+  if (chantal) {
+    document.getElementById('kloeAsideImg').src = 'images/kloe_pointe_droite_01.png';
+    retour2.innerHTML =
+      '<div class="bi-recompense">'
+      +   '<div class="bi-recompense-titre">\u00a1T\u00edtulo desbloqueado \u2014 Le petit curieux / La petite curieuse!</div>'
+      +   '<div class="bi-mdp-note" style="font-style:normal;">C\u2019est la m\u00e8re de Keb\u00a0! Voici un titre pour ta curiosit\u00e9\u00a0!</div>'
+      +   '<div class="bi-code-row">'
+      +     '<span class="bi-code" id="titreCode">ta-cur13ux</span>'
+      +     '<button class="bi-copier-btn" onclick="copierBiCode(this)">Copiar</button>'
+      +   '</div>'
+      +   '<div class="bi-code-row">'
+      +     '<span class="bi-code" id="titreMdp">st99uneb814nnekes</span>'
+      +     '<button class="bi-copier-btn" onclick="copierBiCode(this)">Copiar</button>'
+      +   '</div>'
+      +   '<a class="bi-bravo-lien" href="../bravo/index.html" target="_blank" rel="noopener">Ir a Bravo <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7 M9 7h8v8"/></svg></a>'
+      + '</div>';
+  } else {
+    retour2.textContent = ':-)';
+  }
+  retour2.style.display = 'block';
+  this.disabled = true;
+});
+
+btnContinuer.addEventListener('click', function() {
+  if (step < scenes.length - 1) {
+    step++;
+    rendre();
+  } else {
+    toggleRepli('groupeQuestions', true);
+    document.getElementById('groupeQuestions').scrollIntoView({behavior:'smooth'});
+  }
+});
+btnRetour.addEventListener('click', function() {
+  if (step > 0) {
+    step--;
+    rendre();
+  }
+});
+
+// Navigation au clavier (ordinateur) — flèches gauche/droite équivalentes
+// aux boutons Retour/Continue, pour aller plus vite. Désactivée si l'élève
+// est en train de taper dans un champ (les flèches doivent alors déplacer
+// le curseur dans le texte, pas naviguer entre les scènes).
+document.addEventListener('keydown', function(e) {
+  var actif = document.activeElement;
+  var dansChamp = actif && (actif.tagName === 'INPUT' || actif.tagName === 'TEXTAREA' || actif.isContentEditable);
+  if (dansChamp) return;
+  if (e.key === 'ArrowRight') {
+    e.preventDefault();
+    btnContinuer.click();
+  } else if (e.key === 'ArrowLeft') {
+    if (!btnRetour.disabled) {
+      e.preventDefault();
+      btnRetour.click();
+    }
+  }
+});
+
+// Mots expliqués par Kloé — clic (mobile) ou survol (desktop)
+elPile.addEventListener('click', function(e) {
+  var mot = e.target.closest('.vocab-mot');
+  document.querySelectorAll('.vocab-mot.active').forEach(function(m) {
+    if (m !== mot) m.classList.remove('active');
+  });
+  if (mot) mot.classList.toggle('active');
+});
+
+// ─────────────────────────────────────────────
+//  Sélecteur de difficulté
+// ─────────────────────────────────────────────
+var descriptions = {
+  1: 'Solo lo que Bek y Keb se dicen.',
+  2: 'Diálogo, más pequeñas acciones en francés.',
+  3: 'Diálogo, acciones y sus pensamientos.'
+};
+document.querySelectorAll('.diff-opt').forEach(function(opt) {
+  opt.addEventListener('click', function() {
+    document.querySelectorAll('.diff-opt').forEach(function(o){ o.classList.remove('actif'); });
+    opt.classList.add('actif');
+    niveauActuel = parseInt(opt.dataset.niveau, 10);
+    document.getElementById('diffDesc').textContent = descriptions[niveauActuel];
+    document.getElementById('groupeHautLabel').innerHTML = '<svg class="icone-etincelle" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 C13 8 14 9 20 11 C14 13 13 14 12 20 C11 14 10 13 4 11 C10 9 11 8 12 3 Z"/></svg> Miam ! · Nivel ' + niveauActuel;
+    rendre();
+  });
+});
+
+// ─────────────────────────────────────────────
+//  Panneaux repliables (haut / questions)
+// ─────────────────────────────────────────────
+function toggleRepli(id, forceOuvert) {
+  var groupe = document.getElementById(id);
+  var corps = groupe.querySelector('.repli-corps');
+  var estOuvert = groupe.classList.contains('ouvert');
+  var nouveauEtat = (typeof forceOuvert === 'boolean') ? forceOuvert : !estOuvert;
+  groupe.classList.toggle('ouvert', nouveauEtat);
+  corps.style.display = nouveauEtat ? 'block' : 'none';
+}
+
+// ─────────────────────────────────────────────
+//  Vocabulaire à cocher (bas de page) — accumule au fil de la progression
+// ─────────────────────────────────────────────
+// Mots à ne jamais mettre en minuscule dans l'encadré (noms propres) —
+// tous les autres mots suivis y perdent leur majuscule initiale, même
+// si celle-ci vient du fait qu'ils commencent une phrase dans l'histoire.
+var NOMS_PROPRES = [];
+
+function synchroniserVocabulaire() {
+  var sc = document.getElementById('sectionCocher');
+  var motsVus = [];
+  scenes.forEach(function(scene, i) {
+    if (i > step) return;
+    scene.bulles.forEach(function(b) {
+      if (niveauActuel < b.minNiveau) return;
+      var temp = document.createElement('div');
+      temp.innerHTML = b.texte;
+      temp.querySelectorAll('.vocab-mot').forEach(function(el) {
+        var m = el.dataset.mot;
+        if (motsVus.indexOf(m) === -1) motsVus.push(m);
+      });
+    });
+  });
+  // le titre (Miam) compte toujours comme mot rencontré dès le début
+  motsVus.unshift('Miam');
+
+  sc.innerHTML = '<div class="sc-titre">Palabras nuevas en esta historia</div>';
+  if (motsVus.length === 0) { sc.style.display = 'none'; return; }
+  sc.style.display = 'block';
+
+  var lista = chargerListe();
+  motsVus.forEach(function(mot) {
+    var refEl = document.querySelector('.vocab-mot[data-mot="' + mot + '"]');
+    var trad = refEl ? refEl.querySelector('.vocab-tooltip').textContent.replace('Kloé','').trim() : '';
+    var id = 'mot-' + mot.toLowerCase().replace(/\s+/g, '-');
+    if (document.getElementById(id)) return;
+    var motAffiche = NOMS_PROPRES.indexOf(mot) !== -1 ? mot : mot.charAt(0).toLowerCase() + mot.slice(1);
+    var div = document.createElement('div');
+    div.className = 'sc-item sc-item-nouveau';
+    div.innerHTML = '<input type="checkbox" id="' + id + '" onchange="basculerMot(this,\'' + mot + '\',\'' + trad.replace(/'/g,"\\'") + '\')">'
+      + '<label for="' + id + '">' + motAffiche + ' <span class="sc-trad">— ' + trad + '</span></label>';
+    sc.appendChild(div);
+    if (lista.find(function(i){ return i.mot === mot; })) {
+      div.querySelector('input').checked = true;
+    }
+  });
+}
+
+// Repli en mémoire si localStorage est inaccessible (origines opaques type file://
+// dans certains navigateurs/sandbox, mode privé strict, etc.) — la liste ne survit
+// alors pas au rechargement de la page, mais la fonctionnalité ne casse plus.
+var listeVocabEnMemoire = [];
+var localStorageDisponible = (function(){
+  try {
+    localStorage.setItem('__test_kb__', '1');
+    localStorage.removeItem('__test_kb__');
+    return true;
+  } catch (e) {
+    console.warn('localStorage indisponible — la liste de vocabulaire ne persistera pas entre les visites.', e);
+    return false;
+  }
+})();
+
+function chargerListe() {
+  if (!localStorageDisponible) { return listeVocabEnMemoire; }
+  var d = localStorage.getItem('keb_bek_vocab');
+  return d ? JSON.parse(d) : [];
+}
+function sauvegarderListe(lista) {
+  if (!localStorageDisponible) { listeVocabEnMemoire = lista; return; }
+  localStorage.setItem('keb_bek_vocab', JSON.stringify(lista));
+}
+function rafraichirAffichage() {
+  var lista = chargerListe();
+  document.getElementById('bfCompteur').textContent = lista.length;
+  document.getElementById('bfMiniCompteur').textContent = lista.length;
+  var corps = document.getElementById('bfCorps');
+  if (lista.length === 0) {
+    corps.innerHTML = '<div class="bf-vide">Marca las palabras de abajo para guardarlas aquí.</div>';
+    return;
+  }
+  corps.innerHTML = lista.map(function(item) {
+    return '<div class="bf-item"><span>' + item.mot + '</span><span style="color:var(--gris);font-size:11.5px;">' + item.trad + '</span></div>';
+  }).join('');
+}
+function basculerMot(checkbox, mot, trad) {
+  var lista = chargerListe();
+  if (checkbox.checked) {
+    if (!lista.find(function(i){ return i.mot === mot; })) lista.push({mot:mot, trad:trad});
+  } else {
+    lista = lista.filter(function(i){ return i.mot !== mot; });
+  }
+  sauvegarderListe(lista);
+  rafraichirAffichage();
+}
+function toggleBulle(e) {
+  if (e.target.closest('.bf-btn-min')) return;
+  document.getElementById('bulle-flottante').classList.toggle('repliee');
+}
+function toggleMinimise(e) {
+  e.stopPropagation();
+  document.getElementById('bulle-flottante').classList.toggle('minimisee');
+}
+function copierListe() {
+  var lista = chargerListe();
+  if (lista.length === 0) return;
+  var texte = lista.map(function(i){ return i.mot + ' — ' + i.trad; }).join('\n');
+  navigator.clipboard.writeText(texte).then(function() {
+    var btn = document.getElementById('bfCopiar');
+    var el = document.getElementById('bfCopierTexte');
+    var original = el.textContent;
+    el.textContent = '\u00a1Copiado!'; btn.classList.add('copie');
+    setTimeout(function(){ el.textContent = original; btn.classList.remove('copie'); }, 1800);
+  });
+}
+function demanderPurge() { document.getElementById('confirm-overlay').classList.add('actif'); }
+function annulerPurge() { document.getElementById('confirm-overlay').classList.remove('actif'); }
+function confirmerPurge() {
+  if (localStorageDisponible) { localStorage.removeItem('keb_bek_vocab'); }
+  listeVocabEnMemoire = [];
+  rafraichirAffichage();
+  document.querySelectorAll('.sc-item input[type=checkbox]').forEach(function(cb){ cb.checked = false; });
+  document.getElementById('confirm-overlay').classList.remove('actif');
+}
+
+// ─────────────────────────────────────────────
+//  Exercice — Niveau 1 (plusieurs questions : QCM + réponse texte)
+//  Chaque question compte au plus UNE erreur (peu importe le nombre de
+//  tentatives ratées avant de trouver la bonne réponse) — c'est ce total
+//  qui détermine le message final : 0-1 erreur → encouragé à essayer le
+//  chapitre suivant (plus difficile) ; 2+ erreurs → offre de continuer
+//  plutôt avec la deuxième histoire (plus accessible).
+// ─────────────────────────────────────────────
+function normaliserTexte(s) {
+  return s.toLowerCase()
+    .replace(/[’']/g, ' ')
+    .replace(/-/g, ' ')
+    .replace(/[!?.,;:]/g, '')
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+function verifierSalutCaVa(reponse) {
+  var norm = normaliserTexte(reponse);
+  if (!norm) return false;
+  var mots = norm.split(' ');
+  var premier = mots[0];
+  var reste = mots.slice(1).join(' ');
+  var salutOk = ['salut', 'bonjour', 'allo'].indexOf(premier) !== -1;
+  var caVaOk = ['ca va', 'comment ca va', 'comment vas tu'].indexOf(reste) !== -1;
+  return salutOk && caVaOk;
+}
+
+var quizQuestions = [
+  {
+    id: 'q1', type: 'mcq',
+    question: '¿Qué dice Bek cuando le entrega a Keb su trozo de pastel?',
+    options: [
+      { texte: 'Tiens !', correcte: true },
+      { texte: 'Attends !', correcte: false },
+      { texte: 'Ouvre !', correcte: false }
+    ]
+  },
+  {
+    id: 'q2', type: 'texte',
+    question: '¿Cómo se dice "¡Hola! ¿Cómo estás?"',
+    placeholder: 'Escribe tu respuesta…',
+    verifier: verifierSalutCaVa
+  },
+  {
+    id: 'q3', type: 'mcq',
+    question: '¿Qué significa "Attends !"?',
+    options: [
+      { texte: '¡Atención!', correcte: false },
+      { texte: '¡Espera!', correcte: true },
+      { texte: '¡Mira!', correcte: false }
+    ]
+  },
+  {
+    id: 'q4', type: 'texte',
+    question: '¿Qué dice Keb porque encuentra el pastel absolutamente delicioso?',
+    placeholder: 'Escribe tu respuesta…',
+    verifier: function (r) { return normaliserTexte(r) === 'miam'; }
+  },
+  {
+    id: 'q5', type: 'texte',
+    question: '¿Qué dice Bek cuando quiere que Keb coma?',
+    placeholder: 'Escribe tu respuesta…',
+    verifier: function (r) { return normaliserTexte(r) === 'mange'; }
+  },
+  {
+    id: 'q6', type: 'mcq',
+    question: 'Cuando Bek dice "Ouvre !", ¿qué le está pidiendo a Keb que haga?',
+    options: [
+      { texte: '¡Que abra la boca!', correcte: true },
+      { texte: '¡Que cierre los ojos!', correcte: false },
+      { texte: '¡Que le dé un abrazo!', correcte: false }
+    ]
+  }
+];
+
+var quizEtat = {};
+quizQuestions.forEach(function (q) { quizEtat[q.id] = { reussie: false, erreur: false }; });
+
+function construireQuiz() {
+  var zone = document.getElementById('quizContainer');
+  zone.innerHTML = '';
+  quizQuestions.forEach(function (q, idx) {
+    var bloc = document.createElement('div');
+    bloc.className = 'quiz-question';
+    bloc.id = 'quizQ_' + q.id;
+    var html = '<div class="qcm-question">' + (idx + 1) + '. ' + q.question + '</div>';
+    if (q.type === 'mcq') {
+      html += '<div class="qcm-options" id="qcmOptions_' + q.id + '"></div>';
+    } else {
+      html += '<div class="qcm-texte-ligne">'
+        + '<input type="text" class="qcm-texte-input" id="qcmInput_' + q.id + '" placeholder="' + (q.placeholder || '') + '" autocomplete="off" autocorrect="off">'
+        + '<button class="qcm-texte-btn" id="qcmBtn_' + q.id + '">OK</button>'
+        + '</div>';
+    }
+    html += '<div class="qcm-feedback" id="qcmFeedback_' + q.id + '"></div>';
+    bloc.innerHTML = html;
+    zone.appendChild(bloc);
+
+    if (q.type === 'mcq') {
+      var optZone = bloc.querySelector('#qcmOptions_' + q.id);
+      q.options.forEach(function (opt) {
+        var bouton = document.createElement('button');
+        bouton.className = 'qcm-opt';
+        bouton.textContent = opt.texte;
+        bouton.onclick = function () { verifierMCQ(q.id, opt, bouton); };
+        optZone.appendChild(bouton);
+      });
+    } else {
+      var input = bloc.querySelector('#qcmInput_' + q.id);
+      var bouton = bloc.querySelector('#qcmBtn_' + q.id);
+      bouton.onclick = function () { verifierTexte(q.id); };
+      input.addEventListener('keydown', function (e) { if (e.key === 'Enter') verifierTexte(q.id); });
+    }
+  });
+}
+
+function verifierMCQ(id, opt, bouton) {
+  var feedback = document.getElementById('qcmFeedback_' + id);
+  var tousLesBoutons = document.querySelectorAll('#quizQ_' + id + ' .qcm-opt');
+  tousLesBoutons.forEach(function (b) { b.disabled = true; });
+  if (opt.correcte) {
+    bouton.classList.add('correcte');
+    feedback.textContent = '¡Muy bien!';
+    feedback.className = 'qcm-feedback ok';
+    marquerReussie(id);
+  } else {
+    quizEtat[id].erreur = true;
+    bouton.classList.add('incorrecte');
+    feedback.textContent = 'No es así — ¡inténtalo de nuevo!';
+    feedback.className = 'qcm-feedback retry';
+    setTimeout(function () {
+      bouton.classList.remove('incorrecte');
+      tousLesBoutons.forEach(function (b) { b.disabled = false; });
+      feedback.textContent = '';
+    }, 1100);
+  }
+}
+
+function verifierTexte(id) {
+  var q = quizQuestions.filter(function (x) { return x.id === id; })[0];
+  var input = document.getElementById('qcmInput_' + id);
+  var feedback = document.getElementById('qcmFeedback_' + id);
+  var val = input.value;
+  if (!val.trim()) return;
+  if (q.verifier(val)) {
+    input.disabled = true;
+    document.getElementById('qcmBtn_' + id).disabled = true;
+    feedback.textContent = '¡Muy bien!';
+    feedback.className = 'qcm-feedback ok';
+    marquerReussie(id);
+  } else {
+    quizEtat[id].erreur = true;
+    feedback.textContent = 'No es así — ¡inténtalo de nuevo!';
+    feedback.className = 'qcm-feedback retry';
+  }
+}
+
+function marquerReussie(id) {
+  quizEtat[id].reussie = true;
+  verifierFinDuQuiz();
+}
+
+function verifierFinDuQuiz() {
+  var toutesReussies = quizQuestions.every(function (q) { return quizEtat[q.id].reussie; });
+  if (!toutesReussies) return;
+  var totalErreurs = quizQuestions.filter(function (q) { return quizEtat[q.id].erreur; }).length;
+  afficherResultatQuiz(totalErreurs);
+}
+
+function afficherResultatQuiz(totalErreurs) {
+  var zone = document.getElementById('quizResultat');
+  var texte = document.getElementById('quizResultatTexte');
+  if (totalErreurs <= 1) {
+    texte.innerHTML = '¡Felicidades! ¿Te pareció demasiado fácil? Vamos a ver si ya puedes pasar al siguiente capítulo \u2014 '
+      + '¡es más difícil! <em>(Capítulo 2 \u2014 próximamente.)</em>';
+  } else {
+    texte.innerHTML = '¡Buen trabajo llegando hasta aquí! Si prefieres seguir practicando a un ritmo más suave primero, '
+      + 'también puedes continuar con nuestra segunda historia \u2014 es más accesible. <em>(Historia 2 \u2014 próximamente.)</em>';
+  }
+  zone.style.display = 'flex';
+  zone.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+// ─────────────────────────────────────────────
+//  Section avancée
+// ─────────────────────────────────────────────
+function toggleAvance() {
+  var corps = document.getElementById('avanceCorps');
+  var texte = document.getElementById('avanceToggleTexte');
+  var ouvert = corps.style.display === 'flex';
+  corps.style.display = ouvert ? 'none' : 'flex';
+  texte.innerHTML = ouvert ? '&#9656; Profundizar (opcional)' : '&#9662; Profundizar (opcional)';
+}
+function avanceReflechi() { document.getElementById('avanceNote').style.display = 'block'; }
+
+// ─────────────────────────────────────────────
+//  Démarrage
+// ─────────────────────────────────────────────
+construirePile();
+rendre();
+rafraichirAffichage();
+construireQuiz();
+</script>
+
+</body>
+</html>
