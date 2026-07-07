@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Story 1 — Le français avec Keb &amp; Bek</title>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Patrick+Hand&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,400i&display=swap" rel="stylesheet">
+<style>
+  *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+  :root{
+    --beige:#F2EDE3; --beige-clair:#FDF8F2; --bleu-poudre:#B8C9E0; --bleu-fonce:#7A9BBF;
+    --vert:#7FA86E; --vert-clair:#EAF3DE; --vert-fonce:#4A7A36; --texte:#2A2422;
+    --gris:#8A8480; --blanc:#ffffff; --ombre:rgba(42,36,34,0.14);
+    --corail:#E0593C; --corail-clair:#FBEAE6;
+    --rouge:#C0392B; --rouge-clair:#FDECEA;
+    --ambre:#D4A24E; --ambre-clair:#FAEEDA; --ambre-fonce:#854F0B;
+    --violet:#7B5EA8; --violet-fonce:#5A4080; --violet-clair:#EEE9F7; --gris-clair:#C9C2BC;
+  }
+  html{scroll-behavior:smooth;}
+  body{background:var(--beige);font-family:"Nunito",sans-serif;color:var(--texte);padding-bottom:60px;min-height:100vh;}
+
+  /* ── Back button (canonique) ── */
+  #btn-retour{
+    position:fixed;top:18px;left:18px;z-index:200;
+    display:flex;align-items:center;gap:7px;
+    font-family:"Patrick Hand",cursive;font-size:15px;
+    color:var(--violet-fonce);text-decoration:none;
+    background:var(--beige-clair);border:1.5px solid var(--violet);
+    border-radius:100px;padding:7px 16px 7px 11px;
+    box-shadow:0 3px 10px rgba(90,64,128,0.15);
+    transition:transform 0.18s ease,box-shadow 0.18s ease;
+  }
+  #btn-retour:hover{transform:translateX(-3px);box-shadow:0 5px 16px rgba(90,64,128,0.25);}
+
+  .page-wrap{max-width:520px;margin:0 auto;padding:90px 24px 40px;}
+
+  /* ── En-tête verrou ── */
+  .verrou-entete{text-align:center;margin-bottom:32px;}
+  .verrou-icone{width:46px;height:46px;margin:0 auto 14px;color:var(--ambre-fonce);}
+  .verrou-titre{
+    font-family:"Patrick Hand",cursive;font-size:clamp(24px,4.5vw,30px);
+    color:var(--violet-fonce);margin-bottom:8px;
+  }
+  .verrou-sous{font-size:14px;color:var(--gris);line-height:1.5;max-width:400px;margin:0 auto;}
+
+  /* ── Cartes de question — mirroir de .bulle-invite (en_histoire_001_p02.html) ── */
+  .verrou-carte{
+    background:var(--blanc);border:2px solid var(--bleu-poudre);border-radius:16px;
+    padding:18px 20px;margin-bottom:16px;
+    box-shadow:0 4px 16px rgba(42,36,34,0.08);
+    transition:border-color 0.25s ease,box-shadow 0.25s ease;
+  }
+  .verrou-carte.reussie{border-color:var(--vert-fonce);box-shadow:0 4px 16px rgba(74,122,54,0.15);}
+  .verrou-carte-entete{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
+  .verrou-carte-icone{width:20px;height:20px;flex-shrink:0;color:var(--violet);}
+  .verrou-carte.reussie .verrou-carte-icone{color:var(--vert-fonce);}
+  .verrou-carte-label{
+    font-size:10.5px;font-weight:800;letter-spacing:0.06em;text-transform:uppercase;
+    color:var(--violet);
+  }
+  .verrou-carte.reussie .verrou-carte-label{color:var(--vert-fonce);}
+  .verrou-question{font-size:15.5px;font-weight:700;color:var(--texte);margin-bottom:12px;line-height:1.4;}
+  .verrou-question em{font-style:italic;color:var(--violet-fonce);}
+
+  .verrou-input-row{display:flex;gap:8px;}
+  .verrou-input{
+    flex:1;min-width:0;font-family:"Nunito",sans-serif;font-size:15px;
+    padding:10px 14px;border-radius:100px;border:1.5px solid var(--bleu-poudre);
+    background:var(--beige-clair);color:var(--texte);
+  }
+  .verrou-input:focus{outline:none;border-color:var(--violet);}
+  .verrou-input:disabled{opacity:0.6;}
+  .verrou-btn{
+    flex-shrink:0;font-family:"Patrick Hand",cursive;font-size:15px;
+    padding:9px 20px;border-radius:100px;border:none;cursor:pointer;
+    background:var(--violet-fonce);color:#fff;
+    transition:background 0.15s ease,transform 0.15s ease;
+  }
+  .verrou-btn:hover{background:#4a3468;transform:translateY(-1px);}
+  .verrou-btn:disabled{background:var(--gris-clair);cursor:not-allowed;transform:none;}
+
+  .verrou-feedback{
+    margin-top:9px;font-size:13px;font-weight:700;
+    opacity:0;max-height:0;overflow:hidden;
+    transition:opacity 0.25s ease,max-height 0.25s ease;
+  }
+  .verrou-feedback.visible{opacity:1;max-height:40px;}
+  .verrou-feedback.ok{color:var(--vert-fonce);}
+  .verrou-feedback.non{color:var(--rouge);}
+
+  .verrou-coche{
+    display:none;width:22px;height:22px;flex-shrink:0;color:var(--vert-fonce);
+    align-items:center;justify-content:center;
+  }
+  .verrou-carte.reussie .verrou-coche{display:flex;}
+  .verrou-carte.reussie .verrou-input-row{display:none;}
+  .verrou-carte.reussie .verrou-question{color:var(--vert-fonce);}
+
+  /* ── Bouton de déverrouillage ── */
+  .verrou-action{text-align:center;margin-top:28px;}
+  .btn-deverrouiller{
+    font-family:"Patrick Hand",cursive;font-size:18px;
+    padding:15px 34px;border-radius:100px;border:none;cursor:pointer;
+    background:var(--gris-clair);color:var(--blanc);
+    display:inline-flex;align-items:center;gap:9px;
+    box-shadow:none;
+    transition:background 0.25s ease,box-shadow 0.25s ease,transform 0.2s cubic-bezier(0.34,1.56,0.64,1);
+  }
+  .btn-deverrouiller svg{width:18px;height:18px;}
+  .btn-deverrouiller.actif{
+    background:var(--ambre-fonce);cursor:pointer;
+    box-shadow:0 6px 20px rgba(133,79,11,0.35);
+  }
+  .btn-deverrouiller.actif:hover{transform:translateY(-2px) scale(1.03);}
+  .btn-deverrouiller:disabled{cursor:not-allowed;}
+
+  .verrou-note{
+    text-align:center;font-size:12px;color:var(--gris);font-style:italic;
+    margin-top:12px;
+  }
+
+  /* ── Écran de succès (démo — pas encore le vrai Chapitre 2) ── */
+  .succes-chapitre{
+    display:none;text-align:center;margin-top:10px;
+    padding:26px 22px;background:var(--vert-clair);border:2px solid var(--vert-fonce);
+    border-radius:16px;animation:apparaitre 0.4s ease forwards;
+  }
+  @keyframes apparaitre{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+  .succes-chapitre.visible{display:block;}
+  .succes-titre{font-family:"Patrick Hand",cursive;font-size:20px;color:var(--vert-fonce);margin-bottom:6px;}
+  .succes-texte{font-size:13.5px;color:var(--texte);line-height:1.5;}
+</style>
+</head>
+<body>
+
+<a href="en_histoire_001_p02.html" id="btn-retour">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M5 12L11 6M5 12L11 18"/></svg>
+  Back
+</a>
+
+<div class="page-wrap">
+
+  <div class="verrou-entete">
+    <svg class="verrou-icone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="4.5" y="10.5" width="15" height="10" rx="2"/>
+      <path d="M8 10.5V7a4 4 0 0 1 8 0v3.5"/>
+    </svg>
+    <div class="verrou-titre">Chapter 2 is locked</div>
+    <div class="verrou-sous">Answer both questions below to unlock the next chapter. You can try as many times as you need — there's no penalty for a wrong guess!</div>
+  </div>
+
+  <!-- ── Carte 1 — vocabulaire / grammaire (provisoire) ── -->
+  <div class="verrou-carte" id="carteVocab">
+    <div class="verrou-carte-entete">
+      <svg class="verrou-carte-icone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M4 6.5A2.5 2.5 0 0 1 6.5 4H20v15H6.5A2.5 2.5 0 0 0 4 21.5v-15Z"/>
+        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+      </svg>
+      <span class="verrou-carte-label">French</span>
+      <svg class="verrou-coche" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg>
+    </div>
+    <div class="verrou-question">What's the translation of <em>&ldquo;It's my little brother&rdquo;</em> in French?</div>
+    <div class="verrou-input-row">
+      <input type="text" class="verrou-input" id="inputVocab" placeholder="Type your answer…" autocomplete="off">
+      <button class="verrou-btn" id="btnVocab">Check</button>
+    </div>
+    <div class="verrou-feedback" id="feedbackVocab"></div>
+  </div>
+
+  <!-- ── Carte 2 — univers Keb & Bek ── -->
+  <div class="verrou-carte" id="carteUnivers">
+    <div class="verrou-carte-entete">
+      <svg class="verrou-carte-icone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="8" r="3.2"/>
+        <path d="M5 20c0-3.8 3.1-6 7-6s7 2.2 7 6"/>
+      </svg>
+      <span class="verrou-carte-label">The story</span>
+      <svg class="verrou-coche" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg>
+    </div>
+    <div class="verrou-question">Answer in French: <em>&laquo;&nbsp;Qui est la m&egrave;re de Bek&nbsp;?&nbsp;&raquo;</em></div>
+    <div class="verrou-input-row">
+      <input type="text" class="verrou-input" id="inputUnivers" placeholder="Tape ta r&eacute;ponse&hellip;" autocomplete="off">
+      <button class="verrou-btn" id="btnUnivers">Check</button>
+    </div>
+    <div class="verrou-feedback" id="feedbackUnivers"></div>
+  </div>
+
+  <div class="verrou-action">
+    <button class="btn-deverrouiller" id="btnDeverrouiller" disabled>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="4.5" y="10.5" width="15" height="10" rx="2"/>
+        <path d="M8 10.5V7a4 4 0 0 1 7-2.6"/>
+      </svg>
+      Unlock Chapter 2
+    </button>
+    <div class="verrou-note">Answer both questions correctly to activate this button.</div>
+  </div>
+
+  <div class="succes-chapitre" id="succesChapitre">
+    <div class="succes-titre">🎉 Chapter 2 unlocked!</div>
+    <div class="succes-texte">This is only the opening mechanism — Chapter 2 itself hasn't been written yet. This is just to show how the unlock will work once it is.</div>
+  </div>
+
+</div>
+
+<script>
+// ─────────────────────────────────────────────
+//  Normalisation — identique au canon déjà utilisé dans
+//  en_histoire_000_p01.html et en_histoire_001_p02.html
+//  (minuscules, lettres/accents français seulement, tout le reste retiré,
+//  espaces et apostrophes inclus — ce qui simplifie la comparaison de
+//  phrases entières).
+// ─────────────────────────────────────────────
+function normaliser(s) {
+  return (s || '')
+    .toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '') // r\u00e9duit les accents \u00e0 leur lettre de base (\u00e8\u2192e, \u00e0\u2192a, etc.)
+    .replace(/[^a-z]/g, '')
+    .trim();
+}
+
+var carteVocabReussie = false;
+var carteUniversReussie = false;
+
+// Réponses acceptées — plusieurs formulations plutôt qu'une seule chaîne exacte.
+var reponsesVocab = [
+  'cestmonpetitfrere',
+  'monpetitfrere',
+  'ilestmonpetitfrere'
+].map(normaliser);
+
+var reponsesUnivers = [
+  'ginette',
+  'cestginette',
+  'lameredebekestginette',
+  'lameredebekcestginette',
+  'samereestginette',
+  'samerecestginette',
+  'ginetteestlameredebek',
+  'ginettecestlameredebek'
+].map(normaliser);
+
+function verifierCarte(inputId, btnId, feedbackId, carteId, reponses, marquerReussie) {
+  var input = document.getElementById(inputId);
+  var feedback = document.getElementById(feedbackId);
+  var carte = document.getElementById(carteId);
+  var reponse = normaliser(input.value);
+
+  if (!reponse) return;
+
+  if (reponses.indexOf(reponse) !== -1) {
+    feedback.textContent = 'Correct! 🎉';
+    feedback.className = 'verrou-feedback visible ok';
+    carte.classList.add('reussie');
+    marquerReussie(true);
+    input.disabled = true;
+  } else {
+    feedback.textContent = 'Not quite — try again!';
+    feedback.className = 'verrou-feedback visible non';
+  }
+  majBoutonDeverrouiller();
+}
+
+function majBoutonDeverrouiller() {
+  var btn = document.getElementById('btnDeverrouiller');
+  var pret = carteVocabReussie && carteUniversReussie;
+  btn.disabled = !pret;
+  btn.classList.toggle('actif', pret);
+}
+
+document.getElementById('btnVocab').addEventListener('click', function() {
+  verifierCarte('inputVocab', 'btnVocab', 'feedbackVocab', 'carteVocab', reponsesVocab, function(v){ carteVocabReussie = v; });
+});
+document.getElementById('inputVocab').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') document.getElementById('btnVocab').click();
+});
+
+document.getElementById('btnUnivers').addEventListener('click', function() {
+  verifierCarte('inputUnivers', 'btnUnivers', 'feedbackUnivers', 'carteUnivers', reponsesUnivers, function(v){ carteUniversReussie = v; });
+});
+document.getElementById('inputUnivers').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') document.getElementById('btnUnivers').click();
+});
+
+document.getElementById('btnDeverrouiller').addEventListener('click', function() {
+  if (this.disabled) return;
+  document.getElementById('succesChapitre').classList.add('visible');
+  document.getElementById('succesChapitre').scrollIntoView({ behavior:'smooth', block:'center' });
+});
+</script>
+
+</body>
+</html>
